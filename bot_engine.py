@@ -6,7 +6,10 @@ import os
 # --- CONFIGURATION ---
 TARGET_MODEL_NAME = "Gemini 2.5 Pro"
 TARGET_MODEL_ID = "model-carousel-row-models/gemini-2.5-pro"
-TARGET_SYSTEM_PROMPT = "transcriptor" 
+TARGET_SYSTEM_PROMPT = "transcriptor"
+TEMP_DIR = "temp" 
+
+os.makedirs(TEMP_DIR, exist_ok=True)
 
 class AIStudioBot:
     def __init__(self):
@@ -19,7 +22,6 @@ class AIStudioBot:
             raise Exception("Could not connect to browser.")
         
         context = self.driver.context
-        # Grant clipboard permissions
         context.grant_permissions(["clipboard-read", "clipboard-write"])
         
         found = False
@@ -55,15 +57,12 @@ class AIStudioBot:
                 
                 print("   Switching Model...")
                 card.click()
-                
-                # Try clicking All
                 try:
                     all_btn = self.page.locator("button[data-test-category-button='']").filter(has_text="All")
                     all_btn.wait_for(state="visible", timeout=3000)
                     all_btn.click()
                 except: pass
 
-                # Click ID
                 model_btn = self.page.locator(f'button[id="{TARGET_MODEL_ID}"]')
                 if model_btn.count() > 0:
                     model_btn.scroll_into_view_if_needed()
@@ -99,19 +98,22 @@ class AIStudioBot:
         except Exception as e:
             print(f"   ❌ System Prompt failed: {e}")
 
-    def upload_and_transcribe(self, audio_path, output_path="transcript.txt"):
+    def upload_and_transcribe(self, audio_path):
         if not os.path.exists(audio_path):
             print(f"❌ File not found: {audio_path}")
-            return None
+            return None, None
 
-        print(f"🤖 Bot: Uploading {os.path.basename(audio_path)}...")
+        filename = os.path.basename(audio_path)
+        name_no_ext = os.path.splitext(filename)[0]
+        output_filename = f"{name_no_ext}.txt"
+        output_path = os.path.join(TEMP_DIR, output_filename)
+
+        print(f"🤖 Bot: Uploading {filename}...")
         
         try:
-            # 1. CLICK PLUS
             self.page.locator("button[data-test-add-chunk-menu-button]").click()
             self.page.wait_for_timeout(2000) 
 
-            # 2. CLICK UPLOAD FILE
             try:
                 with self.page.expect_file_chooser(timeout=10000) as fc_info:
                     self.page.get_by_text("Upload File", exact=False).click()
@@ -119,9 +121,8 @@ class AIStudioBot:
                 print("   ✅ File uploaded.")
             except Exception as e:
                 print(f"   ❌ Upload Dialog Failed: {e}")
-                return None
+                return None, None
 
-            # 3. WAIT FOR RUN
             print("   Waiting for 'Run'...")
             run_btn = self.page.locator(".run-button").first
             
@@ -135,7 +136,6 @@ class AIStudioBot:
                 print("   ❌ Timeout: Run button never enabled.")
                 run_btn.click(force=True)
 
-            # 4. WAIT FOR GENERATION
             print("⏳ Waiting for generation...")
             for _ in range(20):
                 if self.page.get_by_label("Stop generation").count() > 0: break
@@ -146,71 +146,63 @@ class AIStudioBot:
             
             print("   Stop button gone. Verifying text stability...")
             
-            # 5. FIND THE CORRECT RESPONSE
-            # Logic: Find 'ms-chat-turn' that contains the 'Model' role div
-            # This is the wrapper for the entire AI answer
             last_model_turn = self.page.locator("ms-chat-turn").filter(
                 has=self.page.locator("[data-turn-role='Model']")
             ).last
-            
-            # Wait for it to exist
             last_model_turn.wait_for(state="visible", timeout=30000)
             
-            # 6. STABILITY CHECK
+            # --- HIGH SPEED STABILITY CHECK ---
             prev_len = 0
             stable_count = 0
             
-            for _ in range(30): # 60 seconds max
-                # We read text from the inner role div to be precise
+            # Max wait: 60 seconds (120 checks * 0.5s)
+            for _ in range(120): 
+                # Force scroll to keep DOM active
+                try: last_model_turn.scroll_into_view_if_needed()
+                except: pass
+
                 curr_text = last_model_turn.inner_text()
                 curr_len = len(curr_text)
                 
+                # Check stability
                 if curr_len == prev_len and curr_len > 10:
                     stable_count += 1
                 else:
-                    stable_count = 0
+                    stable_count = 0 # Reset if text grew
                 
-                if stable_count >= 2:
+                # Threshold: 5 checks * 0.5s = 2.5 seconds of silence
+                if stable_count >= 5:
                     print("   ✅ Text stabilized.")
                     break
                 
                 prev_len = curr_len
-                time.sleep(2)
+                time.sleep(0.5) # Fast polling
 
-            # 7. COPY VIA MENU
             print("   Extracting text via Copy Menu...")
+            final_text = ""
             try:
-                # Hover over the wrapper to reveal buttons
                 last_model_turn.hover()
                 time.sleep(0.5)
+                last_model_turn.locator("button[aria-label='Open options']").click()
                 
-                # Find the 'Open options' button INSIDE this wrapper
-                more_btn = last_model_turn.locator("button[aria-label='Open options']")
-                more_btn.click()
-                
-                # Click "Copy as markdown"
-                # Use exact=True to avoid partial matches if possible, or keep it loose
                 self.page.get_by_text("Copy as markdown").click()
-                
-                time.sleep(1)
-                text = self.page.evaluate("navigator.clipboard.readText()")
-                
-                with open(output_path, "w", encoding="utf-8") as f:
-                    f.write(text)
-                
-                print(f"   ✅ Transcript saved to: {output_path}")
-                return text
+                time.sleep(0.5)
+                final_text = self.page.evaluate("navigator.clipboard.readText()")
+                print("   ✅ Copied via Menu.")
 
             except Exception as e:
-                print(f"   ⚠️ Copy Menu Failed ({e}). Using raw inner_text fallback.")
-                text = last_model_turn.inner_text()
-                with open(output_path, "w", encoding="utf-8") as f:
-                    f.write(text)
-                return text
+                print(f"   ⚠️ Menu copy failed. Using fallback.")
+                final_text = last_model_turn.inner_text()
+
+            with open(output_path, "w", encoding="utf-8") as f:
+                f.write(final_text)
+            
+            print(f"   💾 Saved to: {output_path}")
+            return final_text, output_path
 
         except Exception as e:
             print(f"❌ Transcription failed: {e}")
-            return None
+            return None, None
 
     def close(self):
         self.driver.close()
@@ -226,9 +218,9 @@ if __name__ == "__main__":
         if not os.path.exists(test_file):
             with open(test_file, "w") as f: f.write("dummy content")
         
-        result = bot.upload_and_transcribe(test_file, "transcript.txt")
-        if result:
-            print(f"\n--- SUCCESS (Length: {len(result)}) ---")
+        text, path = bot.upload_and_transcribe(test_file)
+        if path:
+            print(f"\n--- DONE ---")
             
     except Exception as e:
         print(f"CRASH: {e}")
