@@ -5,11 +5,11 @@
 - [x] Task: Initialize testing environment (pytest) and update dependencies [e23c920]
 - [~] Task: Conductor - User Manual Verification 'Cleanup & Setup' (Protocol in workflow.md)
 
-## Phase 2: Bot Engine - Foundation & Selection
+## Phase 2: Bot Engine - Foundation & Selection [checkpoint: 1bac4af]
 - [x] Task: Write Tests: Browser connection and model/instruction selection [98b02ec]
 - [x] Task: Refactor `browser_driver.py` and `bot_engine.py` for reliable connection and fresh chat navigation [98b02ec]
 - [x] Task: Implement model and system instruction selection using `ui_elements/` selectors [98b02ec]
-- [ ] Task: Conductor - User Manual Verification 'Bot Engine Foundation' (Protocol in workflow.md)
+- [~] Task: Conductor - User Manual Verification 'Bot Engine Foundation' (Protocol in workflow.md)
 
 ## Phase 3: Bot Engine - Upload & Extraction
 - [ ] Task: Write Tests: File upload and clean Markdown extraction
