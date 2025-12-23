@@ -1,0 +1,6 @@
+Tasks: Browser connection, Refactor bot_engine.py, Model/Instruction selection.
+Changes:
+- Implemented robust 'ensure_connection' with fresh chat navigation.
+- Implemented 'select_model' and 'select_system_instruction' using ui_elements selectors.
+- Added unit tests in 'test_bot_engine.py'.
+Why: To ensure reliable bot initialization and configuration before running jobs.
