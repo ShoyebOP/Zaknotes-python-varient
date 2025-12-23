@@ -1,18 +1,109 @@
-/* style.css */
 body {
-    /* No font-family specified; use browser default */
+    font-family: "Noto Sans Bengali", sans-serif;
+    font-size: 16px;
+    line-height: 1.8; /* Increased line height for better readability with Bangla script */
+    color: #333;
+    max-width: 800px;
+    margin: 0 auto;
+    padding: 40px; /* Added padding to prevent content touching edges */
+    background-color: #fff;
+}
+
+h1, h2, h3, h4, h5, h6 {
+    font-family: "Noto Sans Bengali", sans-serif; /* Ensure headings also use the font */
+    color: #2c3e50;
+    margin-top: 1.5em;
+    margin-bottom: 0.5em;
+    font-weight: 600;
+}
+
+h1 {
+    font-size: 2.5em;
+    border-bottom: 2px solid #eee;
+    padding-bottom: 0.3em;
+}
+
+h2 {
+    font-size: 2em;
+    border-bottom: 1px solid #eee;
+    padding-bottom: 0.3em;
+}
+
+p {
+    margin-bottom: 1.2em;
+    text-align: justify; /* Optional: Clean look for blocks of text */
+}
+
+a {
+    color: #3498db;
+    text-decoration: none;
+}
+
+a:hover {
+    text-decoration: underline;
+}
+
+code {
+    background-color: #f8f9fa;
+    padding: 0.2em 0.4em;
+    border-radius: 3px;
+    font-family: "Courier New", Courier, monospace; /* Keep monospace for code */
+    font-size: 0.9em;
+}
+
+pre {
+    background-color: #f8f9fa;
+    padding: 1em;
+    border-radius: 5px;
+    overflow-x: auto;
+    margin-bottom: 1.5em;
+    border: 1px solid #e1e4e8;
+}
+
+blockquote {
+    border-left: 4px solid #3498db;
+    padding-left: 1em;
+    margin-left: 0;
+    color: #7f8c8d;
+    font-style: italic;
+    background-color: #f4f6f7;
+    padding: 10px 20px;
 }
 
 ul, ol {
-    padding-left: 2.5em; /* Slightly increased for better indentation */
-    list-style-position: outside; /* Ensures bullets/numbers appear */
+    margin-bottom: 1.2em;
+    padding-left: 2em;
 }
 
 li {
-    list-style-type: disc;
     margin-bottom: 0.5em;
 }
 
-ol li {
-    list-style-type: decimal;
+img {
+    max-width: 100%;
+    height: auto;
+    border-radius: 5px;
+    margin: 1em 0;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+}
+
+table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-bottom: 1.5em;
+}
+
+th, td {
+    padding: 12px 15px;
+    border: 1px solid #ddd;
+    text-align: left;
+}
+
+th {
+    background-color: #f8f9fa;
+    font-weight: bold;
+}
+
+tr:nth-child(even) {
+    background-color: #f9f9f9;
 }
