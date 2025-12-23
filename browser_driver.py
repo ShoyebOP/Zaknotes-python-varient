@@ -7,6 +7,11 @@ from playwright.sync_api import sync_playwright
 
 # --- CONFIGURATION ---
 BROWSER_PATHS = [
+    "/usr/bin/chromium",
+    "/usr/bin/chromium-browser",
+    "/snap/bin/chromium",
+    "/usr/bin/google-chrome",
+    "/usr/bin/google-chrome-stable",
     "/usr/bin/brave-browser",
     "/usr/bin/brave-browser-stable",
     "/usr/bin/brave",
@@ -68,7 +73,7 @@ class BrowserDriver:
         
         if status is False:
             print("\n❌ STOPPING: Port 9222 is occupied by the WRONG browser profile.")
-            print("   Please close your main Brave/Chrome instance running in debug mode.")
+            print("   Please close your main Browser instance running in debug mode.")
             print("   (Or kill the process manually).")
             sys.exit(1) # Hard exit to prevent hijacking main profile
             
@@ -76,7 +81,7 @@ class BrowserDriver:
             print("⚡ Dedicated browser is already running. Reconnecting...")
             return True
 
-        print("🚀 Launching Dedicated Brave Instance...")
+        print("🚀 Launching Dedicated Chromium Instance...")
         print(f"📂 Profile Location: {PROFILE_DIR}")
         
         # Find Executable
@@ -87,7 +92,7 @@ class BrowserDriver:
                 break
         
         if not browser_exe:
-            raise Exception("❌ Could not find Brave Browser executable.")
+            raise Exception("❌ Could not find Chromium/Chrome/Brave executable.")
 
         # Optimization Flags
         cmd = [
