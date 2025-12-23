@@ -1,0 +1,7 @@
+Tasks: File upload, Clean extraction.
+Changes:
+- Implemented 'generate_notes' with direct DOM injection for file upload.
+- Implemented completion verification (waiting for Stop button to vanish).
+- Implemented clean extraction using 'Copy as Markdown' from AI Studio UI.
+- Added tests in 'test_bot_engine.py'.
+Why: To resolve stability issues with file dialogs and ensure clean formatting of extracted notes.
