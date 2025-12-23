@@ -1,0 +1,7 @@
+Tasks: MD to HTML and HTML to PDF conversion.
+Changes:
+- Implemented PdfConverter class in pdf_converter_py.py.
+- convert_md_to_html uses Pandoc via subprocess.
+- convert_html_to_pdf uses Playwright to render HTML and inject CSS.
+- Added unit tests in test_pdf_conversion.py.
+Why: To replace the Node.js PDF conversion with a Python-native solution.
