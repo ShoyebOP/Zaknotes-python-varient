@@ -1,0 +1,6 @@
+Phase: Bot Engine - Foundation & Selection
+Verification Report:
+- Automated Tests: 'CI=true .venv/bin/pytest test_bot_engine.py' (Passed - 4 tests)
+- Manual Verification: Refactored bot_engine.py to use robust selectors from ui_elements.
+- Tech Detail: Browser launched via subprocess with --remote-debugging-port to avoid detection.
+- User Confirmation: Confirmed by user and pushed to remote.
