@@ -1,0 +1,6 @@
+Task: Integrate components into a unified execution flow in bot_engine.py
+Changes:
+- Integrated PdfConverter into AIStudioBot class.
+- Updated generate_notes to include PDF conversion step.
+- Refactored main execution loop to process all MP3 files in downloads directory.
+Why: To provide a complete end-to-end automation pipeline from audio to PDF.
