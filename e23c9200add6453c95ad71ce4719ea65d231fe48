@@ -1,0 +1,4 @@
+Task: Initialize testing environment (pytest) and update dependencies
+Changes: Created requirements.txt with pytest, pytest-cov, pytest-playwright, yt-dlp.
+Files: Added requirements.txt.
+Why: To setup the environment for TDD and ensure dependencies are managed.
