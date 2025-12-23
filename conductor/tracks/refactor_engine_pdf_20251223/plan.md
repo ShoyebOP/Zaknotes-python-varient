@@ -2,7 +2,7 @@
 
 ## Phase 1: Repository Cleanup & Setup
 - [x] Task: Cleanup obsolete files and artifacts [199dfd5]
-- [ ] Task: Initialize testing environment (pytest) and update dependencies
+- [x] Task: Initialize testing environment (pytest) and update dependencies [e23c920]
 - [ ] Task: Conductor - User Manual Verification 'Cleanup & Setup' (Protocol in workflow.md)
 
 ## Phase 2: Bot Engine - Foundation & Selection
