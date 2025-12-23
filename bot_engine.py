@@ -1,4 +1,5 @@
 from browser_driver import BrowserDriver
+from pdf_converter_py import PdfConverter
 from playwright.sync_api import TimeoutError as PlaywrightTimeoutError
 import time
 import os
@@ -19,6 +20,7 @@ class AIStudioBot:
     def __init__(self):
         self.driver = BrowserDriver()
         self.page = None
+        self.converter = PdfConverter()
 
     def ensure_connection(self):
         print("🤖 Bot: Connecting to session...")
@@ -93,23 +95,23 @@ class AIStudioBot:
             current_val = dropdown.text_content().strip()
             if instruction_name in current_val:
                  print(f"   ✅ Already using '{instruction_name}'.")
-                 return
-            
-            print("   Setting instruction...")
-            dropdown.click()
-            
-            option = self.page.locator("mat-option").filter(has_text=instruction_name).first
-            option.wait_for(state="visible", timeout=5000)
-            option.click()
-            
-            print(f"   ✅ Selected: {instruction_name}")
+            else:
+                print("   Setting instruction...")
+                dropdown.click()
+                
+                option = self.page.locator("mat-option").filter(has_text=instruction_name).first
+                option.wait_for(state="visible", timeout=5000)
+                option.click()
+                
+                print(f"   ✅ Selected: {instruction_name}")
 
             # Explicitly close the sidebar after selection
             try:
                 self.page.locator('button[aria-label="Close panel"]').click(timeout=2000)
                 print("   Closed system prompt panel.")
             except Exception as e:
-                print(f"   Note: Could not explicitly close system prompt panel: {e}")
+                # It might have closed automatically
+                pass
 
         except Exception as e:
             print(f"   ❌ System Instruction selection error: {e}")
@@ -126,18 +128,15 @@ class AIStudioBot:
         output_path = os.path.join(TEMP_DIR, output_filename)
 
         print(f"🤖 Bot: Uploading {filename}...")
-
+        
         try:
             # 1. Open Menu
             print("   Clicking '+' to load menu...")
-            # From: ui_elements/add_media_popup_button.html
             self.page.locator('button[data-test-id="add-media-button"]').click()
-
+            
             # 2. TARGET HIDDEN INPUT
-            # From: ui_elements/upload_file_button_in_add_media_popup.html
             print("   Targeting hidden input...")
             file_input = self.page.locator("input[data-test-upload-file-input]")
-            # Direct injection avoids OS file picker
             file_input.set_input_files(audio_path, timeout=60000)
             print("   ✅ File injected successfully.")
 
@@ -145,6 +144,7 @@ class AIStudioBot:
             self.page.keyboard.press("Escape")
             print("   Pressed 'Escape' to close media popup.")
 
+            # 3. WAIT FOR RUN
             print("   Waiting for 'Run'...")
             run_btn = self.page.locator('ms-run-button button[aria-label="Run"]').first
             
@@ -157,6 +157,7 @@ class AIStudioBot:
             else:
                 raise Exception("Timeout: Run button never enabled.")
 
+            # 4. WAIT FOR COMPLETION
             print("⏳ Waiting for generation...")
             stop_btn = self.page.get_by_label("Stop generation")
             
@@ -173,13 +174,14 @@ class AIStudioBot:
             
             print("   ✅ Generation finished.")
             
+            # 5. EXTRACTION
             print("   Locating final response container...")
             last_model_turn = self.page.locator("ms-chat-turn").filter(
                 has=self.page.locator("[data-turn-role='Model']")
             ).last
             last_model_turn.wait_for(state="visible", timeout=30000)
 
-            last_model_turn.hover()
+            last_model_turn.hover() 
             
             more_btn = last_model_turn.locator("button[aria-label='Open options']").first
             more_btn.click()
@@ -196,8 +198,19 @@ class AIStudioBot:
             with open(output_path, "w", encoding="utf-8") as f:
                 f.write(final_text)
             
-            print(f"   💾 Saved to: {output_path}")
-            return final_text, output_path
+            print(f"   💾 Saved Markdown to: {output_path}")
+            
+            # 6. PDF CONVERSION
+            print("   Converting to PDF...")
+            html_path = output_path.replace(".md", ".html")
+            pdf_path = output_path.replace(".md", ".pdf")
+            
+            self.converter.convert_md_to_html(output_path, html_path)
+            self.converter.convert_html_to_pdf(html_path, pdf_path)
+            
+            print(f"   ✅ PDF saved to: {pdf_path}")
+            
+            return final_text, pdf_path
 
         except Exception as e:
             print(f"❌ Notes generation failed: {e}")
@@ -206,20 +219,32 @@ class AIStudioBot:
     def close(self):
         self.driver.close()
 
-if __name__ == "__main__":
-    bot = AIStudioBot()
+def process_single_file(bot, audio_path):
     try:
         bot.ensure_connection()
         bot.select_model()
         bot.select_system_instruction()
         
-        real_files = glob.glob(os.path.join(DOWNLOAD_DIR, "*.mp3"))
-        if real_files:
-            text, path = bot.generate_notes(real_files[0])
-            if path:
-                 print(f"\n--- SUCCESS ---")
-        else:
-            print(f"❌ No mp3 files in {DOWNLOAD_DIR}")
-            
+        text, pdf_path = bot.generate_notes(audio_path)
+        if pdf_path:
+            print(f"\n✨ SUCCESSFULLY PROCESSED: {os.path.basename(audio_path)}")
+            return True
     except Exception as e:
-        print(f"CRASH: {e}")
+        print(f"❌ FAILED TO PROCESS {audio_path}: {e}")
+    return False
+
+if __name__ == "__main__":
+    bot = AIStudioBot()
+    try:
+        real_files = glob.glob(os.path.join(DOWNLOAD_DIR, "*.mp3"))
+        if not real_files:
+            print(f"❌ No mp3 files found in {DOWNLOAD_DIR}")
+        else:
+            print(f"📂 Found {len(real_files)} files to process.")
+            for audio_file in real_files:
+                process_single_file(bot, audio_file)
+                # Small delay between files
+                time.sleep(2)
+            
+    finally:
+        bot.close()
