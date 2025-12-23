@@ -1,0 +1,4 @@
+Task: Cleanup obsolete files and artifacts
+Changes: Removed unused python scripts and test files. Added pdf_converter/style.css and ui_elements/ to version control.
+Files: Deleted 8 files, Added 25 files (mostly ui_elements).
+Why: To clean up the repository and prepare for the refactoring track.
