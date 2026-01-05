@@ -20,9 +20,9 @@ This plan outlines the refactoring of `zaknotes.py` to include a job management 
 - [x] **Task 2: Integrate Sub-Menu Logic with JobManager** a945c5f
 - [x] **Task: Conductor - User Manual Verification 'Job Sub-Menu Integration' (Protocol in workflow.md)** 0eb880e
 
-## Phase 4: Push to Remote & Cleanup
-- [ ] **Task 1: Final End-to-End Verification**
+## Phase 4: Push to Remote & Cleanup [checkpoint: ad4d3a4]
+- [x] **Task 1: Final End-to-End Verification** ea0a881
   - Manually verify all menu paths and `history.json` updates.
-- [ ] **Task 2: Push Commits to GitHub**
+- [x] **Task 2: Push Commits to GitHub** ea0a881
   - **Action**: Execute `git push origin main` to ensure all changes reach the remote repository.
-- [ ] **Task: Conductor - User Manual Verification 'Push to Remote & Cleanup' (Protocol in workflow.md)**
+- [x] **Task: Conductor - User Manual Verification 'Push to Remote & Cleanup' (Protocol in workflow.md)** ea0a881
