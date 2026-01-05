@@ -1,0 +1,3 @@
+Task: Cleanup Legacy Artifacts
+Summary: Deleted test_bot_engine.py, test_integration.py, test_pdf_conversion.py and ensured __pycache__ is gone.
+Why: To remove obsolete files as per the cleanup track.
