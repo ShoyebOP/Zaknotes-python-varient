@@ -1,0 +1,3 @@
+Task: Implement Menu Framework
+Summary: Created zaknotes.py as the main entry point with an interactive menu. Implemented basic loop and option routing.
+Why: To unify the project features under a single interface.
