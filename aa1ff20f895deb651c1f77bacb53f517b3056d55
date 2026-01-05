@@ -1,0 +1,4 @@
+Task: Setup New Directory Structure
+Summary: Moved all core Python modules and resource directories (ui_elements, pdf_converter) to a new src/ directory. Also stopped tracking __pycache__.
+Files Moved: bot_engine.py, browser_driver.py, cookie_manager.py, downloader.py, find_vimeo_url.py, job_manager.py, pdf_converter_py.py, ui_elements/, pdf_converter/
+Why: To clean up the root directory and establish a standard project structure.
