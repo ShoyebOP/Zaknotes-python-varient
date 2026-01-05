@@ -1,0 +1,3 @@
+Task: Implement Launch Browser (Option 4)
+Summary: Added Option 4 to the main menu in zaknotes.py to allow manual browser launching for inspection. Updated the menu loop to shift the Exit option to 5.
+Files: zaknotes.py, tests/test_cli_menu.py
