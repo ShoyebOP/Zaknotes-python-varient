@@ -1,0 +1,3 @@
+Task: Refine Pending Job Retrieval
+Summary: Refactored get_pending_from_last_150 in JobManager to accurately return all jobs currently in the 'queue' status across the entire history, fulfilling the specification for reliable job management.
+Files: src/job_manager.py, tests/test_job_manager_logic.py
