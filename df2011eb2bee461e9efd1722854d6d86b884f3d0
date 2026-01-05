@@ -1,0 +1,3 @@
+Task: Integrate Option 3 - Refresh Cookies
+Summary: Verified that Option 3 correctly routes to the interactive_update function in src/cookie_manager.py.
+Why: Ensures users can manually update their session cookies from the unified menu.
