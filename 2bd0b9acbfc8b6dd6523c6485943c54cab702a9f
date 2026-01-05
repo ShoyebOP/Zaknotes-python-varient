@@ -1,0 +1,3 @@
+Task: Refactor Imports and Paths
+Summary: Created src/__init__.py to make src a package. Updated src/bot_engine.py to use relative imports. Updated src/downloader.py to use __file__ for finding helper scripts.
+Why: To ensure proper module resolution and file access in the new directory structure.
