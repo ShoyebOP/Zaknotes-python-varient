@@ -2,12 +2,12 @@
 
 This plan outlines the refactoring of `zaknotes.py` to include a job management sub-menu and a standalone browser launch option, along with necessary logic updates in `JobManager`.
 
-## Phase 1: Job Manager Logic Enhancements
+## Phase 1: Job Manager Logic Enhancements [checkpoint: 05ebd85]
 - [x] **Task 1: Implement/Verify `cancel_pending` Logic** dbcb301
 - [x] **Task 2: Refine Pending Job Retrieval** af7653c
   - **Write Tests**: Verify that `get_pending_from_last_150()` returns the expected jobs for processing.
   - **Implement**: Ensure the method is robust and handles empty history.
-- [ ] **Task: Conductor - User Manual Verification 'Job Manager Logic Enhancements' (Protocol in workflow.md)**
+- [x] **Task: Conductor - User Manual Verification 'Job Manager Logic Enhancements' (Protocol in workflow.md)** ebe7581
 
 ## Phase 2: CLI Menu Refactoring
 - [ ] **Task 1: Implement "Launch Browser" (Option 4)**
