@@ -24,33 +24,69 @@ def refresh_browser_profile():
     # Since it's Popen in background, we might want to wait or just inform user
     print("\n✅ Browser launched. Follow the steps in the browser window.")
 
-def start_note_generation():
-    # Import here to avoid circular dependencies if any, 
-    # and because it might start the driver immediately
+def run_processing_pipeline(manager):
+    # Import here to avoid circular dependencies and only when needed
     from src.bot_engine import AIStudioBot, process_job
     
-    manager = JobManager()
-    print("\n--- Start Note Generation ---")
-    file_names = input("Give me the file names (separated by comma/pipe/newline): ")
-    urls = input("Give the URLS for the files: ")
-    
-    if not file_names.strip() or not urls.strip():
-        print("❌ Names and URLs are required.")
-        return
-
-    manager.add_jobs(file_names, urls)
     pending_jobs = manager.get_pending_from_last_150()
     
     if not pending_jobs:
         print("📭 No pending jobs in queue.")
-    else:
-        print(f"📂 Found {len(pending_jobs)} pending jobs to process.")
-        bot = AIStudioBot()
-        try:
-            for job in pending_jobs:
-                process_job(bot, manager, job)
-        finally:
-            bot.close()
+        return
+
+    print(f"📂 Found {len(pending_jobs)} pending jobs to process.")
+    bot = AIStudioBot()
+    try:
+        for job in pending_jobs:
+            process_job(bot, manager, job)
+    finally:
+        bot.close()
+
+def start_note_generation():
+    manager = JobManager()
+    
+    while True:
+        print("\n--- Note Generation Sub-Menu ---")
+        print("1. Start New Jobs (Cancel Pending)")
+        print("2. Start New Jobs (Include Pending)")
+        print("3. Cancel Old Pending Jobs")
+        print("4. Start Old Pending Jobs")
+        print("5. Back to Main Menu")
+        print("--------------------------------")
+        
+        sub_choice = input("Enter your choice (1-5): ").strip()
+        
+        if sub_choice == '1':
+            manager.cancel_pending()
+            print("✅ Old pending jobs cancelled.")
+            file_names = input("Give me the file names (separated by comma/pipe/newline): ")
+            urls = input("Give the URLS for the files: ")
+            if file_names.strip() and urls.strip():
+                manager.add_jobs(file_names, urls)
+                run_processing_pipeline(manager)
+            break
+            
+        elif sub_choice == '2':
+            file_names = input("Give me the file names (separated by comma/pipe/newline): ")
+            urls = input("Give the URLS for the files: ")
+            if file_names.strip() and urls.strip():
+                manager.add_jobs(file_names, urls)
+                run_processing_pipeline(manager)
+            break
+            
+        elif sub_choice == '3':
+            manager.cancel_pending()
+            print("✅ Old pending jobs cancelled.")
+            break
+            
+        elif sub_choice == '4':
+            run_processing_pipeline(manager)
+            break
+            
+        elif sub_choice == '5':
+            break
+        else:
+            print("❌ Invalid choice.")
 
 def launch_manual_browser():
     print("\n🚀 Launching Browser for manual inspection...")
