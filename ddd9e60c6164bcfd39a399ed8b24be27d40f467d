@@ -1,0 +1,3 @@
+Task: Git Ignore Updates
+Summary: Updated .gitignore to exclude src/ui_elements/ and stopped tracking existing files in that directory. Verified exclusion works.
+Why: As requested by user to keep resource files out of repo.
