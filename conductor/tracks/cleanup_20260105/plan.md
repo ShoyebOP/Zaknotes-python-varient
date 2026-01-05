@@ -3,7 +3,7 @@
 This plan outlines the steps to reorganize the Zaknotes codebase, clean up legacy files, and implement a unified CLI entry point.
 
 ## Phase 1: Project Structure Reorganization
-- [~] **Task 1: Setup New Directory Structure**
+- [x] **Task 1: Setup New Directory Structure** aa1ff20
   - Create the `src/` directory.
   - Move Python modules: `bot_engine.py`, `browser_driver.py`, `cookie_manager.py`, `downloader.py`, `find_vimeo_url.py`, `job_manager.py`, `pdf_converter_py.py` to `src/`.
   - Move resource directories: `ui_elements/` and `pdf_converter/` to `src/`.
