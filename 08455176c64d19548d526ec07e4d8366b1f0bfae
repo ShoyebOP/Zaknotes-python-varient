@@ -1,0 +1,3 @@
+Task: Integrate Option 1 - Start Note Generation
+Summary: Verified that choosing Option 1 in the menu correctly prompts for input and triggers the note generation pipeline via bot_engine.
+Why: Ensures the primary feature is accessible and functional through the new CLI.
