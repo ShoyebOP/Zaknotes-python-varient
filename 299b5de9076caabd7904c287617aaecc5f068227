@@ -1,0 +1,7 @@
+Phase: Unified CLI Implementation
+Automated Test Command: CI=true .venv/bin/pytest tests/test_cli.py tests/test_integration_option1.py tests/test_integration_option2.py tests/test_integration_option3.py
+Manual Verification Steps:
+1. Launch CLI (python3 zaknotes.py).
+2. Verify menu structure.
+3. Test Option 2 (Browser Refresh) and Option 4 (Exit).
+User Confirmation: Received explicit 'confirm' from user.
