@@ -1,7 +1,7 @@
-from browser_driver import BrowserDriver
-from pdf_converter_py import PdfConverter
-from job_manager import JobManager
-from downloader import download_audio
+from .browser_driver import BrowserDriver
+from .pdf_converter_py import PdfConverter
+from .job_manager import JobManager
+from .downloader import download_audio
 from playwright.sync_api import TimeoutError as PlaywrightTimeoutError
 import time
 import os
