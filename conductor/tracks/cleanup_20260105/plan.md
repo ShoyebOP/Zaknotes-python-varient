@@ -22,7 +22,7 @@ This plan outlines the steps to reorganize the Zaknotes codebase, clean up legac
 - [x] **Task: Conductor - User Manual Verification 'Project Structure Reorganization' (Protocol in workflow.md)** b71252d
 
 ## Phase 2: Unified CLI Implementation (`zaknotes.py`)
-- [ ] **Task 1: Implement Menu Framework**
+- [x] **Task 1: Implement Menu Framework** af64537
   - **Write Tests**: Define tests for the CLI menu structure and user input handling.
   - **Implement**: Create `zaknotes.py` in the root with a loop that displays the 3 options and handles exit.
 - [ ] **Task 2: Integrate Option 1 - Start Note Generation**
