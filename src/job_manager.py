@@ -27,13 +27,9 @@ class JobManager:
 
     def get_pending_from_last_150(self):
         """
-        Check last 150 entries. Return list of jobs with status 'queue'.
+        Return list of ALL jobs with status 'queue' in history.
         """
-        # Get last 150 items (or fewer if list is short)
-        slice_start = max(0, len(self.history) - 150)
-        recent_history = self.history[slice_start:]
-        
-        pending = [job for job in recent_history if job['status'] == 'queue']
+        pending = [job for job in self.history if job.get('status') == 'queue']
         return pending
 
     def cancel_pending(self):

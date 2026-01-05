@@ -44,10 +44,7 @@ class TestJobManager(unittest.TestCase):
             self.assertEqual(job['status'], 'cancelled', f"Job {job['id']} was not cancelled")
 
     def test_get_pending_accurate(self):
-        # Should we rename/refactor this to get ALL pending?
-        # The spec says: "Ensure get_pending_from_last_150() (or a new method) accurately returns all jobs currently waiting to be processed."
-        
-        # Let's test if it currently only gets last 150
+        # Create more than 150 jobs
         for i in range(200):
             self.manager.history.append({
                 "id": str(i),
@@ -58,8 +55,8 @@ class TestJobManager(unittest.TestCase):
             })
         
         pending = self.manager.get_pending_from_last_150()
-        # Currently it should be 150
-        self.assertEqual(len(pending), 150)
+        # It should now return ALL 200 jobs if we refactor it or use a new method
+        self.assertEqual(len(pending), 200)
 
 if __name__ == '__main__':
     unittest.main()
