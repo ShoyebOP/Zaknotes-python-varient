@@ -10,7 +10,7 @@ This plan outlines the steps to reorganize the Zaknotes codebase, clean up legac
 - [x] **Task 2: Cleanup Legacy Artifacts** 33214ca
   - Delete all `test_*.py` files from the root directory.
   - Delete `__pycache__` directories.
-- [ ] **Task 3: Refactor Imports and Paths**
+- [x] **Task 3: Refactor Imports and Paths** 2bd0b9a
   - Update all `import` statements in the moved modules to handle the new directory structure.
   - Update any hardcoded file paths (e.g., to `ui_elements` or `style.css`) within the modules to reflect their new locations relative to `src/`.
 - [ ] **Task 4: Git Ignore Updates**
