@@ -1,0 +1,6 @@
+Phase: Project Structure Reorganization
+Automated Test Command: CI=true .venv/bin/pytest tests/test_integrity.py
+Manual Verification Steps:
+1. Inspect Directory Structure (ls -F) to confirm src/ move and cleanup.
+2. Verify Imports (Interactive from src).
+User Confirmation: Received explicit 'confirm' from user.
