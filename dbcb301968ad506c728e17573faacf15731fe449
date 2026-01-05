@@ -1,0 +1,3 @@
+Task: Implement/Verify cancel_pending Logic
+Summary: Refactored cancel_pending in JobManager to correctly iterate through the entire history and mark all 'queue' jobs as 'cancelled', ensuring no pending jobs are missed regardless of history size.
+Files: src/job_manager.py, tests/test_job_manager_logic.py
