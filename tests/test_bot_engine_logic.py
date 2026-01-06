@@ -5,7 +5,7 @@ from playwright.sync_api import TimeoutError as PlaywrightTimeoutError
 
 @pytest.fixture
 def mock_bot():
-    with patch('src.bot_engine.BrowserDriver'):
+    with patch('src.bot_engine.BrowserDriver'), patch('src.bot_engine.PdfConverter'):
         bot = AIStudioBot()
         bot.page = MagicMock()
         return bot
@@ -81,3 +81,43 @@ def test_select_system_instruction_retries_and_succeeds(mock_bot):
     
     assert mock_card.click.call_count == 2
     mock_dropdown.click.assert_not_called()
+
+def test_generate_notes_success(mock_bot):
+    # Mocking various components for generate_notes
+    mock_bot.page.locator.return_value = MagicMock()
+    mock_run_btn = MagicMock()
+    mock_run_btn.is_enabled.return_value = True
+    mock_bot.page.locator.return_value.first = mock_run_btn
+    
+    mock_stop_btn = MagicMock()
+    mock_stop_btn.count.side_effect = [1, 0] # Generation starts, then finishes
+    mock_bot.page.get_by_label.return_value = mock_stop_btn
+    
+    mock_last_turn = MagicMock()
+    mock_bot.page.locator.return_value.filter.return_value.last = mock_last_turn
+    
+    mock_bot.page.evaluate.return_value = "Mocked AI Response"
+    
+    with patch('os.path.exists', return_value=True), \
+         patch('builtins.open', MagicMock()), \
+         patch('src.bot_engine.PdfConverter', MagicMock()):
+        
+        text, pdf_path = mock_bot.generate_notes("dummy.mp3")
+        
+        assert text == "Mocked AI Response"
+        assert pdf_path is not None
+        assert "dummy.pdf" in pdf_path
+
+def test_generate_notes_timeout_waiting_for_run(mock_bot):
+    # Mock run button never enabled
+    mock_run_btn = MagicMock()
+    mock_run_btn.is_enabled.return_value = False
+    mock_bot.page.locator.return_value.first = mock_run_btn
+    
+    with patch('os.path.exists', return_value=True), \
+         patch('time.sleep', MagicMock()): # Speed up test
+        
+        text, pdf_path = mock_bot.generate_notes("dummy.mp3")
+        
+        assert text is None
+        assert pdf_path is None
