@@ -1,0 +1,1 @@
+Phase 4: Fallback Recovery System Verification Report. Automated tests: .venv/bin/python -m pytest tests/test_recovery.py. Manual verification: Closed browser manually during model selection; confirmed bot performs hard reset and successfully reconnects without asyncio errors. Thinking timeout increased to 10m. User confirmed success.
