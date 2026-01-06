@@ -173,6 +173,7 @@ class AIStudioBot:
         except Exception as e:
             print(f"   (Internal) Error during driver close: {e}")
         
+        self.page = None # Clear stale page reference
         time.sleep(2) # Give OS time to release resources
         self.driver = BrowserDriver()
         self.ensure_connection()
@@ -316,6 +317,7 @@ class AIStudioBot:
 
     def close(self):
         self.driver.close()
+        self.driver.stop_all()
 
 def process_job(bot, job_manager, job):
     """Processes a single job with retry/restart logic"""

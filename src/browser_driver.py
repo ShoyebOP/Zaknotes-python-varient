@@ -24,6 +24,8 @@ PROFILE_DIR = os.path.abspath(os.path.join(os.getcwd(), "browser_profile"))
 DEBUG_PORT = 9222
 
 class BrowserDriver:
+    _playwright_instance = None
+
     def __init__(self):
         self.playwright = None
         self.browser = None
@@ -78,7 +80,8 @@ class BrowserDriver:
             sys.exit(1) # Hard exit to prevent hijacking main profile
             
         if status is True:
-            print("⚡ Dedicated browser is already running. Reconnecting...")
+            # Check if we can actually reach the debugger
+            # Sometimes port is open but CDP is unresponsive
             return True
 
         print("🚀 Launching Dedicated Chromium Instance...")
@@ -128,7 +131,10 @@ class BrowserDriver:
         self.launch_browser() 
 
         print("🔌 Connecting via Playwright...")
-        self.playwright = sync_playwright().start()
+        if BrowserDriver._playwright_instance is None:
+            BrowserDriver._playwright_instance = sync_playwright().start()
+        
+        self.playwright = BrowserDriver._playwright_instance
         
         try:
             self.browser = self.playwright.chromium.connect_over_cdp(f"http://localhost:{DEBUG_PORT}")
@@ -157,18 +163,28 @@ class BrowserDriver:
         page.goto("https://aistudio.google.com/")
         return page
 
+    @classmethod
+    def stop_all(cls):
+        """Final cleanup: stops the shared Playwright instance."""
+        if cls._playwright_instance:
+            print("🔌 Stopping global Playwright instance...")
+            try:
+                cls._playwright_instance.stop()
+            except:
+                pass
+            cls._playwright_instance = None
+
     def close(self):
-        print("🔌 Disconnecting and stopping Playwright...")
+        print("🔌 Disconnecting browser and context...")
         try:
             if self.context:
                 self.context.close()
             if self.browser:
                 self.browser.close()
-            if self.playwright:
-                self.playwright.stop()
         except Exception as e:
-            print(f"   (Internal) Error during Playwright stop: {e}")
+            print(f"   (Internal) Error during disconnect: {e}")
         finally:
             self.context = None
             self.browser = None
-            self.playwright = None
+            # Note: We do NOT stop the global playwright instance here
+            # to avoid asyncio loop conflicts on restart.
