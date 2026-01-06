@@ -1,0 +1,1 @@
+Task: Refine Fallback Recovery and Timeouts. Summary: Increased thinking timeout to 10 minutes and total generation limit to 20 minutes. Improved BrowserDriver.close() and bot.restart_session() to more thoroughly clean up Playwright, avoiding 'asyncio loop' errors during hard resets.
