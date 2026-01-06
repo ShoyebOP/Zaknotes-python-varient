@@ -32,7 +32,7 @@ Focus: Updating the queue system to automatically retry failed jobs.
 ## Phase 4: Fallback Recovery System
 Focus: Implementing a "hard reset" mechanism if UI interactions fail despite the fix.
 
-- [ ] Task: Implement browser session restart logic in `src/bot_engine.py` upon interaction timeout.
+- [x] Task: Implement browser session restart logic in `src/bot_engine.py` upon interaction timeout. 57219a7
     - Sub-task: Catch timeout/interaction exceptions during setup.
     - Sub-task: Logic to close current Playwright/Chromium instance and re-initialize.
 - [ ] Task: Verify recovery flow by simulating a selection failure.
