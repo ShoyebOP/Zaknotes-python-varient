@@ -1,0 +1,1 @@
+Task: Modify job selection logic in the CLI menu to group pending and failed jobs together for the user. Summary: Updated zaknotes.py menu options and print statements to explicitly mention 'Queue/Failed'. Updated src/job_manager.py cancel_pending to clear both status types. Verified with test_retry_logic.py.
