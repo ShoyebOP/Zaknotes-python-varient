@@ -1,0 +1,1 @@
+Task: Update src/job_manager.py to include failed status in the list of jobs to be processed. Summary: Updated get_pending_from_last_150 to query for both 'queue' and 'failed' status, allowing automated retry of failed jobs. Verified with new test test_retry_logic.py.
