@@ -1,0 +1,1 @@
+Phase 1: UI Stability & Root Cause Investigation Verification Report. Automated tests: .venv/bin/python -m pytest tests/test_bot_engine_logic.py. Manual verification: Run zaknotes.py and observe model/instruction selection logic. User confirmed success.
