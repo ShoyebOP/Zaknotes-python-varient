@@ -1,0 +1,1 @@
+Fix for Phase 2 Verification (Retry 2). Updated _get_clean_text_length to iterate over 'ms-prompt-chunk' elements specifically, ignoring the parent container's text (which included UI labels like 'Model'). This ensures the bot waits for actual generated text.
