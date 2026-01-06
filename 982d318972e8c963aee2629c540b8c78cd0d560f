@@ -1,0 +1,1 @@
+Fix for Phase 2 Verification. Implemented _get_clean_text_length to ignore 'ms-thought-chunk' elements. Added pre-wait loop to ensure monitoring starts only after actual response text appears. Added layout stabilization delay before copy. Updated tests to support new logic.
