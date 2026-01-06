@@ -1,0 +1,1 @@
+Task: Implement AI response growth monitoring loop in src/bot_engine.py. Summary: Replaced the stop-button based wait with a loop that monitors the inner_text length of the last Model turn. It waits for the content to be stable for 15 seconds before proceeding, preventing empty PDFs. Files: src/bot_engine.py
