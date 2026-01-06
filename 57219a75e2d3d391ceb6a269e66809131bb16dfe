@@ -1,0 +1,1 @@
+Task: Implement browser session restart logic in src/bot_engine.py upon interaction timeout. Summary: Added restart_session() method to AIStudioBot and updated process_job() to include a retry loop that triggers a hard browser reset on interaction failure. Verified with test_recovery.py.
