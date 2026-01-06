@@ -96,7 +96,18 @@ def test_generate_notes_success(mock_bot):
     mock_last_turn = MagicMock()
     mock_bot.page.locator.return_value.filter.return_value.last = mock_last_turn
     
-    mock_bot.page.evaluate.return_value = "Mocked AI Response"
+    # Mock evaluate to return a positive integer for clean length check
+    # AND return the text content for the clipboard read
+    def evaluate_side_effect(script, *args):
+        if "navigator.clipboard.readText" in script:
+            return "Mocked AI Response"
+        if "innerText" in script: # This matches the _get_clean_text_length script
+            return 100
+        return MagicMock()
+        
+    mock_bot.page.evaluate.side_effect = evaluate_side_effect
+    # Also mock last_model_turn.evaluate for the clean length check
+    mock_last_turn.evaluate.return_value = 100
     
     with patch('os.path.exists', return_value=True), \
          patch('builtins.open', MagicMock()), \

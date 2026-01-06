@@ -144,6 +144,15 @@ class AIStudioBot:
             print(f"   ❌ System Instruction selection error: {e}")
             raise
 
+    def _get_clean_text_length(self, locator):
+        """Calculates text length excluding 'Thinking' blocks."""
+        return locator.evaluate("""(element) => {
+            const clone = element.cloneNode(true);
+            const thoughts = clone.querySelectorAll('ms-thought-chunk');
+            thoughts.forEach(t => t.remove());
+            return clone.innerText.trim().length;
+        }""")
+
     def generate_notes(self, audio_path):
         if not os.path.exists(audio_path):
             print(f"❌ File not found: {audio_path}")
@@ -194,17 +203,35 @@ class AIStudioBot:
             # Wait up to 30s for the response block to appear
             try:
                 last_model_turn.wait_for(state="visible", timeout=30000)
+                last_model_turn.scroll_into_view_if_needed()
             except:
                 raise Exception("Timeout: AI response block never appeared.")
 
-            print("⏳ Monitoring AI response growth...")
+            print("⏳ Monitoring AI response growth (ignoring thoughts)...")
+            
+            # Phase A: Wait for actual text to appear (ignoring thoughts)
+            start_wait_time = time.time()
+            while True:
+                clean_len = self._get_clean_text_length(last_model_turn)
+                if clean_len > 0:
+                    print("   🚀 Response text started.")
+                    break
+                
+                if time.time() - start_wait_time > 120: # Wait up to 2 mins for thinking to finish
+                    print("   ⚠️ Timed out waiting for text start. Assuming empty or done.")
+                    break
+                
+                if int(time.time() - start_wait_time) % 5 == 0:
+                    print(f"   ... Thinking / Waiting ({int(time.time() - start_wait_time)}s) ...")
+                time.sleep(1)
+
+            # Phase B: Monitor Growth
             last_length = 0
             stable_seconds = 0
             start_monitoring_time = time.time()
             
             while stable_seconds < 15:
-                current_text = last_model_turn.inner_text()
-                current_length = len(current_text)
+                current_length = self._get_clean_text_length(last_model_turn)
                 elapsed = int(time.time() - start_monitoring_time)
                 
                 if current_length > last_length:
@@ -215,12 +242,19 @@ class AIStudioBot:
                 else:
                     stable_seconds += 1
                 
+                # Safety timeout (5 mins max generation)
+                if elapsed > 300:
+                    print("   ⚠️ Hit max generation limit (5m). Proceeding.")
+                    break
+
                 time.sleep(1)
             
             print(f"   ✅ Generation finished (stable for 15s, total {elapsed}s).")
             
             # 5. EXTRACTION
             print("   Extracting text...")
+            last_model_turn.scroll_into_view_if_needed()
+            time.sleep(1) # Settle layout
             last_model_turn.hover()
             
             more_btn = last_model_turn.locator("button[aria-label='Open options']").first
