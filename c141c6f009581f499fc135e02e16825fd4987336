@@ -1,0 +1,1 @@
+Phase 3: Job Management & Retry Logic Verification Report. Automated tests: .venv/bin/python -m pytest tests/test_job_manager_logic.py. Manual verification: Renamed Option 4 to 'Process Old Jobs', confirmed 'downloading' and 'failed' jobs are retried correctly. User confirmed success.
