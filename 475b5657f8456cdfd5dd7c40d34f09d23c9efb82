@@ -1,0 +1,1 @@
+Task: Implement 2-second mandatory sleep after file upload completion in src/bot_engine.py. Summary: Added time.sleep(2) after the file input injection and media popup closure to ensure UI stability before clicking Run. Files: src/bot_engine.py
