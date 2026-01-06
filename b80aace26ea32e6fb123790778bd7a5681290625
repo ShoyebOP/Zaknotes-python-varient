@@ -1,0 +1,1 @@
+Fix for Phase 4 Verification (Retry 1). Solved 'Playwright Sync API inside asyncio loop' error by using a class-level persistent Playwright instance in BrowserDriver. This avoids multiple start/stop calls in the same process. Also increased thinking timeout to 10m and generation limit to 20m.
