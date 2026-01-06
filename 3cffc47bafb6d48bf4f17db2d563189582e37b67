@@ -1,0 +1,1 @@
+Task: Refine Job Management & Retry Logic. Summary: Updated JobManager to include 'downloading' and 'processing' statuses in processing queue and cancellation logic. Renamed CLI menu options to 'Old Jobs' and option 4 specifically to 'Process Old Jobs'. Updated tests.
