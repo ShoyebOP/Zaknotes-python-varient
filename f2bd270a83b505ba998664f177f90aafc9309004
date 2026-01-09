@@ -1,0 +1,4 @@
+Task: Fix __Host- cookie handling
+Summary: Modified cookie parsing to respect Netscape domain flag (TRUE/FALSE) and enforce strict requirements for __Host- prefixed cookies (Secure, Path=/, Host-only).
+Files: src/find_vimeo_url.py, tests/test_find_vimeo_url.py
+Why: Fixes ProtocolError when adding __Host- cookies with invalid domain attributes.
