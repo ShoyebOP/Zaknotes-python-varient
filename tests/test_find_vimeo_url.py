@@ -10,16 +10,27 @@ from src.find_vimeo_url import extract_vimeo_url, parse_netscape_cookies
 
 @pytest.fixture
 def mock_cookie_file(tmp_path):
-    cookie_content = "example.com\tTRUE\t/\tFALSE\t2147483647\ttest_name\ttest_value\n"
+    cookie_content = (
+        "example.com\tTRUE\t/\tFALSE\t2147483647\ttest_name\ttest_value\n"
+        "example.com\tFALSE\t/\tTRUE\t2147483647\t__Host-test\thost_val\n"
+    )
     cookie_file = tmp_path / "cookies.txt"
     cookie_file.write_text(cookie_content)
     return str(cookie_file)
 
 def test_parse_netscape_cookies(mock_cookie_file):
     cookies = parse_netscape_cookies(mock_cookie_file, "example.com")
-    assert len(cookies) == 1
-    assert cookies[0]['name'] == 'test_name'
-    assert cookies[0]['value'] == 'test_value'
+    assert len(cookies) == 2
+    
+    # Check standard cookie
+    c1 = next(c for c in cookies if c['name'] == 'test_name')
+    assert c1['domain'] == '.example.com'
+    
+    # Check __Host- cookie
+    c2 = next(c for c in cookies if c['name'] == '__Host-test')
+    assert c2['domain'] == 'example.com' # Should be host-only (no dot)
+    assert c2['secure'] is True
+    assert c2['path'] == '/'
 
 @patch('src.find_vimeo_url.sync_playwright')
 def test_extract_vimeo_url_success(mock_playwright, mock_cookie_file):

@@ -36,6 +36,7 @@ def parse_netscape_cookies(cookie_file_path, target_domain):
                     continue
                 
                 domain = parts[0]
+                domain_flag = parts[1].upper() == 'TRUE' # TRUE means include subdomains (domain cookie)
                 path = parts[2]
                 secure = parts[3].upper() == 'TRUE'
                 expiration = parts[4]
@@ -48,17 +49,35 @@ def parse_netscape_cookies(cookie_file_path, target_domain):
                     # Treat 0 as session cookie (-1)
                     if expires == 0:
                         expires = -1
+                    
+                    # Handle domain based on flag
+                    # If domain_flag is TRUE, it's a domain cookie (should start with .)
+                    # If FALSE, it's a host-only cookie (should NOT start with .)
+                    final_domain = domain
+                    if domain_flag:
+                        if not final_domain.startswith('.'):
+                            final_domain = '.' + final_domain
+                    else:
+                        if final_domain.startswith('.'):
+                            final_domain = final_domain.lstrip('.')
+
+                    # Special handling for __Host- cookies (must be secure, path=/, no domain attribute/host-only)
+                    if name.startswith('__Host-'):
+                        secure = True
+                        path = '/'
+                        if final_domain.startswith('.'):
+                            final_domain = final_domain.lstrip('.')
                         
                     cookie = {
                         'name': name,
                         'value': value,
-                        'domain': domain if domain.startswith('.') else '.' + domain,
+                        'domain': final_domain,
                         'path': path,
                         'secure': secure,
                         'expires': expires
                     }
                     cookies.append(cookie)
-                    print(f"DEBUG: Parsed cookie: {name} (expires={expires}, domain={cookie['domain']})", file=sys.stderr)
+                    print(f"DEBUG: Parsed cookie: {name} (expires={expires}, domain={cookie['domain']}, secure={secure})", file=sys.stderr)
     
     except FileNotFoundError:
         print(f"ERROR: Cookie file not found: {cookie_file_path}", file=sys.stderr)
