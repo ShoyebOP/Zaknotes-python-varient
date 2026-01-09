@@ -1,0 +1,4 @@
+Task: Logic Replacement & Placeholder Implementation
+Summary: Replaced browser automation logic in zaknotes.py with placeholders and added tests to verify placeholders.
+Files: zaknotes.py, tests/test_placeholders.py
+Why: To remove dependency on AI Studio automation as per track requirements.
