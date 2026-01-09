@@ -1,0 +1,6 @@
+Phase: Phase 4: Cleanup & Verification
+Automated Test Command: .venv/bin/pytest tests/
+Manual Verification Steps:
+1. Final Audit of dependencies (pip list).
+2. Final Application Start Check.
+User Confirmation: confirmed
