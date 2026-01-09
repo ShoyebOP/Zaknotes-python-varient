@@ -1,0 +1,4 @@
+Task: Fix invalid cookie handling in src/find_vimeo_url.py
+Summary: Updated cookie parsing to handle expiration=0 (session cookies) and added granular error logging for cookie addition failures.
+Files: src/find_vimeo_url.py
+Why: User reported ProtocolError due to invalid cookie fields.
