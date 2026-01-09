@@ -1,0 +1,4 @@
+Task: Delete src/browser_driver.py, src/bot_engine.py, src/ui_elements/, and unused tests
+Summary: Deleted components related to browser automation and UI. Cleaned up tests directory while preserving new tests.
+Files: src/browser_driver.py, src/bot_engine.py, src/ui_elements/, tests/
+Why: These components are no longer needed after replacing automation with placeholders.
