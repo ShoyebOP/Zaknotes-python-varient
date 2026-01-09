@@ -1,0 +1,4 @@
+Task: Refactor src/find_vimeo_url.py to use playwright instead of selenium
+Summary: Migrated Vimeo URL extraction logic from Selenium to Playwright. Updated parsing of Netscape cookies to fit Playwright context. Added unit tests for extraction logic.
+Files: src/find_vimeo_url.py, tests/test_find_vimeo_url.py, requirements.txt
+Why: To consolidate dependencies and move away from Selenium for browser automation.
