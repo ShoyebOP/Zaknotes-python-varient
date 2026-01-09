@@ -1,0 +1,7 @@
+Phase: Phase 3: Component Removal
+Automated Test Command: .venv/bin/pytest tests/
+Manual Verification Steps:
+1. Verify file deletions: src/browser_driver.py, src/bot_engine.py, src/ui_elements/
+2. Verify tests/ directory contents.
+3. Run remaining tests.
+User Confirmation: confirmed
