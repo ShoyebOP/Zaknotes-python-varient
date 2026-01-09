@@ -1,0 +1,7 @@
+Phase: Phase 2: Selenium to Playwright Migration
+Automated Test Command: .venv/bin/pytest tests/test_find_vimeo_url.py
+Manual Verification Steps:
+1. Run command: python3 src/find_vimeo_url.py --url <URL> --cookies <COOKIES>
+2. Expect URL output.
+3. Check pip list for selenium removal.
+User Confirmation: confirmed (via user execution)
