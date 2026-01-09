@@ -1,0 +1,4 @@
+Task: Final cleanup and verification
+Summary: Audited and removed unused selenium-only dependencies from requirements.txt. Verified application starts correctly.
+Files: requirements.txt
+Why: Final cleanup to ensure lean dependencies.
