@@ -14,11 +14,11 @@
 - [x] Task: Conductor - User Manual Verification 'Selenium to Playwright Migration' (Protocol in workflow.md) 5eb052f
 
 ## Phase 3: Component Removal
-- [ ] Task: Delete `src/browser_driver.py`.
-- [ ] Task: Delete `src/bot_engine.py`.
-- [ ] Task: Delete `src/ui_elements/` directory.
-- [ ] Task: Delete `tests/` directory (excluding the newly created `test_placeholders.py` and `test_find_vimeo_url.py`). *I will back up these specific test files, delete the rest of `tests/`, and restore them.*
-- [ ] Task: Conductor - User Manual Verification 'Component Removal' (Protocol in workflow.md)
+- [x] Task: Delete `src/browser_driver.py`. bbfba2f
+- [x] Task: Delete `src/bot_engine.py`. bbfba2f
+- [x] Task: Delete `src/ui_elements/` directory. bbfba2f
+- [x] Task: Delete `tests/` directory (excluding the newly created `test_placeholders.py` and `test_find_vimeo_url.py`). *I will back up these specific test files, delete the rest of `tests/`, and restore them.* bbfba2f
+- [x] Task: Conductor - User Manual Verification 'Component Removal' (Protocol in workflow.md) bbfba2f
 
 ## Phase 4: Cleanup & Verification
 - [ ] Task: Audit `requirements.txt` and remove any dependencies that are now strictly unused (like `webdriver-manager` if present).
