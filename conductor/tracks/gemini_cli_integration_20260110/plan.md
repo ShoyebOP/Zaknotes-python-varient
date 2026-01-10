@@ -2,14 +2,14 @@
 
 This plan outlines the steps to transition the Zaknotes pipeline from browser-based automation to a direct integration with the Gemini CLI, incorporating robust audio processing and fail-fast job management.
 
-## Phase 1: Environment Setup & Configuration
+## Phase 1: Environment Setup & Configuration [checkpoint: 4feb04d]
 - [x] Task: Prepare project structure by creating the `pdfs/` directory. ba412ce
 - [x] Task: Update `zaknotes.py` CLI menu: b224d9d
     - Remove "Refresh Browser Profile".
     - Add "Configure Gemini Models" to allow setting models for transcription and note generation.
     - Add "Cleanup Stranded Audio Chunks" utility.
 - [x] Task: Implement `ConfigManager` to persist model preferences and other settings in a `config.json` file. 04b22fc
-- [ ] Task: Conductor - User Manual Verification 'Phase 1: Environment Setup & Configuration' (Protocol in workflow.md)
+- [x] Task: Conductor - User Manual Verification 'Phase 1: Environment Setup & Configuration' (Protocol in workflow.md) 4feb04d
 - [ ] Task: Conductor - User Manual Verification 'Phase 1: Environment Setup & Configuration' (Protocol in workflow.md)
 
 ## Phase 2: Audio Processing Module (ffmpeg Integration)
