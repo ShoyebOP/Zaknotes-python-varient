@@ -4,15 +4,59 @@ import sys
 import shutil
 from src.job_manager import JobManager
 from src.cookie_manager import interactive_update as refresh_cookies
+from src.config_manager import ConfigManager
+from src.pipeline import ProcessingPipeline
+from src.cleanup_service import FileCleanupService
 
 def configure_gemini_models():
-    print("TODO: Implement model configuration")
+    config = ConfigManager()
+    curr_t = config.get("transcription_model")
+    curr_n = config.get("note_generation_model")
+    
+    print("\n--- Configure Gemini Models ---")
+    print(f"Current Transcription Model: {curr_t}")
+    print(f"Current Note Generation Model: {curr_n}")
+    
+    new_t = input(f"Enter new Transcription Model (leave blank to keep '{curr_t}'): ").strip()
+    if new_t:
+        config.set("transcription_model", new_t)
+        
+    new_n = input(f"Enter new Note Generation Model (leave blank to keep '{curr_n}'): ").strip()
+    if new_n:
+        config.set("note_generation_model", new_n)
+        
+    config.save()
+    print("✅ Configuration saved.")
 
 def cleanup_stranded_chunks():
-    print("TODO: Implement audio chunk cleanup")
+    print("\n🧹 Cleaning up all intermediate files...")
+    FileCleanupService.cleanup_all_temp_files()
+    print("✅ Cleanup complete.")
 
 def run_processing_pipeline(manager):
-    print("Browser automation placeholder triggered")
+    config = ConfigManager()
+    pipeline = ProcessingPipeline(config)
+    
+    pending_jobs = manager.get_pending_from_last_150()
+    if not pending_jobs:
+        print("No pending jobs to process.")
+        return
+
+    print(f"\n🚀 Starting pipeline for {len(pending_jobs)} jobs...")
+    
+    for job in pending_jobs:
+        print(f"\n--- Processing Job: {job['name']} ---")
+        success = pipeline.execute_job(job)
+        
+        # Save progress after each job
+        manager.save_history()
+        
+        if not success:
+            print(f"⚠️ Job '{job['name']}' failed. Failing all remaining jobs in batch...")
+            manager.fail_pending()
+            break
+    
+    print("\n🏁 Pipeline execution finished.")
 
 def start_note_generation():
     manager = JobManager()
