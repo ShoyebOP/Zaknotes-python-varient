@@ -1,0 +1,1 @@
+Phase: Phase 2: Audio Processing Module (ffmpeg Integration)\nAutomated Test Command: ./.venv/bin/pytest tests/test_audio_processor.py\nManual Verification Steps:\n1. Verify ffmpeg/ffprobe installation.\n2. Run AudioProcessor tests.\n3. Inspect iterative bitrate reduction logic in code.\nUser Confirmation: yes
