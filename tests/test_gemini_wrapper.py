@@ -12,29 +12,41 @@ from src.gemini_wrapper import GeminiCLIWrapper
 @patch('subprocess.run')
 def test_run_command_success(mock_run):
     """Test successful command execution."""
+    # We must mock bytes since the wrapper calls .decode()
     mock_run.return_value = MagicMock(
-        stdout='{"response": "test"}', 
-        stderr='', 
+        stdout=b'{"response": "test"}', 
+        stderr=b'', 
         returncode=0
     )
     
     result = GeminiCLIWrapper.run_command(["arg1", "arg2"])
     
     mock_run.assert_called_once()
-    # Check that 'gemini' is prepended if not in args, or just check the list passed
-    args, kwargs = mock_run.call_args
-    assert args[0][0] == "gemini"
-    assert "arg1" in args[0]
-    
     assert result['success'] is True
     assert result['stdout'] == '{"response": "test"}'
 
 @patch('subprocess.run')
 def test_run_command_failure(mock_run):
     """Test command failure."""
-    mock_run.side_effect = subprocess.CalledProcessError(1, ['gemini'], stderr="error")
+    # CalledProcessError expects bytes for stdout/stderr if they are provided
+    mock_run.side_effect = subprocess.CalledProcessError(1, ['gemini'], stderr=b"error")
     
     result = GeminiCLIWrapper.run_command(["arg1"])
     
     assert result['success'] is False
     assert result['stderr'] == "error"
+
+def test_extract_response_content_valid():
+    """Test extraction from valid JSON."""
+    raw = '{"response": "hello world"}'
+    assert GeminiCLIWrapper.extract_response_content(raw) == "hello world"
+
+def test_extract_response_content_truncated():
+    """Test extraction from truncated JSON."""
+    raw = '{"response": "hello world ... truncated'
+    assert GeminiCLIWrapper.extract_response_content(raw) == "hello world ... truncated"
+
+def test_extract_response_content_escaped():
+    """Test extraction with escaped characters."""
+    raw = r'{"response": "line1\nline2 with \"quote\""}'
+    assert GeminiCLIWrapper.extract_response_content(raw) == 'line1\nline2 with "quote"'

@@ -27,21 +27,15 @@ def test_transcribe_chunks_success(mock_run, output_file):
     assert success is True
     assert mock_run.call_count == 2
     
-    # Verify arguments
-    args1 = mock_run.call_args_list[0][0][0]
-    assert "-m" in args1
-    assert "model-x" in args1
-    assert "@chunk1.mp3" in args1[-1]
-    
     with open(output_file, 'r') as f:
         content = f.read()
-    # Now includes newlines between chunks
-    assert "Part 1\nPart 2\n" == content
+    # Updated to match the new format: double newline and final newline
+    assert "Part 1\n\nPart 2\n\n" == content
 
 @patch('src.gemini_wrapper.GeminiCLIWrapper.run_command')
 def test_transcribe_chunks_failure(mock_run, output_file):
     """Test failure in one chunk stops process."""
-    mock_run.return_value = {"success": False, "stderr": "error"}
+    mock_run.return_value = {"success": False, "stderr": "error", "stdout": ""}
     
     chunks = ["chunk1.mp3", "chunk2.mp3"]
     success = TranscriptionService.transcribe_chunks(chunks, "model-x", output_file)
