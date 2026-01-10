@@ -64,3 +64,24 @@ def test_split_into_chunks(real_audio_file, tmp_path):
     assert len(chunks) >= 2
     for chunk in chunks:
         assert os.path.exists(chunk)
+
+def test_process_for_transcription_small(dummy_file):
+    """Test orchestration for a small file."""
+    chunks = AudioProcessor.process_for_transcription(dummy_file, limit_mb=100)
+    assert chunks == [dummy_file]
+
+def test_process_for_transcription_large(real_audio_file, tmp_path):
+    """Test orchestration for a file that needs splitting and possibly re-encoding."""
+    # real_audio_file is ~80KB. Set limit to 40KB.
+    limit = 0.04 
+    
+    chunks = AudioProcessor.process_for_transcription(
+        real_audio_file, 
+        limit_mb=limit, 
+        segment_time=2,
+        output_dir=str(tmp_path)
+    )
+    
+    assert len(chunks) >= 2
+    for chunk in chunks:
+        assert AudioProcessor.is_under_limit(chunk, limit_mb=limit)

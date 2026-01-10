@@ -65,3 +65,46 @@ class AudioProcessor:
         except subprocess.CalledProcessError as e:
             print(f"Error during splitting: {e.stderr.decode()}")
             return []
+
+    @staticmethod
+    def process_for_transcription(input_path: str, limit_mb: int = 20, segment_time: int = 1800, output_dir: str = "temp") -> List[str]:
+        """
+        Orchestrates the audio processing:
+        1. Check size. If < limit, return [input_path].
+        2. Else, split into chunks.
+        3. For each chunk, if still > limit, re-encode with lower bitrate.
+        4. Return list of chunk paths.
+        """
+        if not os.path.exists(output_dir):
+            os.makedirs(output_dir, exist_ok=True)
+
+        if AudioProcessor.is_under_limit(input_path, limit_mb):
+            return [input_path]
+
+        # Needs splitting
+        base_name = os.path.splitext(os.path.basename(input_path))[0]
+        extension = os.path.splitext(input_path)[1] or ".mp3"
+        output_pattern = os.path.join(output_dir, f"{base_name}_chunk_%03d{extension}")
+        
+        chunks = AudioProcessor.split_into_chunks(input_path, output_pattern, segment_time)
+        
+        final_chunks = []
+        for chunk in chunks:
+            if AudioProcessor.is_under_limit(chunk, limit_mb):
+                final_chunks.append(chunk)
+            else:
+                # Still too large, re-encode
+                reencoded_path = chunk.replace(extension, f"_reencoded{extension}")
+                if AudioProcessor.reencode_audio(chunk, reencoded_path, bitrate="16k"):
+                    if AudioProcessor.is_under_limit(reencoded_path, limit_mb):
+                        final_chunks.append(reencoded_path)
+                        try: os.remove(chunk)
+                        except: pass
+                    else:
+                        final_chunks.append(reencoded_path)
+                        try: os.remove(chunk)
+                        except: pass
+                else:
+                    final_chunks.append(chunk)
+                    
+        return final_chunks
