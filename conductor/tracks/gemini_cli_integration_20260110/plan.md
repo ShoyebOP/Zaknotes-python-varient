@@ -12,12 +12,12 @@ This plan outlines the steps to transition the Zaknotes pipeline from browser-ba
 - [x] Task: Conductor - User Manual Verification 'Phase 1: Environment Setup & Configuration' (Protocol in workflow.md) 4feb04d
 - [ ] Task: Conductor - User Manual Verification 'Phase 1: Environment Setup & Configuration' (Protocol in workflow.md)
 
-## Phase 2: Audio Processing Module (ffmpeg Integration)
+## Phase 2: Audio Processing Module (ffmpeg Integration) [checkpoint: 9078103]
 - [x] Task: TDD - Implement `AudioProcessor.get_file_size` and `AudioProcessor.is_under_limit` (20MB threshold). 2ed992b
 - [x] Task: TDD - Implement `AudioProcessor.reencode_audio` using `ffmpeg` to reduce bitrate if a file/chunk exceeds 20MB. a952be7
 - [x] Task: TDD - Implement `AudioProcessor.split_into_chunks` using `ffmpeg` to create 30-minute segments. d027da3
 - [x] Task: TDD - Implement `AudioProcessor.process_for_transcription` to orchestrate the "Check Size -> Split if needed -> Re-validate chunk sizes" logic. 611c7f6
-- [ ] Task: Conductor - User Manual Verification 'Phase 2: Audio Processing Module (ffmpeg Integration)' (Protocol in workflow.md)
+- [x] Task: Conductor - User Manual Verification 'Phase 2: Audio Processing Module (ffmpeg Integration)' (Protocol in workflow.md) 9078103
 - [ ] Task: Conductor - User Manual Verification 'Phase 2: Audio Processing Module (ffmpeg Integration)' (Protocol in workflow.md)
 
 ## Phase 3: Gemini CLI Integration
