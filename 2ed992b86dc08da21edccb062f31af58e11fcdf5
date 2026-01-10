@@ -1,0 +1,1 @@
+Task: Implement `AudioProcessor.get_file_size` and `AudioProcessor.is_under_limit`. Summary: Added `AudioProcessor` class in `src/audio_processor.py` with static methods for file size checking and limit validation. Why: To support the requirement of ensuring audio chunks are under 20MB before transcription.
