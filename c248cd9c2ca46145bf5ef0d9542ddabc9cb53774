@@ -1,0 +1,1 @@
+Task: Implement `GeminiCLIWrapper`. Summary: Created `src/gemini_wrapper.py` to wrap subprocess calls to the `gemini` CLI tool, handling arguments and error capture. Why: To abstract CLI execution details and provide a clean interface for transcription and note generation.
