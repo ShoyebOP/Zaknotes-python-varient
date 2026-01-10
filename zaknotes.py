@@ -5,8 +5,11 @@ import shutil
 from src.job_manager import JobManager
 from src.cookie_manager import interactive_update as refresh_cookies
 
-def refresh_browser_profile():
-    print("Browser automation placeholder triggered")
+def configure_gemini_models():
+    print("TODO: Implement model configuration")
+
+def cleanup_stranded_chunks():
+    print("TODO: Implement audio chunk cleanup")
 
 def run_processing_pipeline(manager):
     print("Browser automation placeholder triggered")
@@ -66,23 +69,26 @@ def main_menu():
         print("       ZAKNOTES MENU")
         print("==============================")
         print("1. Start Note Generation")
-        print("2. Refresh Browser Profile")
-        print("3. Refresh Cookies")
-        print("4. Launch Browser")
-        print("5. Exit")
+        print("2. Configure Gemini Models")
+        print("3. Cleanup Stranded Audio Chunks")
+        print("4. Refresh Cookies")
+        print("5. Launch Browser")
+        print("6. Exit")
         print("------------------------------")
         
-        choice = input("Enter your choice (1-5): ").strip()
+        choice = input("Enter your choice (1-6): ").strip()
         
         if choice == '1':
             start_note_generation()
         elif choice == '2':
-            refresh_browser_profile()
+            configure_gemini_models()
         elif choice == '3':
-            refresh_cookies()
+            cleanup_stranded_chunks()
         elif choice == '4':
-            launch_manual_browser()
+            refresh_cookies()
         elif choice == '5':
+            launch_manual_browser()
+        elif choice == '6':
             print("Goodbye!")
             break
         else:
