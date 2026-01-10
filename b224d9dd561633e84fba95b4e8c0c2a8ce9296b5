@@ -1,0 +1,1 @@
+Task: Update `zaknotes.py` CLI menu. Summary: Removed 'Refresh Browser Profile' and added 'Configure Gemini Models' and 'Cleanup Stranded Audio Chunks' options. Added corresponding placeholder functions. Why: To prepare the CLI for the new Gemini integration features.
