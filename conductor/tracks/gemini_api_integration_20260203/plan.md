@@ -20,8 +20,8 @@ This plan outlines the migration from the Gemini CLI to the official Google Gene
 - [x] Task: Create `src/gemini_api_wrapper.py` using `google-genai`. 9162e14
     - [x] Sub-task: Implement `generate_content` method that handles API calls and key rotation.
     - [x] Sub-task: Hardcode model names: `gemini-2.5-flash` and `gemini-3-flash-preview`.
-- [~] Task: Update `src/transcription_service.py` and `src/note_generation_service.py` to use `GeminiAPIWrapper`.
-- [ ] Task: Conductor - User Manual Verification 'Phase 3' (Protocol in workflow.md)
+- [x] Task: Update `src/transcription_service.py` and `src/note_generation_service.py` to use `GeminiAPIWrapper`. 425d495
+- [~] Task: Conductor - User Manual Verification 'Phase 3' (Protocol in workflow.md)
 
 ## Phase 4: Audio Processing & Output Refactor
 - [ ] Task: Update `src/audio_processor.py`.
