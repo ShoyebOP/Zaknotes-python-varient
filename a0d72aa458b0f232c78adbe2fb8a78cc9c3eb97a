@@ -1,0 +1,4 @@
+Task: Add google-generativeai using uv add google-generativeai
+Summary: Added google-generativeai to dependencies in pyproject.toml and updated uv.lock.
+Files: pyproject.toml, uv.lock
+Why: Migration from Gemini CLI to official Gemini API requires the google-generativeai library.
