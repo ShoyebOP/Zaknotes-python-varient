@@ -4,29 +4,56 @@ import sys
 import shutil
 from src.job_manager import JobManager
 from src.cookie_manager import interactive_update as refresh_cookies
+from src.api_key_manager import APIKeyManager
 from src.config_manager import ConfigManager
 from src.pipeline import ProcessingPipeline
 from src.cleanup_service import FileCleanupService
 
-def configure_gemini_models():
-    config = ConfigManager()
-    curr_t = config.get("transcription_model")
-    curr_n = config.get("note_generation_model")
-    
-    print("\n--- Configure Gemini Models ---")
-    print(f"Current Transcription Model: {curr_t}")
-    print(f"Current Note Generation Model: {curr_n}")
-    
-    new_t = input(f"Enter new Transcription Model (leave blank to keep '{curr_t}'): ").strip()
-    if new_t:
-        config.set("transcription_model", new_t)
+def manage_api_keys():
+    manager = APIKeyManager()
+    while True:
+        keys = manager.list_keys()
+        print("\n--- Manage Gemini API Keys ---")
+        if not keys:
+            print("No API keys configured.")
+        else:
+            print("Configured Keys:")
+            for i, k in enumerate(keys, 1):
+                # Mask key for display
+                masked = k['key'][:4] + "..." + k['key'][-4:] if len(k['key']) > 8 else "****"
+                print(f"{i}. {masked}")
         
-    new_n = input(f"Enter new Note Generation Model (leave blank to keep '{curr_n}'): ").strip()
-    if new_n:
-        config.set("note_generation_model", new_n)
+        print("\n1. Add API Key")
+        print("2. Remove API Key")
+        print("3. Back to Main Menu")
         
-    config.save()
-    print("✅ Configuration saved.")
+        choice = input("Enter your choice (1-3): ").strip()
+        
+        if choice == '1':
+            key = input("Enter new Gemini API Key: ").strip()
+            if key:
+                if manager.add_key(key):
+                    print("✅ API Key added.")
+                else:
+                    print("❌ Key already exists.")
+        elif choice == '2':
+            if not keys:
+                print("❌ No keys to remove.")
+                continue
+            idx = input("Enter the number of the key to remove: ").strip()
+            try:
+                idx = int(idx) - 1
+                if 0 <= idx < len(keys):
+                    manager.remove_key(keys[idx]['key'])
+                    print("✅ API Key removed.")
+                else:
+                    print("❌ Invalid number.")
+            except ValueError:
+                print("❌ Please enter a number.")
+        elif choice == '3':
+            break
+        else:
+            print("❌ Invalid choice.")
 
 def cleanup_stranded_chunks():
     print("\n🧹 Cleaning up all intermediate files...")
@@ -104,35 +131,29 @@ def start_note_generation():
         else:
             print("❌ Invalid choice.")
 
-def launch_manual_browser():
-    print("Browser automation placeholder triggered")
-
 def main_menu():
     while True:
         print("\n==============================")
         print("       ZAKNOTES MENU")
         print("==============================")
         print("1. Start Note Generation")
-        print("2. Configure Gemini Models")
+        print("2. Manage API Keys")
         print("3. Cleanup Stranded Audio Chunks")
         print("4. Refresh Cookies")
-        print("5. Launch Browser")
-        print("6. Exit")
+        print("5. Exit")
         print("------------------------------")
         
-        choice = input("Enter your choice (1-6): ").strip()
+        choice = input("Enter your choice (1-5): ").strip()
         
         if choice == '1':
             start_note_generation()
         elif choice == '2':
-            configure_gemini_models()
+            manage_api_keys()
         elif choice == '3':
             cleanup_stranded_chunks()
         elif choice == '4':
             refresh_cookies()
         elif choice == '5':
-            launch_manual_browser()
-        elif choice == '6':
             print("Goodbye!")
             break
         else:
