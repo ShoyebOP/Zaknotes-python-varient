@@ -11,8 +11,3 @@ This file tracks all major tracks for the project. Each track has its own detail
 
 ## [x] Track: Replace AI Studio automation with Gemini CLI for audio transcription and note generation
 *Link: [./conductor/archive/gemini_cli_integration_20260110/](./conductor/archive/gemini_cli_integration_20260110/)*
-
----
-
-## [x] Track: Gemini API Integration & Refactor
-*Link: [./conductor/tracks/gemini_api_integration_20260203/](./conductor/tracks/gemini_api_integration_20260203/)*
