@@ -13,7 +13,7 @@ This plan outlines the overhaul of `README.md` to provide a helpful, step-by-ste
 - [x] Task: Conductor - User Manual Verification 'Phase 2' (Protocol in workflow.md) 65869df
 
 ## Phase 3: Feature Deep-Dive & Troubleshooting
-- [~] Task: Write exhaustive documentation for all `zaknotes.py` menu options and the Note Generation sub-menu.
-- [ ] Task: Draft the Troubleshooting section covering 429 errors and download issues.
+- [x] Task: Write exhaustive documentation for all `zaknotes.py` menu options and the Note Generation sub-menu. 9f4f6ea
+- [~] Task: Draft the Troubleshooting section covering 429 errors and download issues.
 - [ ] Task: Perform a final formatting and proofreading pass (Markdown rendering check).
 - [ ] Task: Conductor - User Manual Verification 'Phase 3' (Protocol in workflow.md)
