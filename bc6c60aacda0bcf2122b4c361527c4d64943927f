@@ -1,0 +1,4 @@
+Task: Add API Key Management to the main menu in zaknotes.py.
+Summary: Updated main menu in zaknotes.py to include API key management sub-menu. Removed deprecated 'Configure Gemini Models' and 'Launch Browser' options. Updated tests to match new CLI structure.
+Files: zaknotes.py, tests/test_cli_structure.py, tests/test_placeholders.py
+Why: Provides user interface for managing multiple Gemini API keys and cleans up obsolete browser-automation based features.
