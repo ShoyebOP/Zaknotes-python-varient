@@ -3,8 +3,8 @@
 This plan outlines the migration from the Gemini CLI to the official Google Generative AI API, including API key management, quota tracking, and output refactoring.
 
 ## Phase 1: Environment & Dependency Setup
-- [ ] Task: Add `google-generativeai` using `uv add google-generativeai`.
-- [ ] Task: Create `keys/` directory and ensure it is ignored by git.
+- [x] Task: Add `google-generativeai` using `uv add google-generativeai`. a0d72aa
+- [~] Task: Create `keys/` directory and ensure it is ignored by git.
 - [ ] Task: Conductor - User Manual Verification 'Phase 1' (Protocol in workflow.md)
 
 ## Phase 2: API Key & Quota Management
