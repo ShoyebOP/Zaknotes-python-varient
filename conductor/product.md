@@ -4,23 +4,22 @@ Class-to-Notes Engine
 # Product Guide
 
 ## Project Overview
-The "Class-to-Notes Engine" is a Linux CLI tool designed to automate the conversion of online class URLs into formatted PDF notes. It leverages a local Chromium instance and Google AI Studio to transcribe audio and generate high-quality notes, which are then converted to PDF.
+The "Class-to-Notes Engine" is a Linux CLI tool designed to automate the conversion of online class URLs into study-ready Markdown notes. It leverages the Gemini API for high-quality audio transcription and note generation.
 
 ## Core Goals
 -   **Automate Note Taking:** Streamline the process of turning video/audio content into study notes.
--   **Robust Browser Automation:** Use Playwright with a specific user profile to interact with Google AI Studio reliably.
--   **High-Quality Output:** Generate well-formatted PDF notes using Pandoc and Puppeteer.
+-   **Reliable AI Integration:** Use the official Gemini API for consistent and fast note generation.
+-   **High-Quality Markdown Output:** Generate well-formatted Markdown notes ready for any study workflow.
 -   **User-Friendly Interface:** Provide a CLI (and eventually a TUI) for easy operation on Linux.
 
 ## Key Features
 -   **Enhanced Queue Management:** Provides granular control over job processing, allowing users to start new jobs (with optional clearing of pending tasks), cancel old jobs, or resume existing queued tasks.
 -   **Automated Retry Logic:** Automatically retries failed or interrupted jobs (e.g., from network issues or browser crashes).
--   **Media Download:** Downloads audio/video content for processing.
--   **AI-Powered Generation:** Automates Google AI Studio (Gemini 3 Pro Preview) to generate notes from uploaded audio.
--   **Smart Extraction:** Distinguishes final responses from reasoning blocks (ignoring 'Thinking' phase) and copies content as Markdown only after stability verification.
--   **Robust Recovery:** Implements hard browser resets upon interaction timeouts to maintain long-running automation stability.
--   **PDF Conversion:** Converts Markdown to PDF with custom styling via Pandoc and Playwright (Python).
--   **Manual Browser Control:** Utility to launch the automated browser instance manually for inspection or manual authentication tasks.
+-   **Media Download:** Downloads audio/video content for processing using yt-dlp.
+-   **AI-Powered Generation:** Utilizes the Gemini API (gemini-2.5-flash and gemini-3-flash-preview) for transcription and note generation.
+-   **API Key Management:** Robust system for managing multiple Gemini API keys with quota tracking and automatic key cycling.
+-   **Smart Chunking:** Configurable audio splitting and 10-second delays between processing to respect API rate limits.
+-   **Clean Output:** Saves final notes as raw Markdown files in a dedicated `notes/` directory.
 -   **TUI (Planned):** A terminal user interface for seamless interaction.
 
 ## Target Audience
