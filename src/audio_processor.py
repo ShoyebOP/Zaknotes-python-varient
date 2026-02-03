@@ -1,4 +1,5 @@
 import os
+import shutil
 import subprocess
 from typing import List
 
@@ -42,19 +43,39 @@ class AudioProcessor:
             return 0
 
     @staticmethod
-    def reencode_audio(input_path: str, output_path: str, bitrate: str = "16k") -> bool:
-        """Re-encodes the audio to a lower bitrate using ffmpeg."""
+    def reencode_to_optimal(input_path: str, output_path: str, bitrate: str = "48k") -> bool:
+        """Re-encodes the audio to an optimal bitrate for transcription."""
         try:
-            print(f"      - Re-encoding {input_path} at {bitrate}...")
+            print(f"      - Re-encoding {input_path} at {bitrate} (optimal)...")
             command = [
                 "ffmpeg", "-y", "-i", input_path,
                 "-b:a", bitrate,
+                "-ac", "1", # Mono is usually better for transcription and smaller size
+                "-ar", "16000", # 16kHz is standard for many speech models
                 output_path
             ]
             subprocess.run(command, check=True, capture_output=True)
             return True
         except subprocess.CalledProcessError as e:
-            print(f"      ❌ Error during re-encoding: {e.stderr.decode('utf-8', errors='replace')}")
+            print(f"      ❌ Error during optimal re-encoding: {e.stderr.decode('utf-8', errors='replace')}")
+            return False
+
+    @staticmethod
+    def remove_silence(input_path: str, output_path: str, threshold_db: int = -50) -> bool:
+        """Removes silence from the audio using ffmpeg silenceremove filter."""
+        try:
+            print(f"      - Removing silence (threshold: {threshold_db}dB)...")
+            # silenceremove=stop_periods=-1:stop_duration=1:stop_threshold=-50dB
+            # This removes all silence periods longer than 1s that are below -50dB
+            command = [
+                "ffmpeg", "-y", "-i", input_path,
+                "-af", f"silenceremove=stop_periods=-1:stop_duration=1:stop_threshold={threshold_db}dB",
+                output_path
+            ]
+            subprocess.run(command, check=True, capture_output=True)
+            return True
+        except subprocess.CalledProcessError as e:
+            print(f"      ❌ Error during silence removal: {e.stderr.decode('utf-8', errors='replace')}")
             return False
 
     @staticmethod
@@ -96,46 +117,37 @@ class AudioProcessor:
         if not os.path.exists(output_dir):
             os.makedirs(output_dir, exist_ok=True)
 
-        size_mb = AudioProcessor.get_file_size(input_path) / (1024 * 1024)
-        if size_mb < limit_mb:
-            print(f"   - File size ({size_mb:.2f}MB) is within limit ({limit_mb}MB).")
-            return [input_path]
-
-        print(f"   - File size ({size_mb:.2f}MB) exceeds limit. Splitting...")
+        # 1. First, always remove silence and re-encode to optimal bitrate
+        print(f"   - Preparing audio for transcription...")
         base_name = os.path.splitext(os.path.basename(input_path))[0]
         extension = os.path.splitext(input_path)[1] or ".mp3"
+        
+        prepared_path = os.path.join(output_dir, f"{base_name}_prepared{extension}")
+        
+        # Intermediate path for silence removal
+        silence_removed_path = prepared_path + ".nosilence" + extension
+        if AudioProcessor.remove_silence(input_path, silence_removed_path):
+            if not AudioProcessor.reencode_to_optimal(silence_removed_path, prepared_path):
+                # If re-encoding fails, use silence removed version
+                shutil.copy2(silence_removed_path, prepared_path)
+            try: os.remove(silence_removed_path)
+            except: pass
+        else:
+            # If silence removal fails, try re-encoding original
+            if not AudioProcessor.reencode_to_optimal(input_path, prepared_path):
+                # If both fail, use original
+                shutil.copy2(input_path, prepared_path)
+
+        # 2. Check size and split if needed
+        size_mb = AudioProcessor.get_file_size(prepared_path) / (1024 * 1024)
+        if size_mb < limit_mb:
+            print(f"   - Processed file size ({size_mb:.2f}MB) is within limit.")
+            return [prepared_path]
+
+        print(f"   - Processed file size ({size_mb:.2f}MB) still exceeds limit. Splitting...")
         output_pattern = os.path.join(output_dir, f"{base_name}_chunk_%03d{extension}")
         
-        chunks = AudioProcessor.split_into_chunks(input_path, output_pattern, segment_time)
+        chunks = AudioProcessor.split_into_chunks(prepared_path, output_pattern, segment_time)
         print(f"   - Split into {len(chunks)} chunks.")
         
-        final_chunks = []
-        for i, chunk in enumerate(chunks):
-            chunk_size_mb = AudioProcessor.get_file_size(chunk) / (1024 * 1024)
-            print(f"   - Validating chunk {i+1}: {chunk} ({chunk_size_mb:.2f}MB)")
-            
-            while not AudioProcessor.is_under_limit(chunk, limit_mb):
-                current_bitrate = AudioProcessor.get_bitrate(chunk)
-                if current_bitrate == 0:
-                    current_bitrate = 128000
-                
-                new_bitrate_val = current_bitrate - 10000
-                if new_bitrate_val < 32000:
-                    print(f"      ⚠️ Minimum bitrate reached. Proceeding with large chunk.")
-                    break
-                
-                reencoded_path = chunk + ".tmp" + extension
-                if AudioProcessor.reencode_audio(chunk, reencoded_path, bitrate=str(new_bitrate_val)):
-                    try:
-                        os.remove(chunk)
-                        os.rename(reencoded_path, chunk)
-                        new_size_mb = AudioProcessor.get_file_size(chunk) / (1024 * 1024)
-                        print(f"      - Reduced bitrate to {new_bitrate_val/1000:.0f}k. New size: {new_size_mb:.2f}MB")
-                    except OSError:
-                        pass
-                else:
-                    break
-            
-            final_chunks.append(chunk)
-                    
-        return final_chunks
+        return chunks

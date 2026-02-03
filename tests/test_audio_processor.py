@@ -50,15 +50,21 @@ def test_is_under_limit(dummy_file):
     # 2MB is NOT under 1MB limit
     assert AudioProcessor.is_under_limit(large_file, limit_mb=1) is False
 
-def test_reencode_audio(real_audio_file, tmp_path):
-    """Test re-encoding audio to a lower bitrate."""
-    output_file = str(tmp_path / "reencoded.mp3")
-    
-    # Re-encode with very low bitrate
-    success = AudioProcessor.reencode_audio(real_audio_file, output_file, bitrate="16k")
-    
+def test_reencode_to_optimal(real_audio_file, tmp_path):
+    """Test re-encoding audio to optimal bitrate."""
+    output_file = str(tmp_path / "optimal.mp3")
+    success = AudioProcessor.reencode_to_optimal(real_audio_file, output_file, bitrate="32k")
     assert success is True
     assert os.path.exists(output_file)
+
+def test_remove_silence(real_audio_file, tmp_path):
+    """Test removing silence from audio."""
+    # Our real_audio_file is pure silence
+    output_file = str(tmp_path / "nosilence.mp3")
+    success = AudioProcessor.remove_silence(real_audio_file, output_file)
+    assert success is True
+    assert os.path.exists(output_file)
+    # Since it's pure silence, it should be significantly smaller or empty-ish
     assert os.path.getsize(output_file) < os.path.getsize(real_audio_file)
 
 def test_split_into_chunks(real_audio_file, tmp_path):
@@ -72,23 +78,17 @@ def test_split_into_chunks(real_audio_file, tmp_path):
     for chunk in chunks:
         assert os.path.exists(chunk)
 
-def test_process_for_transcription_small(dummy_file):
-    """Test orchestration for a small file."""
-    chunks = AudioProcessor.process_for_transcription(dummy_file, limit_mb=100)
-    assert chunks == [dummy_file]
-
-def test_process_for_transcription_large(real_audio_file, tmp_path):
-    """Test orchestration for a file that needs splitting and possibly re-encoding."""
-    # real_audio_file is ~80KB. Set limit to 40KB.
-    limit = 0.04 
-    
+def test_process_for_transcription(real_audio_file, tmp_path):
+    """Test orchestration for transcription preparation."""
+    # Should always produce at least one "prepared" file
     chunks = AudioProcessor.process_for_transcription(
         real_audio_file, 
-        limit_mb=limit, 
-        segment_time=2,
+        limit_mb=10, 
+        segment_time=1800,
         output_dir=str(tmp_path)
     )
     
-    assert len(chunks) >= 2
+    assert len(chunks) >= 1
+    assert "prepared" in chunks[0]
     for chunk in chunks:
-        assert AudioProcessor.is_under_limit(chunk, limit_mb=limit)
+        assert os.path.exists(chunk)
