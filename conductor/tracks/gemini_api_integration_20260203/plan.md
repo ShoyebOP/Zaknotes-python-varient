@@ -15,16 +15,16 @@ This plan outlines the migration from the Gemini CLI to the official Google Gene
 - [x] Task: Add API Key Management to the main menu in `zaknotes.py`. bc6c60a
 - [x] Task: Conductor - User Manual Verification 'Phase 2' (Protocol in workflow.md) 8e1d2e3
 
-## Phase 3: Gemini API Wrapper & Prompt Refactor
+## Phase 3: Gemini API Wrapper & Prompt Refactor [checkpoint: f9eaa58]
 - [x] Task: Modify `src/prompts.py` to remove file path references from `NOTE_GENERATION_PROMPT`. dc3d2b8
 - [x] Task: Create `src/gemini_api_wrapper.py` using `google-genai`. 9162e14
     - [x] Sub-task: Implement `generate_content` method that handles API calls and key rotation.
     - [x] Sub-task: Hardcode model names: `gemini-2.5-flash` and `gemini-3-flash-preview`.
 - [x] Task: Update `src/transcription_service.py` and `src/note_generation_service.py` to use `GeminiAPIWrapper`. 425d495
-- [~] Task: Conductor - User Manual Verification 'Phase 3' (Protocol in workflow.md)
+- [x] Task: Conductor - User Manual Verification 'Phase 3' (Protocol in workflow.md) f9eaa58
 
 ## Phase 4: Audio Processing & Output Refactor
-- [ ] Task: Update `src/audio_processor.py`.
+- [~] Task: Update `src/audio_processor.py`.
     - [ ] Sub-task: Support configurable `segment_time` (default 1800s).
     - [ ] Sub-task: Retain silence removal but increase the silence threshold for safety (e.g., `-50dB`).
     - [ ] Sub-task: Hardlock the bitrate to an optimal transcription value (e.g., `48k` or `64k`) and remove scaling logic.
