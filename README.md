@@ -28,3 +28,30 @@ git clone https://github.com/ShoyebOP/Zaknotes-python-varient.git
 cd Zaknotes-python-varient
 uv sync
 ```
+
+---
+
+## 🚀 Quick Start Guide (The "Happy Path")
+
+Get your first set of notes in 3 easy steps:
+
+### 1. Add your Gemini API Key
+Run the tool and navigate to API management:
+```bash
+uv run python zaknotes.py
+```
+- Select **Option 2: Manage API Keys**
+- Select **Option 1: Add API Key**
+- Paste your key from [Google AI Studio](https://aistudio.google.com/app/apikey).
+
+### 2. Start Note Generation
+Return to the main menu and start a new job:
+- Select **Option 1: Start Note Generation**
+- Select **Option 1: Start New Jobs (Cancel Old Jobs)**
+- Provide a name for your notes (e.g., `Biology_Lecture_1`) and the class URL.
+
+### 3. Retrieve Your Notes
+Once the pipeline finishes, your high-quality Markdown notes will be waiting for you in the `notes/` directory:
+```bash
+ls notes/
+```
