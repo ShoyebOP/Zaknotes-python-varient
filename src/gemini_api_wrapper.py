@@ -1,7 +1,7 @@
 import time
 import httpx
 from google import genai
-from google.genai import types
+from google.genai import types, errors
 from src.api_key_manager import APIKeyManager
 
 class GeminiAPIWrapper:
@@ -32,9 +32,13 @@ class GeminiAPIWrapper:
                 )
                 self.key_manager.record_usage(api_key, model_name)
                 return response.text
+            except errors.ClientError as e:
+                if e.code == 429:
+                    self.key_manager.mark_exhausted(api_key, model_name)
+                    continue
+                raise
             except httpx.HTTPStatusError as e:
                 if e.response.status_code == 429:
-                    # Quota exhausted for this key, try next one
                     self.key_manager.mark_exhausted(api_key, model_name)
                     continue
                 raise
@@ -57,6 +61,11 @@ class GeminiAPIWrapper:
                 )
                 self.key_manager.record_usage(api_key, model_name)
                 return response.text
+            except errors.ClientError as e:
+                if e.code == 429:
+                    self.key_manager.mark_exhausted(api_key, model_name)
+                    continue
+                raise
             except httpx.HTTPStatusError as e:
                 if e.response.status_code == 429:
                     self.key_manager.mark_exhausted(api_key, model_name)
