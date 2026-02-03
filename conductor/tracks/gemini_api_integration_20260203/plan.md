@@ -28,8 +28,8 @@ This plan outlines the migration from the Gemini CLI to the official Google Gene
     - [x] Sub-task: Support configurable `segment_time` (default 1800s).
     - [x] Sub-task: Retain silence removal but increase the silence threshold for safety (e.g., `-50dB`).
     - [x] Sub-task: Hardlock the bitrate to an optimal transcription value (e.g., `48k` or `64k`) and remove scaling logic.
-- [~] Task: Add "Configure Audio Chunking Time" (default 30m) to the main menu in `zaknotes.py`.
-- [ ] Task: Refactor `src/pipeline.py`.
+- [x] Task: Add "Configure Audio Chunking Time" (default 30m) to the main menu in `zaknotes.py`. 8aa1f88
+- [~] Task: Refactor `src/pipeline.py`.
     - [ ] Sub-task: Add a 10-second wait (`time.sleep(10)`) before processing each audio chunk.
     - [ ] Sub-task: Remove PDF conversion steps and `PdfConverter` dependency.
     - [ ] Sub-task: Update pipeline to save Markdown output to a `notes/` directory.
