@@ -8,11 +8,11 @@ This plan outlines the migration from the Gemini CLI to the official Google Gene
 - [x] Task: Conductor - User Manual Verification 'Phase 1' (Protocol in workflow.md) e0e215a
 
 ## Phase 2: API Key & Quota Management
-- [~] Task: Implement `src/api_key_manager.py` for managing keys and tracking usage.
-    - [ ] Sub-task: Implement `APIKeyManager` class with `add_key`, `remove_key`, `list_keys` methods.
-    - [ ] Sub-task: Implement `get_available_key(model)` logic with cycling and quota checking.
-    - [ ] Sub-task: Implement `reset_quotas_if_needed()` using `worldtimeapi.org` or similar for PT midnight.
-- [ ] Task: Add API Key Management to the main menu in `zaknotes.py`.
+- [x] Task: Implement `src/api_key_manager.py` for managing keys and tracking usage. 1511e80
+    - [x] Sub-task: Implement `APIKeyManager` class with `add_key`, `remove_key`, `list_keys` methods.
+    - [x] Sub-task: Implement `get_available_key(model)` logic with cycling and quota checking.
+    - [x] Sub-task: Implement `reset_quotas_if_needed()` using `worldtimeapi.org` or similar for PT midnight.
+- [~] Task: Add API Key Management to the main menu in `zaknotes.py`.
 - [ ] Task: Conductor - User Manual Verification 'Phase 2' (Protocol in workflow.md)
 
 ## Phase 3: Gemini API Wrapper & Prompt Refactor
