@@ -1,0 +1,4 @@
+Task: Write the Introduction and detailed Arch Linux Installation & Prerequisites sections.
+Summary: Overhauled the beginning of README.md with a clear value proposition and sequential Arch Linux setup steps using pacman.
+Files: README.md
+Why: Provides a solid onboarding foundation for our primary target audience.
