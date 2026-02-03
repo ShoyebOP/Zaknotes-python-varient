@@ -1,53 +1,30 @@
 # Zaknotes (Python Variant)
 
-Automated class-to-notes engine using Gemini API.
+Zaknotes is a powerful Linux CLI tool designed for students and learners who want to automate their study workflow. It effortlessly converts online class URLs (YouTube, Facebook, and more) into high-quality, study-ready **Markdown notes** using the official Google Gemini API.
 
-## Prerequisites
+---
 
-Before running Zaknotes, ensure you have the following system-level tools installed:
+## 🛠 Arch Linux Installation & Prerequisites
 
-1.  **Python 3.13+**
-2.  **uv** (recommended for dependency management): `curl -LsSf https://astral.sh/uv/install.sh | sh`
-3.  **ffmpeg**: Required for audio processing and extraction.
-    -   Linux: `sudo apt install ffmpeg` (or your distro's equivalent)
-4.  **Node.js**: Required by `yt-dlp-ejs` to solve YouTube's "n challenge".
-    -   Ensure `node` is available in your PATH.
+Zaknotes is optimized for Arch Linux. Follow these steps to set up your environment:
 
-## Setup
+### 1. Install System Dependencies
+Zaknotes requires `ffmpeg` for audio processing and `nodejs` to solve YouTube's "n challenge" via the EJS solver.
 
-1.  **Clone the repository:**
-    ```bash
-    git clone https://github.com/ShoyebOP/Zaknotes-python-varient.git
-    cd Zaknotes-python-varient
-    ```
-
-2.  **Install dependencies:**
-    ```bash
-    uv sync
-    ```
-
-3.  **Configure API Keys:**
-    -   Run the application: `uv run python zaknotes.py`
-    -   Select **Option 2: Manage API Keys**
-    -   Add one or more Google Gemini API keys.
-
-## Usage
-
-1.  **Start Note Generation:**
-    -   Run `uv run python zaknotes.py`
-    -   Select **Option 1: Start Note Generation**
-    -   Follow the prompts to provide video names and URLs.
-
-2.  **Configure Audio Chunking:**
-    -   If you have very long videos or want to adjust processing chunks, use **Option 3: Configure Audio Chunking**. The default is 1800s (30 minutes).
-
-## Output
-
-Generated notes are saved as Markdown files in the `notes/` directory.
-
-## Testing
-
-Run the test suite using pytest:
 ```bash
-uv run pytest
+sudo pacman -S ffmpeg nodejs
+```
+
+### 2. Install UV (Modern Python Package Manager)
+We use `uv` for lightning-fast dependency management and virtual environments.
+
+```bash
+sudo pacman -S uv
+```
+
+### 3. Clone & Setup
+```bash
+git clone https://github.com/ShoyebOP/Zaknotes-python-varient.git
+cd Zaknotes-python-varient
+uv sync
 ```
