@@ -1,0 +1,4 @@
+Task: Add 'Configure Audio Chunking Time' to the main menu in zaknotes.py.
+Summary: Added configure_audio_chunking function to zaknotes.py to allow users to set custom segment_time for audio processing. Updated main menu to include this option.
+Files: zaknotes.py, tests/test_cli_structure.py
+Why: Provides user control over how audio is split, which is useful for handling different video lengths and staying within API limits.
