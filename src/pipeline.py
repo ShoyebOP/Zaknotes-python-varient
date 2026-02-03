@@ -1,15 +1,16 @@
 import os
+import time
 from src.downloader import download_audio
 from src.audio_processor import AudioProcessor
 from src.transcription_service import TranscriptionService
 from src.note_generation_service import NoteGenerationService
-from src.pdf_converter_py import PdfConverter
 from src.cleanup_service import FileCleanupService
+from src.gemini_api_wrapper import GeminiAPIWrapper
+from src.prompts import TRANSCRIPTION_PROMPT
 
 class ProcessingPipeline:
     def __init__(self, config_manager):
         self.config = config_manager
-        self.pdf_converter = PdfConverter()
 
     def execute_job(self, job) -> bool:
         """
@@ -19,11 +20,10 @@ class ProcessingPipeline:
         chunks = []
         transcript_path = None
         notes_path = None
-        html_path = None
         
         try:
             # 1. Download
-            print(f"📥 [1/5] Downloading audio for: {job['name']}...")
+            print(f"📥 [1/4] Downloading audio for: {job['name']}...")
             job['status'] = 'downloading'
             audio_path = download_audio(job)
             if not audio_path or not os.path.exists(audio_path):
@@ -32,70 +32,102 @@ class ProcessingPipeline:
                 return False
 
             # 2. Audio Processing
-            print(f"✂️ [2/5] Checking size and splitting audio: {audio_path}")
+            print(f"✂️ [2/4] Checking size and splitting audio: {audio_path}")
             job['status'] = 'processing'
             temp_dir = "temp"
             if not os.path.exists(temp_dir):
                 os.makedirs(temp_dir, exist_ok=True)
                 
+            segment_time = self.config.get("segment_time", 1800)
             chunks = AudioProcessor.process_for_transcription(
                 audio_path, 
                 limit_mb=20, 
+                segment_time=segment_time,
                 output_dir=temp_dir
             )
             print(f"   - Audio split into {len(chunks)} chunk(s).")
             
             # 3. Transcription
-            print(f"📝 [3/5] Transcribing {len(chunks)} chunks using Gemini...")
+            print(f"📝 [3/4] Transcribing {len(chunks)} chunks using Gemini...")
             transcript_path = os.path.join(temp_dir, f"{job['id']}_transcript.txt")
-            t_model = self.config.get("transcription_model")
-            if not TranscriptionService.transcribe_chunks(chunks, t_model, transcript_path):
+            
+            # Implementation of 10s wait before chunks
+            out_dir = os.path.dirname(transcript_path)
+            if out_dir and not os.path.exists(out_dir):
+                os.makedirs(out_dir, exist_ok=True)
+            if os.path.exists(transcript_path):
+                os.remove(transcript_path)
+
+            api = GeminiAPIWrapper()
+            
+            any_success = False
+            for i, chunk in enumerate(chunks):
+                if i > 0:
+                    print(f"      - Waiting 10s before next chunk...")
+                    time.sleep(10)
+                
+                print(f"      - Processing chunk {i+1}/{len(chunks)}...")
+                try:
+                    text = api.generate_content_with_file(
+                        file_path=chunk,
+                        prompt=TRANSCRIPTION_PROMPT,
+                        model_type="transcription"
+                    )
+                    if text:
+                        with open(transcript_path, 'a', encoding='utf-8') as f:
+                            f.write(text)
+                            f.write("\n\n")
+                        any_success = True
+                    else:
+                        print(f"      ⚠️ Warning: No text extracted from chunk {i+1}")
+                        job['status'] = 'failed'
+                        return False
+                except Exception as e:
+                    print(f"      ❌ Failed to get transcription for chunk {i+1}: {str(e)}")
+                    job['status'] = 'failed'
+                    return False
+
+            if not any_success:
                 print(f"❌ Transcription failed for job: {job['name']}")
                 job['status'] = 'failed'
                 return False
             print(f"   - Transcription complete: {transcript_path}")
 
             # 4. Note Generation
-            print(f"🗒️ [4/5] Generating study notes...")
-            notes_path = os.path.join(temp_dir, f"{job['id']}_notes.md")
-            n_model = self.config.get("note_generation_model")
-            if not NoteGenerationService.generate(transcript_path, n_model, notes_path):
+            print(f"🗒️ [4/4] Generating study notes...")
+            safe_name = job['name'].replace(" ", "_").replace("/", "-")
+            notes_dir = "notes"
+            if not os.path.exists(notes_dir):
+                os.makedirs(notes_dir, exist_ok=True)
+            
+            final_notes_path = os.path.join(notes_dir, f"{safe_name}.md")
+            
+            if not NoteGenerationService.generate(transcript_path, final_notes_path):
                 print(f"❌ Note generation failed for job: {job['name']}")
                 job['status'] = 'failed'
                 return False
-            print(f"   - Notes generated: {notes_path}")
+            print(f"   - Notes generated: {final_notes_path}")
 
-            # 5. PDF Conversion
-            print(f"📄 [5/5] Converting notes to PDF...")
-            safe_name = job['name'].replace(" ", "_").replace("/", "-")
-            if not os.path.exists("pdfs"):
-                os.makedirs("pdfs", exist_ok=True)
-                
-            final_pdf_path = os.path.join("pdfs", f"{safe_name}.pdf")
-            html_path = os.path.join(temp_dir, f"{job['id']}_temp.html")
-            
-            self.pdf_converter.convert_md_to_html(notes_path, html_path)
-            self.pdf_converter.convert_html_to_pdf(html_path, final_pdf_path)
-            
-            # 6. Cleanup
+            # 5. Cleanup
             print(f"🧹 Cleaning up intermediate files...")
-            files_to_cleanup = [audio_path, transcript_path, notes_path, html_path]
+            files_to_cleanup = [audio_path, transcript_path]
             for c in chunks:
                 if c != audio_path:
                     files_to_cleanup.append(c)
             FileCleanupService.cleanup_job_files(files_to_cleanup)
             
             job['status'] = 'completed'
-            print(f"✅ Job '{job['name']}' completed successfully! PDF: {final_pdf_path}")
+            print(f"✅ Job '{job['name']}' completed successfully! Notes: {final_notes_path}")
             return True
 
         except Exception as e:
             print(f"❌ Exception in pipeline for job {job['id']}: {e}")
             job['status'] = 'failed'
             # Cleanup whatever we can on failure
-            files_to_cleanup = [audio_path, transcript_path, notes_path, html_path]
-            for c in chunks:
-                if c != audio_path:
-                    files_to_cleanup.append(c)
+            files_to_cleanup = [audio_path, transcript_path]
+            if chunks:
+                for c in chunks:
+                    if c != audio_path:
+                        files_to_cleanup.append(c)
             FileCleanupService.cleanup_job_files(files_to_cleanup)
             return False
