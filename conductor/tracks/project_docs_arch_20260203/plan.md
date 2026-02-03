@@ -9,8 +9,8 @@ This plan outlines the overhaul of `README.md` to provide a helpful, step-by-ste
 
 ## Phase 2: Core Content Drafting
 - [x] Task: Write the Introduction and detailed Arch Linux Installation & Prerequisites sections. b6be1b6
-- [~] Task: Create the "Happy Path" Quick Start Guide.
-- [ ] Task: Conductor - User Manual Verification 'Phase 2' (Protocol in workflow.md)
+- [x] Task: Create the "Happy Path" Quick Start Guide. 5d74522
+- [~] Task: Conductor - User Manual Verification 'Phase 2' (Protocol in workflow.md)
 
 ## Phase 3: Feature Deep-Dive & Troubleshooting
 - [ ] Task: Write exhaustive documentation for all `zaknotes.py` menu options and the Note Generation sub-menu.
