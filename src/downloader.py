@@ -17,6 +17,9 @@ SMART_FORMAT = "best[height=240]/best[height=360]/best[height=480]/best[height=5
 # -N 16: Downloads 16 fragments at once. much faster than aria2c for streams.
 CONCURRENCY = "-N 16"
 
+# Ensure we use the VENV yt-dlp
+YT_DLP_BASE = f'"{sys.executable}" -m yt_dlp'
+
 # Ensure directories exist
 os.makedirs(DOWNLOAD_DIR, exist_ok=True)
 os.makedirs(TEMP_DIR, exist_ok=True)
@@ -58,7 +61,7 @@ def download_audio(job):
     if "facebook.com" in url or "fb.watch" in url:
         print(">> Mode: Facebook")
         cmd = (
-            f'yt-dlp {CONCURRENCY} --no-part --no-keep-fragments '
+            f'{YT_DLP_BASE} {CONCURRENCY} --no-part --no-keep-fragments '
             f'{cookie_arg} {paths_arg} '
             f'-f "{SMART_FORMAT}" '
             f'-x --audio-format mp3 '
@@ -70,7 +73,7 @@ def download_audio(job):
     elif "aparsclassroom" in url:
         print(">> Mode: Apar's Classroom")
         cmd = (
-            f'yt-dlp {CONCURRENCY} --no-part --no-keep-fragments '
+            f'{YT_DLP_BASE} {CONCURRENCY} --no-part --no-keep-fragments '
             f'{cookie_arg} {paths_arg} --no-playlist '
             f'-f "{SMART_FORMAT}" '
             f'-x --audio-format mp3 '
@@ -93,7 +96,7 @@ def download_audio(job):
             print(f"   Found Vimeo URL: {vimeo_url}")
             
             cmd = (
-                f'yt-dlp {CONCURRENCY} --no-part --no-keep-fragments '
+                f'{YT_DLP_BASE} {CONCURRENCY} --no-part --no-keep-fragments '
                 f'--referer "{url}" '
                 f'{cookie_arg} {paths_arg} '
                 f'-f "{SMART_FORMAT}" '
@@ -111,7 +114,7 @@ def download_audio(job):
         ua = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36"
         
         cmd = (
-            f'yt-dlp {CONCURRENCY} '
+            f'{YT_DLP_BASE} {CONCURRENCY} '
             f'-f "{SMART_FORMAT}" '
             f'--extract-audio --audio-format mp3 --audio-quality 5 '
             f'--continue {cookie_arg} {paths_arg} '
