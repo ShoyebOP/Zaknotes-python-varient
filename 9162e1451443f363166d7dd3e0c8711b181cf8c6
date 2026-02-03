@@ -1,0 +1,4 @@
+Task: Create src/gemini_api_wrapper.py using google-genai.
+Summary: Implemented GeminiAPIWrapper to provide high-level interface for transcription and note generation. Features automatic key rotation on 429 errors, model hardcoding (gemini-2.5-flash and gemini-3-flash-preview), and audio file upload management.
+Files: src/gemini_api_wrapper.py, tests/test_gemini_api_wrapper.py
+Why: Replaces the deprecated Gemini CLI wrapper with a robust, API-native solution that handles quotas and file processing automatically.
