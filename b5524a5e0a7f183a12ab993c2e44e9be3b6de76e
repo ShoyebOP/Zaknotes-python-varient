@@ -1,0 +1,4 @@
+Task: Update src/audio_processor.py.
+Summary: Refactored AudioProcessor to include silence removal (-50dB threshold) and hardlocked optimal bitrate (48k, mono, 16kHz). Simplified process_for_transcription to always apply these optimizations before splitting.
+Files: src/audio_processor.py, tests/test_audio_processor.py
+Why: Improves transcription quality by removing noise/silence and ensures consistent audio formatting for the Gemini API.
