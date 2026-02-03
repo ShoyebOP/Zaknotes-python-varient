@@ -18,6 +18,8 @@ temp/*
 !temp/.gitkeep
 cookies/*
 !cookies/.gitkeep
+keys/*
+!keys/.gitkeep
 browser_profile/
 history.json
 .coverage
