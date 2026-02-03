@@ -1,0 +1,4 @@
+Task: Verify overall flow and ensure quota tracking/resetting is triggered before each video.
+Summary: Added explicit call to reset_quotas_if_needed() at the start of each pipeline execution to ensure API quotas are fresh for the new day. Verified integration between Pipeline and APIKeyManager.
+Files: src/pipeline.py
+Why: Ensures reliable operation across different days and keeps quota tracking accurate before starting new processing tasks.
