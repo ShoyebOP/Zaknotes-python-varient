@@ -1,0 +1,1 @@
+Task: Integration and Final Verification\n\nSummary: Updated ProcessingPipeline to use the performance_profile from ConfigManager to set the thread count for AudioProcessor. Removed limit_mb parameter from the AudioProcessor call to favor duration-based chunking. Updated pipeline tests.\n\nFiles:\n- src/pipeline.py\n- tests/test_pipeline.py
