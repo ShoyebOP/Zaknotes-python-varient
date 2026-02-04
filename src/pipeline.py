@@ -41,11 +41,20 @@ class ProcessingPipeline:
                 os.makedirs(temp_dir, exist_ok=True)
                 
             segment_time = self.config.get("segment_time", 1800)
+            
+            # Map performance profile to thread count
+            profile = self.config.get("performance_profile", "balanced")
+            threads = 0 # Default (auto)
+            if profile == "low":
+                threads = 1 # Force single thread for low-end
+            elif profile == "high":
+                threads = 0 # Ffmpeg auto uses all cores
+                
             chunks = AudioProcessor.process_for_transcription(
                 audio_path, 
-                limit_mb=20, 
                 segment_time=segment_time,
-                output_dir=temp_dir
+                output_dir=temp_dir,
+                threads=threads
             )
             print(f"   - Audio split into {len(chunks)} chunk(s).")
             

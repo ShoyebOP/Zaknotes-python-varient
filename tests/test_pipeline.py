@@ -52,7 +52,13 @@ def test_execute_job_success(mock_notes, mock_api_class, mock_audio, mock_down, 
         assert success is True
         assert job['status'] == 'completed'
         mock_down.assert_called_once()
-        mock_audio.assert_called_once()
+        # Verify it was called with threads parameter
+        mock_audio.assert_called_once_with(
+            "downloads/Test_Job.mp3",
+            segment_time=1800,
+            output_dir="temp",
+            threads=0 # default balanced -> 0
+        )
         mock_api.generate_content_with_file.assert_called_once()
         mock_notes.assert_called_once()
 
