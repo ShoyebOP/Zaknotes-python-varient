@@ -137,12 +137,12 @@ def extract_vimeo_url(url, cookie_file):
             iframes = soup.find_all('iframe')
             for iframe in iframes:
                 src = iframe.get('src', '')
-                if 'player.vimeo.com' in src:
-                    print("INFO: Successfully found Vimeo iframe", file=sys.stderr)
+                if 'player.vimeo.com' in src or 'player.vidinfra.com' in src:
+                    print(f"INFO: Successfully found iframe: {src}", file=sys.stderr)
                     browser.close()
                     return src
             
-            print("ERROR: No Vimeo iframe found on page", file=sys.stderr)
+            print("ERROR: No suitable iframe (Vimeo/Vidinfra) found on page", file=sys.stderr)
             browser.close()
             sys.exit(1)
             
