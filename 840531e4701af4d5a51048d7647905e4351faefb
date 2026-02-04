@@ -1,0 +1,1 @@
+Phase 3: Vidinfra Support\n\nAutomated Tests: uv run pytest tests/test_find_vimeo_url.py (Passed, 79% coverage)\nManual Verification: User confirmed Vidinfra URL extraction.\nUser Confirmation: Yes
