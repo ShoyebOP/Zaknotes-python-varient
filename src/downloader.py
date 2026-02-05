@@ -89,7 +89,7 @@ def download_audio(job):
         print(">> Mode: EdgeCourseBD (Running Scraper...)")
         
         # Use sys.executable to ensure we use the VENV python
-        script_path = os.path.join(os.path.dirname(os.path.abspath(__file__)), "find_vimeo_url.py")
+        script_path = os.path.join(os.path.dirname(os.path.abspath(__file__)), "link_extractor.py")
         scraper_cmd = f'"{sys.executable}" "{script_path}" --url "{url}"'
         if cookie_file:
             scraper_cmd += f' --cookies "{cookie_file}"'

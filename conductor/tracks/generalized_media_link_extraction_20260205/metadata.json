@@ -1,0 +1,8 @@
+{
+  "track_id": "generalized_media_link_extraction_20260205",
+  "type": "feature",
+  "status": "new",
+  "created_at": "2026-02-05T14:30:00Z",
+  "updated_at": "2026-02-05T14:30:00Z",
+  "description": "Generalize link extraction, rename to link_extractor.py, and update downloader.py with match/case and specialized rules."
+}
