@@ -3,6 +3,7 @@ import subprocess
 import shlex
 import sys
 from urllib.parse import urlparse
+from src.config_manager import ConfigManager
 
 # CONFIGURATION
 DOWNLOAD_DIR = "downloads"
@@ -47,6 +48,9 @@ def download_audio(job):
     url = job['url']
     name = job['name']
     
+    config = ConfigManager()
+    ua = config.get("user_agent")
+    
     # Clean filename
     safe_name = name.replace(" ", "_").replace("/", "-")
     filename_tmpl = f"{safe_name}.%(ext)s"
@@ -61,9 +65,6 @@ def download_audio(job):
     
     domain = urlparse(url).netloc.lower()
     
-    # Common UA
-    ua = "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36"
-
     # Match domain or characteristic parts of the URL
     match_found = False
     
@@ -120,6 +121,9 @@ def download_audio(job):
         scraper_cmd = f'"{sys.executable}" "{script_path}" --url "{url}"'
         if cookie_file:
             scraper_cmd += f' --cookies "{cookie_file}"'
+        
+        if ua:
+            scraper_cmd += f' --user-agent "{ua}"'
             
         try:
             vimeo_url = run_command(scraper_cmd)

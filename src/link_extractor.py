@@ -123,17 +123,20 @@ def select_with_timeout(options, timeout=30):
         return options[0]
 
 
-def extract_link(url, cookie_file):
+def extract_link(url, cookie_file, user_agent=None):
     """
     Extract Vimeo/Vidinfra media link.
     """
+    if not user_agent:
+        user_agent = 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36'
+        
     try:
         cookies = parse_netscape_cookies(cookie_file)
         
         with sync_playwright() as p:
             browser = p.chromium.launch(headless=True)
             context = browser.new_context(
-                user_agent='Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36'
+                user_agent=user_agent
             )
             
             try:
@@ -192,6 +195,7 @@ def main():
     parser = argparse.ArgumentParser(description='Vimeo/Vidinfra Media Link Extractor')
     parser.add_argument('--url', required=True, help='Target webpage URL')
     parser.add_argument('--cookies', required=True, help='Path to Netscape cookie file')
+    parser.add_argument('--user-agent', help='Custom Browser User-Agent')
     
     args = parser.parse_args()
     
@@ -199,7 +203,7 @@ def main():
         print(f"ERROR: Cookie file does not exist: {args.cookies}", file=sys.stderr)
         sys.exit(1)
     
-    link = extract_link(args.url, args.cookies)
+    link = extract_link(args.url, args.cookies, args.user_agent)
     
     if link:
         print(link)
