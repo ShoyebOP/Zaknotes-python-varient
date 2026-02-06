@@ -1,0 +1,4 @@
+Task: Conductor - User Manual Verification 'Phase 1: Link Extractor Generalization'
+Summary: Fixed and enhanced tests for Phase 1. Updated tests to correctly mock Playwright frames and avoid long timeouts. Improved coverage to 81%. Verified that link_extractor.py correctly handles Vimeo, YouTube, and MediaDelivery modes.
+Files: tests/test_link_extractor.py
+Why: Tests were failing due to incorrect mocking and outdated function signatures. Verification was needed to complete Phase 1.
