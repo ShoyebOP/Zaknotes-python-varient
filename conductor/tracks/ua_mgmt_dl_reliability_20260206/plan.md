@@ -33,6 +33,6 @@
 - [x] Task: Conductor - User Manual Verification 'Phase 4: Download Reliability Fixes' (Protocol in workflow.md)
 
 ## Phase 5: Documentation
-- [ ] Task: Update `README.md` with comprehensive troubleshooting for download errors.
-    - [ ] Add sections for 403 Forbidden, HLS stream issues, and general `yt-dlp` tips.
+- [x] Task: Update `README.md` with comprehensive troubleshooting for download errors. 1ce8bae
+    - [x] Add sections for 403 Forbidden, HLS stream issues, and general `yt-dlp` tips.
 - [ ] Task: Conductor - User Manual Verification 'Phase 5: Documentation' (Protocol in workflow.md)
