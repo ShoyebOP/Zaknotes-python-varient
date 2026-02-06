@@ -2,6 +2,7 @@ import os
 import subprocess
 import shlex
 import sys
+from urllib.parse import urlparse
 
 # CONFIGURATION
 DOWNLOAD_DIR = "downloads"
@@ -10,11 +11,9 @@ COOKIES_DIR = "cookies"
 DEFAULT_COOKIE = os.path.join(COOKIES_DIR, "bangi.txt") 
 
 # SMART FORMAT STRATEGY
-# 1. 240p Video (Fastest) -> ... -> Best Audio -> Best
 SMART_FORMAT = "best[height=240]/best[height=360]/best[height=480]/best[height=540]/bestaudio/best"
 
 # CONCURRENCY SETTING
-# -N 16: Downloads 16 fragments at once. much faster than aria2c for streams.
 CONCURRENCY = "-N 16"
 
 # Ensure we use the VENV yt-dlp
@@ -59,9 +58,17 @@ def download_audio(job):
     cookie_arg = f'--cookies "{cookie_file}"' if cookie_file else ""
 
     print(f"\n⬇️  Starting Download: {name}")
+    
+    domain = urlparse(url).netloc.lower()
+    
+    # Common UA
+    ua = "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36"
 
-    # --- RULE 1: FACEBOOK ---
-    if "facebook.com" in url or "fb.watch" in url:
+    # Match domain or characteristic parts of the URL
+    match_found = False
+    
+    # 1. FACEBOOK
+    if any(x in url for x in ["facebook.com", "fb.watch"]):
         print(">> Mode: Facebook")
         cmd = (
             f'{YT_DLP_BASE} {CONCURRENCY} {EJS_ARGS} --no-part --no-keep-fragments '
@@ -71,24 +78,44 @@ def download_audio(job):
             f'-o "{filename_tmpl}" "{url}"'
         )
         run_command(cmd)
+        match_found = True
 
-    # --- RULE 2: APAR'S CLASSROOM ---
-    elif "aparsclassroom" in url:
-        print(">> Mode: Apar's Classroom")
+    # 2. YOUTUBE
+    elif any(x in url for x in ["youtube.com", "youtu.be", "youtube-nocookie.com"]):
+        print(">> Mode: YouTube")
+        cmd = (
+            f'{YT_DLP_BASE} {CONCURRENCY} {EJS_ARGS} '
+            f'-f "{SMART_FORMAT}" '
+            f'--extract-audio --audio-format mp3 --audio-quality 5 '
+            f'--continue {cookie_arg} {paths_arg} '
+            f'-o "{filename_tmpl}" '
+            f'--add-header "Referer: https://www.youtube.com/" '
+            f'--add-header "User-Agent: {ua}" '
+            f'"{url}"'
+        )
+        run_command(cmd)
+        match_found = True
+
+    # 3. MEDIADELIVERY (Apar's Classroom)
+    elif "mediadelivery.net" in url:
+        print(">> Mode: MediaDelivery")
         cmd = (
             f'{YT_DLP_BASE} {CONCURRENCY} {EJS_ARGS} --no-part --no-keep-fragments '
             f'{cookie_arg} {paths_arg} --no-playlist '
             f'-f "{SMART_FORMAT}" '
             f'-x --audio-format mp3 '
+            f'--add-header "Referer: https://academic.aparsclassroom.com/" '
+            f'--add-header "Origin: https://academic.aparsclassroom.com" '
+            f'--add-header "User-Agent: {ua}" '
             f'-o "{filename_tmpl}" "{url}"'
         )
         run_command(cmd)
+        match_found = True
 
-    # --- RULE 3: EDGECOURSEBD ---
+    # 4. EDGECOURSEBD
     elif "edgecoursebd" in url:
         print(">> Mode: EdgeCourseBD (Running Scraper...)")
         
-        # Use sys.executable to ensure we use the VENV python
         script_path = os.path.join(os.path.dirname(os.path.abspath(__file__)), "link_extractor.py")
         scraper_cmd = f'"{sys.executable}" "{script_path}" --url "{url}"'
         if cookie_file:
@@ -107,15 +134,14 @@ def download_audio(job):
                 f'-o "{filename_tmpl}" "{vimeo_url}"'
             )
             run_command(cmd)
+            match_found = True
         except Exception as e:
             print(f"❌ Scraper failed: {e}")
             raise e
 
-    # --- RULE 4: DEFAULT / FALLBACK ---
-    else:
-        print(">> Mode: Default/Generic")
-        ua = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36"
-        
+    # 5. FALLBACK
+    if not match_found:
+        print(">> Mode: Default/Fallback")
         cmd = (
             f'{YT_DLP_BASE} {CONCURRENCY} {EJS_ARGS} '
             f'-f "{SMART_FORMAT}" '
@@ -126,7 +152,11 @@ def download_audio(job):
             f'--add-header "User-Agent: {ua}" '
             f'"{url}"'
         )
-        run_command(cmd)
+        try:
+            run_command(cmd)
+        except Exception as e:
+            print(f"❌ Fallback download failed: {e}")
+            raise e
     
     final_output = f"{DOWNLOAD_DIR}/{safe_name}.mp3"
     print(f"✅ Download Complete: {final_output}")
