@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """
-Extract media links (Vimeo, YouTube, MediaDelivery) from a webpage using Playwright.
+Extract media links (Vimeo, Vidinfra) from a webpage using Playwright.
 """
 
 import argparse
@@ -8,12 +8,12 @@ import sys
 import os
 import threading
 import queue
+import re
 from urllib.parse import urlparse, urljoin
 from playwright.sync_api import sync_playwright
-from bs4 import BeautifulSoup
 
 
-def parse_netscape_cookies(cookie_file_path, target_domain=None):
+def parse_netscape_cookies(cookie_file_path):
     """
     Parse Netscape-formatted cookie file and return cookies for Playwright.
     Returns all cookies in the file.
@@ -29,9 +29,11 @@ def parse_netscape_cookies(cookie_file_path, target_domain=None):
                 if not line or (line.startswith('#') and not line.startswith('#HttpOnly_')):
                     continue
                 
+                is_http_only = False
                 # Handle HttpOnly prefix
                 if line.startswith('#HttpOnly_'):
                     line = line[len('#HttpOnly_'):]
+                    is_http_only = True
                 
                 # Split by tab
                 parts = line.split('\t')
@@ -70,7 +72,8 @@ def parse_netscape_cookies(cookie_file_path, target_domain=None):
                     'domain': final_domain,
                     'path': path,
                     'secure': secure,
-                    'expires': expires
+                    'expires': expires,
+                    'httpOnly': is_http_only
                 }
                 cookies.append(cookie)
     
@@ -100,6 +103,8 @@ def select_with_timeout(options, timeout=30):
             res_queue.put(choice)
         except EOFError:
             res_queue.put("")
+        except Exception:
+            res_queue.put("")
 
     thread = threading.Thread(target=get_input)
     thread.daemon = True
@@ -118,9 +123,9 @@ def select_with_timeout(options, timeout=30):
         return options[0]
 
 
-def extract_link(url, cookie_file, mode="vimeo"):
+def extract_link(url, cookie_file):
     """
-    Extract media link based on mode.
+    Extract Vimeo/Vidinfra media link.
     """
     try:
         cookies = parse_netscape_cookies(cookie_file)
@@ -128,7 +133,7 @@ def extract_link(url, cookie_file, mode="vimeo"):
         with sync_playwright() as p:
             browser = p.chromium.launch(headless=True)
             context = browser.new_context(
-                user_agent='Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36'
+                user_agent='Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36'
             )
             
             try:
@@ -136,60 +141,40 @@ def extract_link(url, cookie_file, mode="vimeo"):
             except Exception as e:
                 print(f"ERROR: Failed to add cookies: {e}", file=sys.stderr)
                 browser.close()
-                sys.exit(1)
+                return None
             
             page = context.new_page()
             print(f"INFO: Navigating to {url}...", file=sys.stderr)
-            page.goto(url, wait_until="networkidle")
             
-            try:
-                page.wait_for_selector("iframe, embed, object", timeout=15000)
-            except Exception:
-                pass # Continue to scan even if specific selector wait fails
+            # Use longer timeouts and wait for commit
+            page.goto(url, wait_until="commit", timeout=60000)
             
-            content = page.content()
-            soup = BeautifulSoup(content, 'html.parser')
+            # Wait for content to settle
+            print(f"INFO: Waiting for content to settle...", file=sys.stderr)
+            page.wait_for_timeout(15000)
+            
+            print(f"DEBUG: Final URL: {page.url}", file=sys.stderr)
+            
             found_links = set()
 
-            if mode == "vimeo":
-                iframes = soup.find_all('iframe')
-                for iframe in iframes:
-                    src = iframe.get('src', '')
-                    if 'player.vimeo.com' in src or 'player.vidinfra.com' in src:
-                        found_links.add(src.split('?')[0])
-            
-            elif mode == "yt":
-                # 1. Scan iframes
-                for iframe in soup.find_all('iframe'):
-                    src = iframe.get('src', '') or iframe.get('data-src', '')
-                    if any(domain in src for domain in ['youtube.com', 'youtube-nocookie.com', 'youtu.be']):
-                        found_links.add(src.split('?')[0])
-                
-                # 2. Scan embed/object
-                for tag in soup.find_all(['embed', 'object']):
-                    src = tag.get('src', '') or tag.get('data', '')
-                    if 'youtube' in src:
-                        found_links.add(src.split('?')[0])
-                
-                # 3. Regex scan for IDs in raw content (similar to bookmarklet)
-                import re
-                id_regex = r'(?:v=|embed\/|vi\/|youtu\.be\/|videoId["\']?\s*[:=]\s*["\'])([a-zA-Z0-9_-]{11})'
-                matches = re.findall(id_regex, content)
-                for vid_id in matches:
-                    found_links.add(f"https://www.youtube.com/watch?v={vid_id}")
-
-            elif mode == "md":
-                # Find BunnyCDN / mediadelivery links
-                iframes = soup.find_all('iframe')
-                for iframe in iframes:
-                    src = iframe.get('src', '')
-                    if 'mediadelivery.net' in src:
-                        found_links.add(src.split('?')[0])
+            # Iterate through ALL frames
+            all_frames = page.frames
+            for frame in all_frames:
+                try:
+                    f_url = frame.url
+                    if not f_url or f_url == "about:blank":
+                        continue
+                        
+                    if 'player.vimeo.com' in f_url or 'player.vidinfra.com' in f_url:
+                        found_links.add(f_url.split('?')[0])
+                            
+                except:
+                    continue
 
             browser.close()
 
             if not found_links:
-                print(f"ERROR: No links found in mode: {mode}", file=sys.stderr)
+                print(f"ERROR: No links found", file=sys.stderr)
                 return None
 
             sorted_links = sorted(list(found_links))
@@ -199,16 +184,14 @@ def extract_link(url, cookie_file, mode="vimeo"):
             return sorted_links[0]
             
     except Exception as e:
-        print(f"ERROR: Unexpected error: {e}", file=sys.stderr)
+        print(f"ERROR: Unexpected error in extract_link: {e}", file=sys.stderr)
         return None
 
 
 def main():
-    parser = argparse.ArgumentParser(description='Generalized Media Link Extractor')
+    parser = argparse.ArgumentParser(description='Vimeo/Vidinfra Media Link Extractor')
     parser.add_argument('--url', required=True, help='Target webpage URL')
     parser.add_argument('--cookies', required=True, help='Path to Netscape cookie file')
-    parser.add_argument('-yt', action='store_true', help='Search for YouTube links')
-    parser.add_argument('-md', action='store_true', help='Search for MediaDelivery links')
     
     args = parser.parse_args()
     
@@ -216,11 +199,7 @@ def main():
         print(f"ERROR: Cookie file does not exist: {args.cookies}", file=sys.stderr)
         sys.exit(1)
     
-    mode = "vimeo"
-    if args.yt: mode = "yt"
-    elif args.md: mode = "md"
-    
-    link = extract_link(args.url, args.cookies, mode=mode)
+    link = extract_link(args.url, args.cookies)
     
     if link:
         print(link)

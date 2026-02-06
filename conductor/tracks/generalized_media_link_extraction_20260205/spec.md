@@ -7,10 +7,7 @@ Generalize the link extraction script, rename it to `src/link_extractor.py`, and
 
 ### 1. Link Extractor Refactor (`src/link_extractor.py`)
 - **Rename:** Move `src/find_vimeo_url.py` to `src/link_extractor.py`.
-- **New Flags:**
-  - `-yt`: Search only for YouTube links (logic from `bookmarlet-youtube.js`).
-  - `-md`: Search only for MediaDelivery links (logic from `bookmarlet-apar.js`).
-- **Default Behavior:** Continue searching for Vimeo and Vidinfra links if no flags are provided.
+- **Default Behavior:** Continue searching for Vimeo and Vidinfra links.
 - **Cookie Handling:** Load all cookies from the file without domain-specific filtering.
 - **Multiple Links Handling:**
   - Display numbered list if multiple unique links are found.
@@ -21,17 +18,15 @@ Generalize the link extraction script, rename it to `src/link_extractor.py`, and
 - **Rules:**
   1. **Facebook** (`facebook.com`, `fb.watch`): Direct download.
   2. **YouTube** (`youtube.com`, `youtu.be`, `youtube-nocookie.com`): Direct download using fallback command.
-  3. **Apar's Classroom** (`aparsclassroom`):
-     - Extract `mediadelivery.net` link using `src/link_extractor.py -md`.
-     - Download using custom headers:
+  3. **Apar's Classroom** / **MediaDelivery** (`mediadelivery.net`):
+     - Use custom headers:
        - Referer: `https://academic.aparsclassroom.com/`
        - Origin: `https://academic.aparsclassroom.com`
        - User-Agent: `Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36`
   4. **EdgeCourseBD** (`edgecoursebd`): Use `src/link_extractor.py` (default) to find Vimeo/Vidinfra link, then download.
   5. **Fallback (Unknown Domain):**
-     - Pass URL to `src/link_extractor.py -yt`.
-     - If a YouTube link is found, download it using the fallback command.
-     - If NO link is found, mark job status as `no_link_found`.
+     - Attempt direct download using the fallback command.
+     - If it fails, mark job status as `no_link_found`.
 
 ### 3. Job Management
 - Implement `no_link_found` status in `JobManager`.
