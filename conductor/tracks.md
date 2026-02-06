@@ -14,6 +14,6 @@ This file tracks all major tracks for the project. Each track has its own detail
 
 ---
 
-- [~] **Track: Add user-agent configuration, improve cleanup, and fix download reliability issues (403 and HLS).**
+## [x] Track: Add user-agent configuration, improve cleanup, and fix download reliability issues (403 and HLS).
 *Link: [./tracks/ua_mgmt_dl_reliability_20260206/](./tracks/ua_mgmt_dl_reliability_20260206/)*
 
