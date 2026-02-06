@@ -20,7 +20,7 @@ CONCURRENCY = "-N 16"
 YT_DLP_BASE = f'"{sys.executable}" -m yt_dlp'
 
 # EJS Configuration for YouTube
-EJS_ARGS = '--js-runtime node --extractor-args "youtube:player_client=web"'
+EJS_ARGS = '--js-runtime node'
 
 # Ensure directories exist
 os.makedirs(DOWNLOAD_DIR, exist_ok=True)
