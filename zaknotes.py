@@ -83,6 +83,18 @@ def configure_audio_chunking():
         except ValueError:
             print("❌ Invalid input. Please enter a number.")
 
+def configure_user_agent():
+    config = ConfigManager()
+    curr_ua = config.get("user_agent")
+    print("\n--- Configure Browser User-Agent ---")
+    print(f"Current User-Agent: {curr_ua}")
+    
+    val = input("Enter new User-Agent (leave blank to keep current): ").strip()
+    if val:
+        config.set("user_agent", val)
+        config.save()
+        print("✅ Configuration saved.")
+
 def cleanup_stranded_chunks():
     print("\n🧹 Cleaning up all intermediate files...")
     FileCleanupService.cleanup_all_temp_files()
@@ -167,12 +179,13 @@ def main_menu():
         print("1. Start Note Generation")
         print("2. Manage API Keys")
         print("3. Configure Audio Chunking")
-        print("4. Cleanup Stranded Audio Chunks")
-        print("5. Refresh Cookies")
-        print("6. Exit")
+        print("4. Configure Browser User-Agent")
+        print("5. Cleanup Stranded Audio Chunks")
+        print("6. Refresh Cookies")
+        print("7. Exit")
         print("------------------------------")
         
-        choice = input("Enter your choice (1-6): ").strip()
+        choice = input("Enter your choice (1-7): ").strip()
         
         if choice == '1':
             start_note_generation()
@@ -181,10 +194,12 @@ def main_menu():
         elif choice == '3':
             configure_audio_chunking()
         elif choice == '4':
-            cleanup_stranded_chunks()
+            configure_user_agent()
         elif choice == '5':
-            refresh_cookies()
+            cleanup_stranded_chunks()
         elif choice == '6':
+            refresh_cookies()
+        elif choice == '7':
             print("Goodbye!")
             break
         else:
