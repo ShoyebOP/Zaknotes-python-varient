@@ -1,0 +1,3 @@
+Task: Phase 3: Pipeline Resumption Logic
+Summary: Refactored ProcessingPipeline to support resumption. Added logic to skip download if file exists and status is >= DOWNLOADED. Skip audio processing if chunks exist and status is >= CHUNKED. Implemented per-chunk transcription resumption by skipping chunks present in job['transcriptions'] and reconstructing the transcript file from existing parts.
+Files: src/pipeline.py, src/downloader.py, tests/test_pipeline_resumption.py
