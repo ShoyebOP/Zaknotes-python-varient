@@ -14,12 +14,12 @@ Goal: Implement persistent intermediate states in the job management system.
 - [x] Task: Implement per-chunk transcription state tracking in `JobManager`. e3bfc45
 - [x] Task: Conductor - User Manual Verification 'Phase 2: Granular State Tracking' (Protocol in workflow.md) ebe3ac6
 
-## Phase 3: Pipeline Resumption Logic
+## Phase 3: Pipeline Resumption Logic [checkpoint: 38ee98d]
 Goal: Modify the main pipeline to utilize new states for resuming interrupted jobs.
 
 - [x] Task: Refactor `Pipeline` to check for existing state/files and skip completed steps. d45d4b6
 - [x] Task: Implement transcription resumption logic (skip already transcribed chunks). d45d4b6
-- [ ] Task: Conductor - User Manual Verification 'Phase 3: Pipeline Resumption Logic' (Protocol in workflow.md)
+- [x] Task: Conductor - User Manual Verification 'Phase 3: Pipeline Resumption Logic' (Protocol in workflow.md) 38ee98d
 
 ## Phase 4: Interactive Cleanup
 Goal: Provide users with granular control over workspace cleanup.
