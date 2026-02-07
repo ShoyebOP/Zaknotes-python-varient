@@ -105,9 +105,31 @@ def configure_user_agent():
         print("✅ Configuration saved.")
 
 def cleanup_stranded_chunks():
-    print("\n🧹 Cleaning up all intermediate files...")
-    FileCleanupService.cleanup_all_temp_files()
-    print("✅ Cleanup complete.")
+    print("\n--- Cleanup Options ---")
+    print("1. Purge Everything (All temp and download files)")
+    print("2. Purge Completed/Cancelled Only (Preserve pending jobs)")
+    print("3. Back")
+    
+    choice = input("Enter your choice (1-3): ").strip()
+    
+    if choice == '1':
+        print("\n🧹 Cleaning up ALL intermediate files...")
+        FileCleanupService.cleanup_all_temp_files()
+        print("✅ Full cleanup complete.")
+    elif choice == '2':
+        manager = JobManager()
+        # Filter for non-pending jobs
+        jobs_to_purge = [j for j in manager.history if j.get('status') in ['completed', 'cancelled', 'failed', 'no_link_found']]
+        if not jobs_to_purge:
+            print("No completed/cancelled jobs found to purge.")
+            return
+        print(f"\n🧹 Cleaning up files for {len(jobs_to_purge)} non-pending jobs...")
+        FileCleanupService.cleanup_all_temp_files(jobs_to_purge=jobs_to_purge)
+        print("✅ Targeted cleanup complete.")
+    elif choice == '3':
+        return
+    else:
+        print("❌ Invalid choice.")
 
 def run_processing_pipeline(manager):
     config = ConfigManager()
