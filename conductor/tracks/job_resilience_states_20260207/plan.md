@@ -7,12 +7,12 @@ Goal: Improve transparency and accuracy of API usage and responses.
 - [x] Task: Enhance `GeminiAPIWrapper` with extensive debug logging and truncated response output. fecca61
 - [x] Task: Conductor - User Manual Verification 'Phase 1: API Quota & Debug Logging' (Protocol in workflow.md) 16b62e2
 
-## Phase 2: Granular State Tracking
+## Phase 2: Granular State Tracking [checkpoint: ebe3ac6]
 Goal: Implement persistent intermediate states in the job management system.
 
-- [x] Task: Update `JobManager` state definitions to include intermediate processing steps (DOWNLOADED, CHUNKED, etc.). e3bfc45
+- [x] Task: Update `JobManager` state definitions to include intermediate processing steps (DOWNLOADED, SILENCE_REMOVED, CHUNKED, etc.). e3bfc45
 - [x] Task: Implement per-chunk transcription state tracking in `JobManager`. e3bfc45
-- [ ] Task: Conductor - User Manual Verification 'Phase 2: Granular State Tracking' (Protocol in workflow.md)
+- [x] Task: Conductor - User Manual Verification 'Phase 2: Granular State Tracking' (Protocol in workflow.md) ebe3ac6
 
 ## Phase 3: Pipeline Resumption Logic
 Goal: Modify the main pipeline to utilize new states for resuming interrupted jobs.
