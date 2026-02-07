@@ -2,6 +2,8 @@
 
 Zaknotes is a powerful Linux CLI tool designed for students and learners who want to automate their study workflow. It effortlessly converts online class URLs (YouTube, Facebook, and more) into high-quality, study-ready **Markdown notes** using the official Google Gemini API.
 
+[demo notes](notes/)
+
 ---
 
 ## 🛠 Installation & Prerequisites
