@@ -1,0 +1,8 @@
+{
+  "track_id": "cleanup_backup_20260209",
+  "type": "chore",
+  "status": "new",
+  "created_at": "2026-02-09T17:00:00Z",
+  "updated_at": "2026-02-09T17:00:00Z",
+  "description": "clean up the tracks.md and move some of the completed track junks to archives, then create a new branch named genai/Google-AI-SDK"
+}
