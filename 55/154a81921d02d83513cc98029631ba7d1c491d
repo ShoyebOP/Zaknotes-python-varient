@@ -1,0 +1,4 @@
+Phase: Phase 1: Configuration Updates
+Automated Tests: uv run pytest tests/test_api_config.py
+Manual Verification: Confirmed presence and loadability of api_timeout, api_max_retries, and api_retry_delay in config.json.
+User Confirmation: yes
