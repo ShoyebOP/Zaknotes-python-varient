@@ -130,3 +130,16 @@ def test_quota_reset_at_midnight_pt(key_manager):
         key_manager.reset_quotas_if_needed()
         assert key_manager.list_keys()[0]["usage"][model] == 0
         assert key_manager.list_keys()[0]["exhausted"][model] is False
+
+def test_round_robin_rotation(key_manager):
+    """Test that it rotates through available keys on every call."""
+    key_manager.add_key("key-1")
+    key_manager.add_key("key-2")
+    key_manager.add_key("key-3")
+    model = "gemini-2.5-flash"
+    
+    assert key_manager.get_available_key(model) == "key-1"
+    assert key_manager.get_available_key(model) == "key-2"
+    assert key_manager.get_available_key(model) == "key-3"
+    assert key_manager.get_available_key(model) == "key-1"
+
