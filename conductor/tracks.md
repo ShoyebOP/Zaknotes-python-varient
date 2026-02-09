@@ -16,8 +16,3 @@ This file tracks all major tracks for the project. Each track has its own detail
 
 ## [x] Track: Refactor Gemini API calls to use system_instruction and refine transcription prompt
 *Link: [./conductor/archive/system_instruction_transcription_20260208/](./conductor/archive/system_instruction_transcription_20260208/)*
-
----
-
-## [x] Track: API request timeout, retry mechanism, and mandatory key rotation
-*Link: [./tracks/api_request_reliability_20260209/](./tracks/api_request_reliability_20260209/)*
