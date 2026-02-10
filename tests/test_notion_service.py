@@ -32,3 +32,48 @@ def test_notion_service_check_connection_failure(mock_notion_client):
     
     service = NotionService(notion_secret="test_secret", database_id="test_db")
     assert service.check_connection() is False
+
+def test_markdown_to_blocks_simple():
+    service = NotionService(notion_secret="test_secret", database_id="test_db")
+    md = "# Heading 1\n\nThis is a paragraph.\n\n- Bullet 1\n- Bullet 2"
+    blocks = service.markdown_to_blocks(md)
+    
+    assert len(blocks) == 4
+    assert blocks[0]["type"] == "heading_1"
+    assert blocks[0]["heading_1"]["rich_text"][0]["text"]["content"] == "Heading 1"
+    assert blocks[1]["type"] == "paragraph"
+    assert blocks[1]["paragraph"]["rich_text"][0]["text"]["content"] == "This is a paragraph."
+    assert blocks[2]["type"] == "bulleted_list_item"
+    assert blocks[3]["type"] == "bulleted_list_item"
+
+def test_inline_formatting_bold_italic():
+    service = NotionService(notion_secret="test_secret", database_id="test_db")
+    text = "This is **bold** and *italic* and `code`."
+    rich_text = service.process_inline_formatting(text)
+    
+    # We expect multiple segments
+    # 1. "This is " (plain)
+    # 2. "bold" (bold: True)
+    # 3. " and " (plain)
+    # 4. "italic" (italic: True)
+    # 5. " and " (plain)
+    # 6. "code" (code: True)
+    # 7. "." (plain)
+    
+    assert len(rich_text) > 1
+    
+    # Find segments (simplistic check)
+    contents = [rt["text"]["content"] for rt in rich_text]
+    assert "bold" in contents
+    assert "italic" in contents
+    assert "code" in contents
+    
+    for rt in rich_text:
+        content = rt["text"]["content"]
+        annotations = rt.get("annotations", {})
+        if content == "bold":
+            assert annotations.get("bold") is True
+        elif content == "italic":
+            assert annotations.get("italic") is True
+        elif content == "code":
+            assert annotations.get("code") is True
