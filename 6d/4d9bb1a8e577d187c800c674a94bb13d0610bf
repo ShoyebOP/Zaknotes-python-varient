@@ -1,0 +1,3 @@
+Task: Create src/notion_service.py skeleton with basic Notion API connectivity tests
+Summary: Added notion-client dependency. Created NotionService class with basic initialization and check_connection method. Added mocked unit tests for connectivity verification.
+Files: src/notion_service.py, tests/test_notion_service.py, pyproject.toml, uv.lock
