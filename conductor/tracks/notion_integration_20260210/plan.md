@@ -4,7 +4,7 @@ This plan outlines the integration of Notion as an automated storage backend for
 
 ## Phase 1: Configuration & Credential Management
 - [x] Task: Create `keys/notion_keys.json` structure and initial configuration `notion_integration_enabled` in `config.json` 83caee6
-- [ ] Task: Implement `src/notion_config_manager.py` to handle Notion-specific credentials and settings
+- [x] Task: Implement `src/notion_config_manager.py` to handle Notion-specific credentials and settings cde23c2
 - [ ] Task: Update `zaknotes.py` main menu (`Manage API Keys`) to include Notion setup options
 - [ ] Task: Conductor - User Manual Verification 'Phase 1: Configuration & Credential Management' (Protocol in workflow.md)
 
