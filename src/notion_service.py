@@ -1,21 +1,48 @@
 import logging
 import re
-from typing import List, Dict, Any
-from notion_client import Client
+import time
+from typing import List, Dict, Any, Callable
+from notion_client import Client, APIResponseError
 
 logger = logging.getLogger(__name__)
 
 class NotionService:
-    def __init__(self, notion_secret: str, database_id: str):
+    def __init__(self, notion_secret: str, database_id: str, max_retries: int = 3, retry_delay: int = 5):
         self.client = Client(auth=notion_secret)
         self.database_id = database_id
+        self.max_retries = max_retries
+        self.retry_delay = retry_delay
+
+    def _execute_with_retry(self, func: Callable, *args, **kwargs) -> Any:
+        """
+        Executes a Notion API call with a retry mechanism for rate limits (429).
+        """
+        retries = 0
+        while retries <= self.max_retries:
+            try:
+                return func(*args, **kwargs)
+            except APIResponseError as e:
+                if e.status == 429:
+                    retries += 1
+                    if retries > self.max_retries:
+                        logger.error(f"Max retries reached for Notion API (429).")
+                        raise
+                    wait_time = self.retry_delay * retries
+                    logger.warning(f"Notion rate limit reached. Retrying in {wait_time}s... (Attempt {retries}/{self.max_retries})")
+                    time.sleep(wait_time)
+                else:
+                    logger.error(f"Notion API error: {e}")
+                    raise
+            except Exception as e:
+                logger.error(f"Unexpected error calling Notion API: {e}")
+                raise
 
     def check_connection(self) -> bool:
         """
         Verifies the connection to Notion by retrieving the database metadata.
         """
         try:
-            self.client.databases.retrieve(database_id=self.database_id)
+            self._execute_with_retry(self.client.databases.retrieve, database_id=self.database_id)
             return True
         except Exception as e:
             logger.error(f"Failed to connect to Notion: {e}")
@@ -252,11 +279,7 @@ class NotionService:
             final_blocks.append(block)
 
         # 1. Create the page with initial properties (title)
-        # Notion databases require specific property names. 
-        # Usually, the title property is named 'Name' or 'title'.
-        # We'll try to find the title property name or default to 'title'.
-        
-        db_info = self.client.databases.retrieve(database_id=self.database_id)
+        db_info = self._execute_with_retry(self.client.databases.retrieve, database_id=self.database_id)
         title_prop_name = "title" # default
         for prop_name, prop_info in db_info.get("properties", {}).items():
             if prop_info.get("type") == "title":
@@ -267,7 +290,8 @@ class NotionService:
         initial_batch = final_blocks[:100]
         remaining_blocks = final_blocks[100:]
 
-        new_page = self.client.pages.create(
+        new_page = self._execute_with_retry(
+            self.client.pages.create,
             parent={"database_id": self.database_id},
             properties={
                 title_prop_name: {
@@ -280,7 +304,8 @@ class NotionService:
         # 2. Append remaining blocks in batches of 100
         for i in range(0, len(remaining_blocks), 100):
             batch = remaining_blocks[i:i + 100]
-            self.client.blocks.children.append(
+            self._execute_with_retry(
+                self.client.blocks.children.append,
                 block_id=new_page["id"],
                 children=batch
             )

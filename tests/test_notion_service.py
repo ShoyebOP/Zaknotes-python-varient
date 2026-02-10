@@ -98,3 +98,26 @@ def test_notion_service_create_page_batching(mock_notion_client):
     args, kwargs = mock_instance.blocks.children.append.call_args
     assert kwargs["block_id"] == "new_page_id"
     assert len(kwargs["children"]) == 50
+
+def test_notion_service_create_page_retry_on_429(mock_notion_client):
+    from notion_client import APIResponseError
+    
+    mock_instance = mock_notion_client.return_value
+    
+    # Create a mock 429 error
+    mock_response = MagicMock()
+    mock_response.status_code = 429
+    error_429 = APIResponseError(mock_response, "Rate limit", "rate_limit_reached")
+    
+    # Fail once, then succeed
+    mock_instance.databases.retrieve.return_value = {"properties": {"Name": {"type": "title"}}}
+    mock_instance.pages.create.side_effect = [error_429, {"id": "success_id", "url": "http://success"}]
+    
+    service = NotionService(notion_secret="test_secret", database_id="test_db")
+    
+    with patch('time.sleep') as mock_sleep:
+        url = service.create_page("Retry Test", "md")
+    
+    assert url == "http://success"
+    assert mock_instance.pages.create.call_count == 2
+    mock_sleep.assert_called_once()
