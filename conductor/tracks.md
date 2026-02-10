@@ -9,5 +9,5 @@ This file tracks all major tracks for the project. Each track has its own detail
 
 ---
 
-- [~] **Track: Integrate Notion as an automated storage backend for generated notes, including configuration, pipeline integration, and legacy note migration.**
+- [x] **Track: Integrate Notion as an automated storage backend for generated notes, including configuration, pipeline integration, and legacy note migration.**
 *Link: [./tracks/notion_integration_20260210/](./tracks/notion_integration_20260210/)*
