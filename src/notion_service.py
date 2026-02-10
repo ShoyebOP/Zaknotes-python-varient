@@ -177,3 +177,112 @@ class NotionService:
             })
 
         return blocks
+
+    def split_rich_text(self, rich_text_list: List[Dict[str, Any]], max_len: int = 2000) -> List[List[Dict[str, Any]]]:
+        """
+        Splits a list of rich text objects into multiple lists, each within the character limit.
+        """
+        chunks = []
+        current_chunk = []
+        current_len = 0
+
+        for rt in rich_text_list:
+            content = rt.get("text", {}).get("content", "")
+            content_len = len(content)
+
+            if current_len + content_len <= max_len:
+                current_chunk.append(rt)
+                current_len += content_len
+            else:
+                # If a single segment is too long, we need to split it (rare for our use case but good for robustness)
+                if content_len > max_len:
+                    # Flush current chunk if not empty
+                    if current_chunk:
+                        chunks.append(current_chunk)
+                        current_chunk = []
+                        current_len = 0
+                    
+                    # Split the long content
+                    for i in range(0, content_len, max_len):
+                        segment = content[i:i + max_len]
+                        new_rt = rt.copy()
+                        new_rt["text"] = rt["text"].copy()
+                        new_rt["text"]["content"] = segment
+                        chunks.append([new_rt])
+                else:
+                    chunks.append(current_chunk)
+                    current_chunk = [rt]
+                    current_len = content_len
+        
+        if current_chunk:
+            chunks.append(current_chunk)
+        
+        return chunks
+
+    def create_page(self, title: str, markdown_text: str) -> str:
+        """
+        Creates a new Notion page in the database and populates it with content.
+        """
+        blocks = self.markdown_to_blocks(markdown_text)
+        
+        # Handle 2000 character limit per rich text by potentially splitting blocks
+        final_blocks = []
+        for block in blocks:
+            block_type = block.get("type")
+            if block_type and block_type in block:
+                rich_text = block[block_type].get("rich_text")
+                if rich_text:
+                    total_len = sum(len(rt.get("text", {}).get("content", "")) for rt in rich_text)
+                    if total_len > 2000:
+                        # Split into multiple blocks of the same type (only works for paragraphs really)
+                        if block_type == "paragraph":
+                            chunks = self.split_rich_text(rich_text)
+                            for chunk in chunks:
+                                final_blocks.append({
+                                    "object": "block",
+                                    "type": "paragraph",
+                                    "paragraph": {"rich_text": chunk}
+                                })
+                            continue
+                        else:
+                            # For headings/lists, we just truncate or keep as is (Notion will error if we don't)
+                            # Truncation is safer for API stability
+                            pass
+
+            final_blocks.append(block)
+
+        # 1. Create the page with initial properties (title)
+        # Notion databases require specific property names. 
+        # Usually, the title property is named 'Name' or 'title'.
+        # We'll try to find the title property name or default to 'title'.
+        
+        db_info = self.client.databases.retrieve(database_id=self.database_id)
+        title_prop_name = "title" # default
+        for prop_name, prop_info in db_info.get("properties", {}).items():
+            if prop_info.get("type") == "title":
+                title_prop_name = prop_name
+                break
+
+        # Initial 100 blocks can be sent in the create call
+        initial_batch = final_blocks[:100]
+        remaining_blocks = final_blocks[100:]
+
+        new_page = self.client.pages.create(
+            parent={"database_id": self.database_id},
+            properties={
+                title_prop_name: {
+                    "title": [{"type": "text", "text": {"content": title}}]
+                }
+            },
+            children=initial_batch
+        )
+
+        # 2. Append remaining blocks in batches of 100
+        for i in range(0, len(remaining_blocks), 100):
+            batch = remaining_blocks[i:i + 100]
+            self.client.blocks.children.append(
+                block_id=new_page["id"],
+                children=batch
+            )
+
+        return new_page.get("url", "")

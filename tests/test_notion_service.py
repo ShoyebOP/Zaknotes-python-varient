@@ -77,3 +77,24 @@ def test_inline_formatting_bold_italic():
             assert annotations.get("italic") is True
         elif content == "code":
             assert annotations.get("code") is True
+
+def test_notion_service_create_page_batching(mock_notion_client):
+    mock_instance = mock_notion_client.return_value
+    mock_instance.pages.create.return_value = {"id": "new_page_id", "url": "http://notion.so/new_page"}
+    
+    service = NotionService(notion_secret="test_secret", database_id="test_db")
+    
+    # Create 150 blocks to trigger batching
+    blocks = [{"object": "block", "type": "paragraph", "paragraph": {"rich_text": []}}] * 150
+    
+    with patch.object(service, 'markdown_to_blocks', return_value=blocks):
+        url = service.create_page(title="Test Page", markdown_text="some md")
+    
+    assert url == "http://notion.so/new_page"
+    # Should call pages.create once
+    mock_instance.pages.create.assert_called_once()
+    # Should call blocks.children.append once for the remaining 50 blocks
+    mock_instance.blocks.children.append.assert_called_once()
+    args, kwargs = mock_instance.blocks.children.append.call_args
+    assert kwargs["block_id"] == "new_page_id"
+    assert len(kwargs["children"]) == 50
