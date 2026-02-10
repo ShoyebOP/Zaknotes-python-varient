@@ -16,9 +16,9 @@ This plan outlines the integration of Notion as an automated storage backend for
 - [x] Task: Conductor - User Manual Verification 'Phase 2: Notion Integration Service' (Protocol in workflow.md)
 
 ## Phase 3: Pipeline & Feature Integration
-- [ ] Task: Integrate Notion service into `src/pipeline.py` as a post-generation step
-- [ ] Task: Implement conditional local file deletion based on Notion push success
-- [ ] Task: Implement "Process Old Notes" logic and add it to the `Start Note Generation` menu in `zaknotes.py`
+- [x] Task: Integrate Notion service into `src/pipeline.py` as a post-generation step 2bd38ad
+- [x] Task: Implement conditional local file deletion based on Notion push success 2bd38ad
+- [x] Task: Implement "Process Old Notes" logic and add it to the `Start Note Generation` menu in `zaknotes.py` b0e366a
 - [ ] Task: Conductor - User Manual Verification 'Phase 3: Pipeline & Feature Integration' (Protocol in workflow.md)
 
 ## Phase 4: Finalization & Cleanup
