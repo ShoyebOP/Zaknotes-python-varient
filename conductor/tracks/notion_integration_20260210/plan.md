@@ -8,12 +8,12 @@ This plan outlines the integration of Notion as an automated storage backend for
 - [x] Task: Update `zaknotes.py` main menu (`Manage API Keys`) to include Notion setup options 91f1a29
 - [x] Task: Conductor - User Manual Verification 'Phase 1: Configuration & Credential Management' (Protocol in workflow.md)
 
-## Phase 2: Notion Integration Service
+## Phase 2: Notion Integration Service [checkpoint: a65fdae]
 - [x] Task: Create `src/notion_service.py` skeleton with basic Notion API connectivity tests 6d4d9bb
 - [x] Task: Implement Markdown to Notion block parsing (adapted from `md2notion/` with modern API checks) e5a9cff
 - [x] Task: Implement Notion page creation and block batching (100 blocks/2000 chars limits) e71082e
 - [x] Task: Implement error handling for API failures and rate limits 6dace77
-- [ ] Task: Conductor - User Manual Verification 'Phase 2: Notion Integration Service' (Protocol in workflow.md)
+- [x] Task: Conductor - User Manual Verification 'Phase 2: Notion Integration Service' (Protocol in workflow.md)
 
 ## Phase 3: Pipeline & Feature Integration
 - [ ] Task: Integrate Notion service into `src/pipeline.py` as a post-generation step
