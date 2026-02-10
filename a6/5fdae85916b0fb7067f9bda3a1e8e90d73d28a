@@ -1,0 +1,3 @@
+Task: Implement LaTeX and Table support in NotionService
+Summary: Added regex-based detection for inline math ($) and block math (118045). Implemented '_convert_table_to_latex' to transform Markdown tables into LaTeX array structures. Updated 'markdown_to_blocks' to integrate these new features.
+Files: src/notion_service.py, tests/test_notion_service.py
