@@ -50,7 +50,7 @@ This plan outlines the steps to replace the standard Gemini API key authenticati
     - [x] Implement error logging to `error.json` (full un-truncated payloads).
 - [x] Task: Conductor - User Manual Verification 'Phase 5: Internal API Integration' (Protocol in workflow.md)
 
-## Phase 6: Pipeline Integration & Final Testing
+## Phase 6: Pipeline Integration & Final Testing [checkpoint: ba55a24]
 - [x] Task: Integrate Auth and API into Pipeline
     - [x] Update `src/pipeline.py` to use the new `GeminiAuthService` and updated `GeminiApiWrapper`.
 - [x] Task: Update Menu and CLI Interface
