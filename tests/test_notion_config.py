@@ -34,15 +34,6 @@ def test_notion_integration_default_false(config_manager):
     """Test that notion_integration_enabled defaults to False."""
     assert config_manager.get("notion_integration_enabled") is False
 
-def test_notion_keys_structure():
-    """Test that notion_keys.json exists and has the correct keys."""
-    notion_keys_path = os.path.join("keys", "notion_keys.json")
-    assert os.path.exists(notion_keys_path)
-    with open(notion_keys_path, 'r') as f:
-        data = json.load(f)
-        assert "NOTION_SECRET" in data
-        assert "DATABASE_ID" in data
-
 def test_notion_config_load_save(notion_config_manager):
     """Test saving and loading Notion credentials."""
     notion_config_manager.set_credentials("secret_123", "db_456")

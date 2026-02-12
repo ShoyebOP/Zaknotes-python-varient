@@ -22,7 +22,6 @@ class ProcessingPipeline:
         """
         Executes the full pipeline for a single job with resumption support.
         """
-        self.api.key_manager.reset_quotas_if_needed()
         
         audio_path = None
         chunks = []

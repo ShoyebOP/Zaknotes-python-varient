@@ -33,4 +33,4 @@ src/ui_elements/
 .idea/
 .DS_Store
 *.swp
-*~
+*~gemini-cli-auth-files/

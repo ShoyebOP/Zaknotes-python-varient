@@ -9,7 +9,7 @@ import zaknotes
 
 def test_new_menu_functions_exist():
     """Test that the new menu option functions are defined."""
-    assert hasattr(zaknotes, 'manage_api_keys'), "zaknotes should have manage_api_keys"
+    assert hasattr(zaknotes, 'manage_notion_settings'), "zaknotes should have manage_notion_settings"
     assert hasattr(zaknotes, 'cleanup_stranded_chunks'), "zaknotes should have cleanup_stranded_chunks"
     assert hasattr(zaknotes, 'configure_audio_chunking'), "zaknotes should have configure_audio_chunking"
     assert hasattr(zaknotes, 'configure_user_agent'), "zaknotes should have configure_user_agent"

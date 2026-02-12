@@ -13,7 +13,6 @@ logging.basicConfig(
 logger = logging.getLogger(__name__)
 
 from src.cookie_manager import interactive_update as refresh_cookies
-from src.api_key_manager import APIKeyManager
 from src.notion_config_manager import NotionConfigManager
 from src.notion_service import NotionService
 from src.config_manager import ConfigManager
@@ -32,7 +31,7 @@ def manage_notion_settings():
         print(f"1. Integration Enabled: {'✅ Yes' if enabled else '❌ No'}")
         print(f"2. Set Notion Secret (Current: {secret[:4]}...{secret[-4:] if len(secret) > 8 else '****'})")
         print(f"3. Set Database ID (Current: {db_id})")
-        print("4. Back to Keys Menu")
+        print("4. Back to Main Menu")
         
         choice = input("Enter your choice (1-4): ").strip()
         
@@ -53,64 +52,6 @@ def manage_notion_settings():
                 notion_manager.set_credentials(curr_secret, val)
                 print("✅ Database ID updated.")
         elif choice == '4':
-            break
-        else:
-            print("❌ Invalid choice.")
-
-def manage_api_keys():
-    manager = APIKeyManager()
-    while True:
-        keys = manager.list_keys()
-        print("\n--- Manage API Keys & Integration ---")
-        if not keys:
-            print("No Gemini API keys configured.")
-        else:
-            print("Configured Gemini Keys:")
-            for i, k in enumerate(keys, 1):
-                # Mask key for display
-                masked = k['key'][:4] + "..." + k['key'][-4:] if len(k['key']) > 8 else "****"
-                print(f"{i}. {masked}")
-        
-        print("\n1. Add Gemini API Key")
-        print("2. Remove Gemini API Key")
-        print("3. View Quota Status")
-        print("4. Manage Notion Settings")
-        print("5. Back to Main Menu")
-        
-        choice = input("Enter your choice (1-5): ").strip()
-        
-        if choice == '1':
-            key = input("Enter new Gemini API Key: ").strip()
-            if key:
-                if manager.add_key(key):
-                    print("✅ API Key added.")
-                else:
-                    print("❌ Key already exists.")
-        elif choice == '2':
-            if not keys:
-                print("❌ No keys to remove.")
-                continue
-            idx = input("Enter the number of the key to remove: ").strip()
-            try:
-                idx = int(idx) - 1
-                if 0 <= idx < len(keys):
-                    manager.remove_key(keys[idx]['key'])
-                    print("✅ API Key removed.")
-                else:
-                    print("❌ Invalid number.")
-            except ValueError:
-                print("❌ Please enter a number.")
-        elif choice == '3':
-            report = manager.get_status_report()
-            if not report:
-                print("No API keys configured.")
-            else:
-                print("\n--- API Key Quota Status ---")
-                for line in report:
-                    print(line)
-        elif choice == '4':
-            manage_notion_settings()
-        elif choice == '5':
             break
         else:
             print("❌ Invalid choice.")
@@ -306,7 +247,7 @@ def main_menu():
         print("       ZAKNOTES MENU")
         print("==============================")
         print("1. Start Note Generation")
-        print("2. Manage API Keys")
+        print("2. Manage Notion Settings")
         print("3. Configure Audio Chunking")
         print("4. Configure Browser User-Agent")
         print("5. Cleanup Stranded Audio Chunks")
@@ -319,7 +260,7 @@ def main_menu():
         if choice == '1':
             start_note_generation()
         elif choice == '2':
-            manage_api_keys()
+            manage_notion_settings()
         elif choice == '3':
             configure_audio_chunking()
         elif choice == '4':
