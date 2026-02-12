@@ -43,12 +43,12 @@ This plan outlines the steps to replace the standard Gemini API key authenticati
     - [x] Implement base64 encoding for audio chunks.
 - [x] Task: Conductor - User Manual Verification 'Phase 4: Audio Processing & Chunking' (Protocol in workflow.md)
 
-## Phase 5: Internal API Integration
-- [ ] Task: Implement `v1internal` API Wrapper
-    - [ ] Write unit tests for `streamGenerateContent` request/response handling (mocking `cloudcode-pa.googleapis.com`).
-    - [ ] Update `src/gemini_api_wrapper.py` to use endpoints, headers, and request structure from `gemini.ts`.
-    - [ ] Implement error logging to `error.json` (full un-truncated payloads).
-- [ ] Task: Conductor - User Manual Verification 'Phase 5: Internal API Integration' (Protocol in workflow.md)
+## Phase 5: Internal API Integration [checkpoint: 9377b46]
+- [x] Task: Implement `v1internal` API Wrapper
+    - [x] Write unit tests for `streamGenerateContent` request/response handling (mocking `cloudcode-pa.googleapis.com`).
+    - [x] Update `src/gemini_api_wrapper.py` to use endpoints, headers, and request structure from `gemini.ts`.
+    - [x] Implement error logging to `error.json` (full un-truncated payloads).
+- [x] Task: Conductor - User Manual Verification 'Phase 5: Internal API Integration' (Protocol in workflow.md)
 
 ## Phase 6: Pipeline Integration & Final Testing
 - [ ] Task: Integrate Auth and API into Pipeline
