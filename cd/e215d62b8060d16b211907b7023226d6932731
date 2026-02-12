@@ -1,0 +1,3 @@
+Task: Implement configure_user_agent in zaknotes.py and add it to the main menu.
+Summary: Added configure_user_agent function and updated main_menu to include the new option.
+Files: zaknotes.py, tests/test_cli_structure.py

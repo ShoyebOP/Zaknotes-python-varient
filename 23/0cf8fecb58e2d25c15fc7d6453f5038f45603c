@@ -1,0 +1,1 @@
+Task: Update URL Finder for Vidinfra\n\nSummary: Updated src/find_vimeo_url.py to detect and extract URLs from player.vidinfra.com iframes. Maintained backward compatibility for player.vimeo.com. Added comprehensive unit tests for various scenarios.\n\nFiles:\n- src/find_vimeo_url.py\n- tests/test_find_vimeo_url.py

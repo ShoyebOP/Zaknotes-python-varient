@@ -1,0 +1,3 @@
+Task: Fix download reliability issues for YouTube and EdgeCourseBD.
+Summary: Reduced YouTube concurrency to -N 4 to avoid 403 Forbidden errors. Added --downloader ffmpeg --hls-use-mpegts flags for EdgeCourseBD/Vimeo to support HLS streams.
+Files: src/downloader.py, tests/test_downloader_ua.py

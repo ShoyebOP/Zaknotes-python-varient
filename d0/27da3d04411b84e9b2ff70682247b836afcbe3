@@ -1,0 +1,1 @@
+Task: Implement `AudioProcessor.split_into_chunks`. Summary: Added `split_into_chunks` method to `AudioProcessor` that uses `ffmpeg` segmenter to split audio into parts of a given duration. Why: To handle large audio files by splitting them into smaller chunks that fit within the Gemini CLI size limits.

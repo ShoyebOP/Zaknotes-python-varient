@@ -1,0 +1,3 @@
+Task: Implement 'Process Old Notes' logic and add it to the 'Start Note Generation' menu
+Summary: Added 'process_old_notes' function to zaknotes.py which scans 'notes/' for .md files and pushes them to Notion. Updated 'Start Note Generation' sub-menu to include this option. Renamed 'Process Old Jobs' to 'Process Queued Jobs' for clarity.
+Files: zaknotes.py

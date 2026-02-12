@@ -1,0 +1,4 @@
+Task: Draft the Troubleshooting section covering 429 errors and download issues.
+Summary: Added a 'Troubleshooting' section to README.md with actionable solutions for API rate limits, yt-dlp/Node.js issues, 403 Forbidden errors, and disk cleanup.
+Files: README.md
+Why: Empowers users to self-solve common environment and API-related hurdles.

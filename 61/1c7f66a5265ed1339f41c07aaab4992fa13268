@@ -1,0 +1,1 @@
+Task: Implement `AudioProcessor.process_for_transcription`. Summary: Added `process_for_transcription` method to `AudioProcessor` that orchestrates the full audio processing flow: size check, optional splitting, and conditional re-encoding. Why: To provide a single entry point for preparing any audio file for Gemini CLI transcription, ensuring all requirements are met.

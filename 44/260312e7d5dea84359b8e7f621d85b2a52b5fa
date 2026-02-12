@@ -1,0 +1,1 @@
+Task: Fix JSON Decode Errors. Summary: Implemented `extract_response_content` in `GeminiCLIWrapper` using a fallback regex approach. This allows the system to extract the transcript text even when the Gemini CLI's JSON output is truncated due to size limits. Updated services and tests. Why: To ensure the pipeline doesn't crash on long audio files where the response exceeds 64KB.

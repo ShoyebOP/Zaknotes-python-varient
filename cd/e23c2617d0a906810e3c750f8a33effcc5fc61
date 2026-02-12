@@ -1,0 +1,3 @@
+Task: Implement src/notion_config_manager.py to handle Notion-specific credentials and settings
+Summary: Created NotionConfigManager class to manage Notion API secret and database ID. Added tests to verify loading and saving of credentials.
+Files: src/notion_config_manager.py, tests/test_notion_config.py

@@ -1,0 +1,1 @@
+Task: Implement `AudioProcessor.reencode_audio`. Summary: Added `reencode_audio` method to `AudioProcessor` that uses `ffmpeg` to reduce the audio bitrate. Why: To ensure audio chunks meet the 20MB size requirement for the Gemini CLI.

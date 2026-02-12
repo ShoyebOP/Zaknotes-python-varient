@@ -1,0 +1,3 @@
+Task: Update zaknotes.py main menu (Manage API Keys) to include Notion setup options
+Summary: Updated the 'Manage API Keys' menu to 'Manage API Keys & Integration'. Added a sub-menu 'Manage Notion Settings' that allows users to toggle Notion integration and set the API Secret and Database ID.
+Files: zaknotes.py

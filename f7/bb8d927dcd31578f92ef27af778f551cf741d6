@@ -1,0 +1,1 @@
+Task: Implement `ProcessingPipeline.execute_job`. Summary: Created `src/pipeline.py` which orchestrates the entire workflow from download to PDF generation, including intermediate file cleanup. Why: To provide a single entry point for processing jobs using the new Gemini CLI integration.

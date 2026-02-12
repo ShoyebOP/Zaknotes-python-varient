@@ -1,0 +1,1 @@
+Task: Implement system resource detection and performance profiling\n\nSummary: Implemented  and  in . Added logic to auto-profile the system on first run and save to . Added corresponding unit tests.\n\nFiles:\n- src/config_manager.py\n- tests/test_config_manager.py

@@ -1,0 +1,1 @@
+Phase: Phase 3: Gemini CLI Integration\nAutomated Test Command: ./.venv/bin/pytest tests/test_gemini_wrapper.py tests/test_transcription_service.py tests/test_note_generation_service.py\nManual Verification Steps:\n1. Verify service files exist.\n2. Verify prompt migration to src/prompts.py.\n3. Run all tests in Phase 3.\nUser Confirmation: yes

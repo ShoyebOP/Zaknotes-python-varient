@@ -1,0 +1,7 @@
+Phase Verification Report: Phase 2: User-Agent Integration
+Automated Test Command: uv run pytest tests/test_downloader.py tests/test_link_extractor.py tests/test_downloader_ua.py
+Manual Verification Steps:
+1. Set custom UA in zaknotes.py.
+2. Run YouTube job and verify UA in yt-dlp command output.
+3. Run EdgeCourseBD job and verify UA in link_extractor command output.
+User Confirmation: Yes

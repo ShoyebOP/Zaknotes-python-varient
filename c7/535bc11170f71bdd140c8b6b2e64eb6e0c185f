@@ -1,0 +1,4 @@
+Task: Remove src/gemini_wrapper.py and src/pdf_converter_py.py.
+Summary: Deleted obsolete files including gemini_wrapper.py, pdf_converter_py.py, transcription_service.py and their corresponding test files. Cleaned up imports in pipeline.py.
+Files: src/gemini_wrapper.py, src/pdf_converter_py.py, src/transcription_service.py, tests/test_gemini_wrapper.py, tests/test_transcription_service.py, src/pipeline.py
+Why: Removes unused code and reduces project complexity following the migration to the official Gemini API and Markdown-only output.

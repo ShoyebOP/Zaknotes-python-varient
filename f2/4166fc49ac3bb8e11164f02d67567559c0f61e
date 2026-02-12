@@ -1,0 +1,1 @@
+Task: Implement Batch Management logic (JobManager side). Summary: Added `fail_pending` method to `JobManager` class to allow marking all active/queued jobs as failed in case of a pipeline error. Added unit tests. Why: To support the requirement of failing the entire batch if one job fails.

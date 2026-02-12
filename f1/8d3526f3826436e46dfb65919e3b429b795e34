@@ -1,0 +1,4 @@
+Fix: Use venv python -m yt_dlp to ensure correct version and plugins.
+Summary: Updated src/downloader.py to invoke yt-dlp via sys.executable to ensure it uses the virtual environment's packages, including yt-dlp-ejs.
+Files: src/downloader.py
+Why: Resolves 'n challenge' errors where yt-dlp would default to a system version that lacked required plugins.

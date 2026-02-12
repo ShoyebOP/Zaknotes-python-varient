@@ -1,0 +1,3 @@
+Task: Integrate Notion service into src/pipeline.py as a post-generation step. Implement conditional local file deletion.
+Summary: Updated ProcessingPipeline to include Notion push logic after note generation. Implemented automatic title formatting (underscores to spaces). Added conditional logic to delete local .md files only if the Notion push is successful. If it fails, the job is marked 'completed_local_only' and the file is preserved.
+Files: src/pipeline.py, tests/test_notion_pipeline.py

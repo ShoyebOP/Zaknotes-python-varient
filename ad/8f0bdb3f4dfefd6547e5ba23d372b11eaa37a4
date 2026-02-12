@@ -1,0 +1,4 @@
+Task: Add API key exhaustion tracking and status reporting.
+Summary: Implemented mark_exhausted(key, model) in APIKeyManager to flag keys that return 429 errors. Added get_status_report() to display current usage and exhaustion status for all keys. Refactored GeminiAPIWrapper to trigger exhaustion flagging on 429 HTTP errors. Added 'View Quota Status' to the CLI.
+Files: src/api_key_manager.py, src/gemini_api_wrapper.py, zaknotes.py, tests/test_api_key_manager.py
+Why: Provides a more robust way to manage quotas by reacting to real API failures and gives users a clear view of their API key health.

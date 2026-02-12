@@ -1,0 +1,3 @@
+Task: Phase 3: Pipeline Resumption Fixes
+Summary: Injected JobManager into ProcessingPipeline to ensure status updates are reflected real-time in history.json. Updated AudioProcessor and Pipeline to use job ID in chunk filenames (job_<id>_chunk_NNN.mp3) for precise resumption and targeted cleanup.
+Files: src/pipeline.py, src/audio_processor.py, zaknotes.py, tests/test_pipeline_resumption.py
