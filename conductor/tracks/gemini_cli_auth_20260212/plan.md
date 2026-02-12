@@ -36,12 +36,12 @@ This plan outlines the steps to replace the standard Gemini API key authenticati
     - [x] Modify the existing cycling logic to rotate between multiple `GeminiCliAuthRecord` objects.
 - [x] Task: Conductor - User Manual Verification 'Phase 3: Auth Service & Credential Helper' (Protocol in workflow.md)
 
-## Phase 4: Audio Processing & Chunking
-- [ ] Task: Implement Size-Based Chunking
-    - [ ] Write unit tests for size-based chunking logic.
-    - [ ] Update `src/audio_processor.py` to replace duration-based chunking with size-based chunking (configurable `max_chunk_size_mb`).
-    - [ ] Implement base64 encoding for audio chunks.
-- [ ] Task: Conductor - User Manual Verification 'Phase 4: Audio Processing & Chunking' (Protocol in workflow.md)
+## Phase 4: Audio Processing & Chunking [checkpoint: 6a483c6]
+- [x] Task: Implement Size-Based Chunking
+    - [x] Write unit tests for size-based chunking logic.
+    - [x] Update `src/audio_processor.py` to replace duration-based chunking with size-based chunking (configurable `max_chunk_size_mb`).
+    - [x] Implement base64 encoding for audio chunks.
+- [x] Task: Conductor - User Manual Verification 'Phase 4: Audio Processing & Chunking' (Protocol in workflow.md)
 
 ## Phase 5: Internal API Integration
 - [ ] Task: Implement `v1internal` API Wrapper
