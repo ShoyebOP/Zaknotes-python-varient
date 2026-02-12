@@ -8,12 +8,15 @@ from src.cleanup_service import FileCleanupService
 from src.gemini_api_wrapper import GeminiAPIWrapper
 from src.prompts import TRANSCRIPTION_PROMPT
 from src.job_manager import JobManager
+from src.notion_service import NotionService
+from src.notion_config_manager import NotionConfigManager
 
 class ProcessingPipeline:
     def __init__(self, config_manager, api_wrapper=None, job_manager=None):
         self.config = config_manager
         self.manager = job_manager or JobManager()
         self.api = api_wrapper or GeminiAPIWrapper()
+        self.notion_config = NotionConfigManager()
 
     def execute_job(self, job) -> bool:
         """
@@ -205,16 +208,55 @@ class ProcessingPipeline:
                 return False
             print(f"   - Notes generated: {final_notes_path}")
 
-            # 5. Cleanup
+            # 5. Notion Integration (Post-generation)
+            pushed_to_notion = False
+            if self.config.get("notion_integration_enabled", False):
+                print(f"🚀 [5/5] Pushing to Notion...")
+                notion_secret, database_id = self.notion_config.get_credentials()
+                
+                if not notion_secret or not database_id:
+                    print("⚠️ Notion credentials not configured. Skipping Notion push.")
+                else:
+                    try:
+                        notion_service = NotionService(notion_secret, database_id)
+                        
+                        # Title: replace underscores with spaces, remove extension
+                        title = os.path.splitext(os.path.basename(final_notes_path))[0].replace("_", " ")
+                        
+                        with open(final_notes_path, 'r', encoding='utf-8') as f:
+                            markdown_content = f.read()
+                        
+                        url = notion_service.create_page(title, markdown_content)
+                        if url:
+                            print(f"✅ Successfully pushed to Notion: {url}")
+                            pushed_to_notion = True
+                        else:
+                            print("❌ Notion push failed: No URL returned.")
+                    except Exception as e:
+                        print(f"❌ Notion push failed with exception: {e}")
+
+            # 6. Cleanup
             print(f"🧹 Cleaning up intermediate files...")
             files_to_cleanup = [audio_path, transcript_path]
             for c in chunks:
                 if c != audio_path:
                     files_to_cleanup.append(c)
-            FileCleanupService.cleanup_job_files(files_to_cleanup)
             
-            self.manager.update_job_status(job['id'], 'completed')
-            print(f"✅ Job '{job['name']}' completed successfully! Notes: {final_notes_path}")
+            # If successfully pushed to Notion, also cleanup the final md file
+            if pushed_to_notion:
+                files_to_cleanup.append(final_notes_path)
+                self.manager.update_job_status(job['id'], 'completed')
+                print(f"✅ Job '{job['name']}' completed and pushed to Notion!")
+            else:
+                if self.config.get("notion_integration_enabled", False):
+                    # If enabled but failed, keep local file and mark specially
+                    self.manager.update_job_status(job['id'], 'completed_local_only')
+                    print(f"✅ Job '{job['name']}' completed locally (Notion push failed). Notes: {final_notes_path}")
+                else:
+                    self.manager.update_job_status(job['id'], 'completed')
+                    print(f"✅ Job '{job['name']}' completed successfully! Notes: {final_notes_path}")
+
+            FileCleanupService.cleanup_job_files(files_to_cleanup)
             return True
 
         except Exception as e:

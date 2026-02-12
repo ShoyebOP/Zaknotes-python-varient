@@ -1,0 +1,8 @@
+{
+  "track_id": "notion_integration_20260210",
+  "type": "feature",
+  "status": "new",
+  "created_at": "2026-02-10T11:48:00Z",
+  "updated_at": "2026-02-10T11:48:00Z",
+  "description": "Integrate Notion as an automated storage backend for generated notes, including configuration, pipeline integration, and legacy note migration."
+}

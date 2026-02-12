@@ -33,7 +33,13 @@ curl -LsSf https://astral.sh/uv/install.sh | sh
 wget -qO- https://astral.sh/uv/install.sh | sh
 ```
 
-### 3. Clone & Setup
+### 3. Notion Integration (Optional)
+Zaknotes can automatically push your generated notes to a Notion database.
+1.  **Create a Notion Integration:** Go to [Notion My Integrations](https://www.notion.so/my-integrations) and create a new internal integration to get your **Notion API Secret**.
+2.  **Setup Database:** Create a database in Notion and [share it with your integration](https://developers.notion.com/docs/create-a-notion-integration#step-2-share-a-database-with-your-integration).
+3.  **Get Database ID:** Copy the ID of your database from the URL.
+
+### 4. Clone & Setup
 ```bash
 git clone https://github.com/ShoyebOP/Zaknotes-python-varient.git
 cd Zaknotes-python-varient
@@ -77,12 +83,16 @@ Zaknotes offers a granular CLI interface to manage your learning materials.
 - **Start New Jobs (Cancel Old Jobs):** Clears the current queue and starts a fresh batch.
 - **Start New Jobs (Add to Queue):** Appends new links to your existing processing queue.
 - **Cancel All Old Jobs:** Flushes the queue without starting new work.
-- **Process Old Jobs:** Resumes processing any pending links in the queue.
+- **Process Queued Jobs:** Resumes processing any pending links in the queue.
+- **Process Old Notes (Push to Notion):** Scans your `notes/` folder and pushes any existing Markdown files to your Notion database.
 
-### 2. Manage API Keys
-Zaknotes supports multiple API keys to help you stay within free tier limits.
-- **Add/Remove Keys:** Easily cycle through your available Gemini keys.
-- **View Quota Status:** Get a real-time report of usage per key. If a key returns a `429 Too Many Requests` error, Zaknotes automatically marks it as **[EXHAUSTED]** for the day and cycles to the next one.
+### 2. Manage API Keys & Integration
+Zaknotes supports multiple API keys and external integrations.
+- **Gemini Keys:** Add/remove keys and view quota status. Zaknotes automatically cycles through keys on exhaustion.
+- **Manage Notion Settings:** 
+    - Toggle `notion_integration_enabled` to decide if notes should be pushed automatically.
+    - Set your **Notion Secret** and **Database ID**.
+    - If a Notion push fails, Zaknotes preserves your local Markdown note and marks the job as `completed_local_only`.
 
 ### 3. Configure Audio Chunking
 Long lectures are automatically split into manageable parts for the AI.

@@ -30,7 +30,7 @@ class GeminiAPIWrapper:
         # Configure client with timeout
         return genai.Client(
             api_key=api_key,
-            config=httpx.Client(timeout=self.api_timeout)
+            http_options={'timeout': self.api_timeout}
         ), api_key
 
     def generate_content(self, prompt, model_type="note", system_instruction=None):

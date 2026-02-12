@@ -14,6 +14,7 @@ The "Class-to-Notes Engine" is a Linux CLI tool designed to automate the convers
 
 ## Key Features
 -   **Enhanced Queue Management:** Provides granular control over job processing, allowing users to start new jobs, cancel tasks, or resume existing queued jobs.
+-   **Automated Notion Integration:** Automatically pushes generated notes to a configured Notion database, converting Markdown to Notion-compatible blocks (including LaTeX math and tables).
 -   **Granular Resumption Logic:** Automatically resumes interrupted jobs from the exact point of failure (e.g., specific transcription chunk) by tracking persistent intermediate states.
 -   **API Quota & Debug Transparency:** Includes proactive API quota counting and extensive, truncated debug logging for all Gemini API interactions to ensure reliability and visibility.
 - **Intelligent Media Download:** Utilizes domain-specific rules and specialized headers (for Facebook, YouTube, MediaDelivery, etc.) via `yt-dlp` to ensure reliable content extraction.
@@ -26,6 +27,7 @@ The "Class-to-Notes Engine" is a Linux CLI tool designed to automate the convers
 -   **Interactive Workspace Cleanup:** Provides granular control over temporary files, allowing users to purge everything or target only completed/cancelled jobs.
 - **Dynamic Resource Scaling:** Automatically detects system CPU/RAM to optimize FFmpeg processing speed (low, balanced, high modes).
 - **Clean Output:** Saves final notes as raw Markdown files in a dedicated `notes/` directory.
+- **Legacy Note Migration:** Includes a utility to batch-process and push existing local Markdown notes to Notion.
 -   **TUI (Planned):** A terminal user interface for seamless interaction.
 
 ## Target Audience

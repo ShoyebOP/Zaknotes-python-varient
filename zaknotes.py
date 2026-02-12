@@ -14,30 +14,70 @@ logger = logging.getLogger(__name__)
 
 from src.cookie_manager import interactive_update as refresh_cookies
 from src.api_key_manager import APIKeyManager
+from src.notion_config_manager import NotionConfigManager
+from src.notion_service import NotionService
 from src.config_manager import ConfigManager
 from src.pipeline import ProcessingPipeline
 from src.cleanup_service import FileCleanupService
+
+def manage_notion_settings():
+    config = ConfigManager()
+    notion_manager = NotionConfigManager()
+    
+    while True:
+        enabled = config.get("notion_integration_enabled", False)
+        secret, db_id = notion_manager.get_credentials()
+        
+        print("\n--- Manage Notion Integration ---")
+        print(f"1. Integration Enabled: {'✅ Yes' if enabled else '❌ No'}")
+        print(f"2. Set Notion Secret (Current: {secret[:4]}...{secret[-4:] if len(secret) > 8 else '****'})")
+        print(f"3. Set Database ID (Current: {db_id})")
+        print("4. Back to Keys Menu")
+        
+        choice = input("Enter your choice (1-4): ").strip()
+        
+        if choice == '1':
+            config.set("notion_integration_enabled", not enabled)
+            config.save()
+            print(f"✅ Integration {'enabled' if not enabled else 'disabled'}.")
+        elif choice == '2':
+            val = input("Enter Notion API Secret: ").strip()
+            if val:
+                _, curr_db = notion_manager.get_credentials()
+                notion_manager.set_credentials(val, curr_db)
+                print("✅ Notion Secret updated.")
+        elif choice == '3':
+            val = input("Enter Notion Database ID: ").strip()
+            if val:
+                curr_secret, _ = notion_manager.get_credentials()
+                notion_manager.set_credentials(curr_secret, val)
+                print("✅ Database ID updated.")
+        elif choice == '4':
+            break
+        else:
+            print("❌ Invalid choice.")
 
 def manage_api_keys():
     manager = APIKeyManager()
     while True:
         keys = manager.list_keys()
-        print("\n--- Manage Gemini API Keys ---")
+        print("\n--- Manage API Keys & Integration ---")
         if not keys:
-            print("No API keys configured.")
+            print("No Gemini API keys configured.")
         else:
-            print("Configured Keys:")
+            print("Configured Gemini Keys:")
             for i, k in enumerate(keys, 1):
                 # Mask key for display
                 masked = k['key'][:4] + "..." + k['key'][-4:] if len(k['key']) > 8 else "****"
                 print(f"{i}. {masked}")
         
-        print("\n1. Add API Key")
-        print("2. Remove API Key")
+        print("\n1. Add Gemini API Key")
+        print("2. Remove Gemini API Key")
         print("3. View Quota Status")
-        print("4. Back to Main Menu")
+        print("4. Manage Notion Settings")
+        print("5. Back to Main Menu")
         
-        choice = input("Enter your choice (1-4): ").strip()
+        choice = input("Enter your choice (1-5): ").strip()
         
         if choice == '1':
             key = input("Enter new Gemini API Key: ").strip()
@@ -69,6 +109,8 @@ def manage_api_keys():
                 for line in report:
                     print(line)
         elif choice == '4':
+            manage_notion_settings()
+        elif choice == '5':
             break
         else:
             print("❌ Invalid choice.")
@@ -156,6 +198,57 @@ def run_processing_pipeline(manager):
     
     print("\n🏁 Pipeline execution finished.")
 
+def process_old_notes():
+    config = ConfigManager()
+    if not config.get("notion_integration_enabled", False):
+        print("❌ Notion integration is disabled. Please enable it in 'Manage Notion Settings' first.")
+        return
+
+    notion_manager = NotionConfigManager()
+    notion_secret, database_id = notion_manager.get_credentials()
+    if not notion_secret or not database_id:
+        print("❌ Notion credentials not configured. Please set them in 'Manage Notion Settings' first.")
+        return
+
+    notes_dir = "notes"
+    if not os.path.exists(notes_dir):
+        print(f"❌ Notes directory '{notes_dir}' does not exist.")
+        return
+
+    md_files = [f for f in os.listdir(notes_dir) if f.endswith(".md")]
+    if not md_files:
+        print("No old notes found in 'notes/' directory.")
+        return
+
+    print(f"🚀 Found {len(md_files)} notes. Starting push to Notion...")
+    
+    try:
+        notion_service = NotionService(notion_secret, database_id)
+        success_count = 0
+        
+        for filename in md_files:
+            file_path = os.path.join(notes_dir, filename)
+            title = os.path.splitext(filename)[0].replace("_", " ")
+            
+            print(f"--- Pushing: {title} ---")
+            try:
+                with open(file_path, 'r', encoding='utf-8') as f:
+                    content = f.read()
+                
+                url = notion_service.create_page(title, content)
+                if url:
+                    print(f"✅ Pushed: {url}")
+                    os.remove(file_path)
+                    success_count += 1
+                else:
+                    print(f"❌ Failed to push '{filename}': No URL returned.")
+            except Exception as e:
+                print(f"❌ Error pushing '{filename}': {e}")
+        
+        print(f"\n🏁 Finished! Successfully pushed {success_count}/{len(md_files)} notes.")
+    except Exception as e:
+        print(f"❌ Failed to initialize Notion service: {e}")
+
 def start_note_generation():
     manager = JobManager()
     
@@ -164,11 +257,12 @@ def start_note_generation():
         print("1. Start New Jobs (Cancel Old Jobs)")
         print("2. Start New Jobs (Add to Queue)")
         print("3. Cancel All Old Jobs")
-        print("4. Process Old Jobs")
-        print("5. Back to Main Menu")
+        print("4. Process Queued Jobs")
+        print("5. Process Old Notes (Push to Notion)")
+        print("6. Back to Main Menu")
         print("--------------------------------")
         
-        sub_choice = input("Enter your choice (1-5): ").strip()
+        sub_choice = input("Enter your choice (1-6): ").strip()
         
         if sub_choice == '1':
             manager.cancel_pending()
@@ -198,6 +292,10 @@ def start_note_generation():
             break
             
         elif sub_choice == '5':
+            process_old_notes()
+            break
+            
+        elif sub_choice == '6':
             break
         else:
             print("❌ Invalid choice.")

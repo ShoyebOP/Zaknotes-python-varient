@@ -258,6 +258,13 @@ Before requesting review:
 
 ## Commit Guidelines
 
+### Commit and Push
+**CRITICAL:** Every commit MUST be immediately followed by a push to the remote repository. This ensures that the remote is always the source of truth and prevents divergence.
+1. `git add <files>`
+2. `git commit -m "<message>"`
+3. `git push`
+4. If git notes were added: `git push origin refs/notes/*`
+
 ### Message Format
 ```
 <type>(<scope>): <description>

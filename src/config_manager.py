@@ -9,7 +9,8 @@ class ConfigManager:
         "user_agent": "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36",
         "api_timeout": 300,
         "api_max_retries": 3,
-        "api_retry_delay": 10
+        "api_retry_delay": 10,
+        "notion_integration_enabled": False
     }
 
     def __init__(self, config_file: str = "config.json"):
