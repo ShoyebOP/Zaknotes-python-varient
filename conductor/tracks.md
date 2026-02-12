@@ -14,5 +14,5 @@ This file tracks all major tracks for the project. Each track has its own detail
 
 ---
 
-- [~] **Track: Transition to Gemini CLI Auth & Internal API**
+- [x] **Track: Transition to Gemini CLI Auth & Internal API**
 *Link: [./tracks/gemini_cli_auth_20260212/](./tracks/gemini_cli_auth_20260212/)*
