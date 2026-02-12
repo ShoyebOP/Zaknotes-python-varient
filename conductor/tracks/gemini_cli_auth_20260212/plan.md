@@ -21,7 +21,7 @@ This plan outlines the steps to replace the standard Gemini API key authenticati
     - [x] Implement the usage tracker.
 - [x] Task: Conductor - User Manual Verification 'Phase 2: Models & Usage Tracking' (Protocol in workflow.md)
 
-## Phase 3: Auth Service & Credential Helper
+## Phase 3: Auth Service & Credential Helper [checkpoint: 05579bc]
 - [x] Task: Create Gemini Credential Helper
     - [x] Implement `src/gemini_creds_helper.py` to extract `clientId` and `clientSecret` from `gemini-cli` (following `gemini.ts`).
     - [x] Add logic to handle cases where the CLI is missing by prompting for manual input.
@@ -34,7 +34,7 @@ This plan outlines the steps to replace the standard Gemini API key authenticati
         - [x] Project discovery (`loadCodeAssist`/`onboardUser`).
 - [x] Task: Adapt Rotation Logic
     - [x] Modify the existing cycling logic to rotate between multiple `GeminiCliAuthRecord` objects.
-- [ ] Task: Conductor - User Manual Verification 'Phase 3: Auth Service & Credential Helper' (Protocol in workflow.md)
+- [x] Task: Conductor - User Manual Verification 'Phase 3: Auth Service & Credential Helper' (Protocol in workflow.md)
 
 ## Phase 4: Audio Processing & Chunking
 - [ ] Task: Implement Size-Based Chunking
