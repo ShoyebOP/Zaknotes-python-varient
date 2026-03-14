@@ -21,6 +21,7 @@ class ProcessingPipeline:
     def execute_job(self, job) -> bool:
         """
         Executes the full pipeline for a single job with resumption support.
+        Supports both URL-based and local file-based jobs.
         """
         
         audio_path = None
@@ -33,30 +34,45 @@ class ProcessingPipeline:
             os.makedirs(temp_dir, exist_ok=True)
 
         try:
-            # 1. Download
-            audio_path = get_expected_audio_path(job)
-            skip_download = False
-            ready_states = ['DOWNLOADED', 'SILENCE_REMOVED', 'BITRATE_MODIFIED', 'CHUNKED']
-            if job.get('status') in ready_states or job.get('status', '').startswith('TRANSCRIBING_CHUNK_'):
-                if os.path.exists(audio_path):
-                    print(f"⏩ Skipping download: {audio_path} already exists.")
-                    skip_download = True
-            elif os.path.exists(audio_path):
-                print(f"⏩ Audio file {audio_path} already exists. Skipping download and setting status to DOWNLOADED.")
-                job['status'] = 'DOWNLOADED'
-                self.manager.update_job_status(job['id'], 'DOWNLOADED')
-                skip_download = True
+            # 1. Source Acquisition (Download or Local)
+            is_local = "file_path" in job
             
-            if not skip_download:
-                print(f"📥 [1/4] Downloading audio for: {job['name']}...")
-                self.manager.update_job_status(job['id'], 'downloading')
-                audio_path = download_audio(job)
-                if not audio_path or not os.path.exists(audio_path):
-                    print(f"❌ Download failed or file missing for job: {job['name']}")
+            if is_local:
+                audio_path = job["file_path"]
+                if not os.path.exists(audio_path):
+                    print(f"❌ Local file missing: {audio_path}")
                     self.manager.update_job_status(job['id'], 'failed')
                     return False
-                self.manager.update_job_status(job['id'], 'DOWNLOADED')
-                job['status'] = 'DOWNLOADED'
+                print(f"📂 [1/4] Using local file: {audio_path}")
+                # Ensure status is at least DOWNLOADED for local files to enter next step
+                if job.get('status') == 'queue' or job.get('status') == 'downloading':
+                    job['status'] = 'DOWNLOADED'
+                    self.manager.update_job_status(job['id'], 'DOWNLOADED')
+            else:
+                # URL-based: 1. Download
+                audio_path = get_expected_audio_path(job)
+                skip_download = False
+                ready_states = ['DOWNLOADED', 'SILENCE_REMOVED', 'BITRATE_MODIFIED', 'CHUNKED']
+                if job.get('status') in ready_states or job.get('status', '').startswith('TRANSCRIBING_CHUNK_'):
+                    if os.path.exists(audio_path):
+                        print(f"⏩ Skipping download: {audio_path} already exists.")
+                        skip_download = True
+                elif os.path.exists(audio_path):
+                    print(f"⏩ Audio file {audio_path} already exists. Skipping download and setting status to DOWNLOADED.")
+                    job['status'] = 'DOWNLOADED'
+                    self.manager.update_job_status(job['id'], 'DOWNLOADED')
+                    skip_download = True
+                
+                if not skip_download:
+                    print(f"📥 [1/4] Downloading audio for: {job['name']}...")
+                    self.manager.update_job_status(job['id'], 'downloading')
+                    audio_path = download_audio(job)
+                    if not audio_path or not os.path.exists(audio_path):
+                        print(f"❌ Download failed or file missing for job: {job['name']}")
+                        self.manager.update_job_status(job['id'], 'failed')
+                        return False
+                    self.manager.update_job_status(job['id'], 'DOWNLOADED')
+                    job['status'] = 'DOWNLOADED'
 
             # 2. Audio Processing (Granular steps)
             base_name = os.path.splitext(os.path.basename(audio_path))[0]

@@ -415,6 +415,8 @@ def main_menu():
 
 import argparse
 
+from src.local_media_manager import LocalMediaManager
+
 def main():
     parser = argparse.ArgumentParser(description="Zaknotes: Automated Class Note Generation")
     parser.add_argument("--local", nargs="*", help="Process local media files in uploads/ folder. Can take optional class names.")
@@ -424,10 +426,36 @@ def main():
     args, unknown = parser.parse_known_args()
     
     if args.local is not None:
-        # Pass names to local processing flow (implemented in Phase 2)
-        print(f"DEBUG: --local detected with names: {args.local}")
-        # Placeholder for local processing
-        # process_local_media(args.local)
+        manager = JobManager()
+        local_manager = LocalMediaManager()
+        
+        # args.local is a list of strings if provided, or an empty list if --local is used alone
+        mapped_jobs = local_manager.map_files_to_names(args.local)
+        
+        if not mapped_jobs:
+            print("❌ No supported media files found in 'uploads/' directory.")
+            return
+
+        print(f"📂 Found {len(mapped_jobs)} local files to process.")
+        
+        # Add to JobManager history
+        from datetime import datetime
+        new_jobs = []
+        for i, job_info in enumerate(mapped_jobs):
+            new_job = {
+                "id": f"local_{datetime.now().timestamp()}_{i}",
+                "name": job_info["name"],
+                "file_path": job_info["file_path"],
+                "status": "queue",
+                "added_at": str(datetime.now())
+            }
+            new_jobs.append(new_job)
+        
+        manager.history.extend(new_jobs)
+        manager.save_history()
+        
+        # Run pipeline
+        run_processing_pipeline(manager)
     else:
         main_menu()
 
