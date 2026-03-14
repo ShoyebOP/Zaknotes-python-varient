@@ -1,0 +1,4 @@
+Task: Implement LocalMediaManager to list and map files in uploads/
+Summary: Created LocalMediaManager in src/local_media_manager.py to handle scanning the uploads/ directory for media files (.mp3, .mp4, etc.) and mapping them to job names chronologically. Added comprehensive unit tests in tests/test_local_media_manager.py.
+Files: src/local_media_manager.py, tests/test_local_media_manager.py
+Why: Core logic for identifying and naming local media files before they enter the processing pipeline.
