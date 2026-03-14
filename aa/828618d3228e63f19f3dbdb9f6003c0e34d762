@@ -1,0 +1,7 @@
+Phase Verification Report: Phase 2
+Automated Tests: pytest tests/test_pipeline.py tests/test_local_pipeline.py (3 passed)
+Manual Verification Plan:
+1. Place a sample .mp3 file in uploads/.
+2. Run uv run zaknotes.py --local.
+3. Confirm it skips download and ONLY processes the uploaded file (ignores old pending jobs).
+User Confirmation: Yes (verified by user with a real .mp4 file)
