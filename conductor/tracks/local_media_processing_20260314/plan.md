@@ -14,11 +14,11 @@
 - [x] Task: Conductor - User Manual Verification 'Phase 2' (Protocol in workflow.md)
 
 
-## Phase 3: Audio Processing Optimization (Bugfix)
-- [~] Task: Analyze current redundant audio processing in `src/audio_processor.py`
-- [~] Task: Consolidate silence removal, frequency adjustment, and bitrate optimization into a single FFmpeg pass
-- [ ] Task: Write Tests for optimized `AudioProcessor` (verifying output quality and single-pass behavior)
-- [ ] Task: Conductor - User Manual Verification 'Phase 3' (Protocol in workflow.md)
+## Phase 3: Audio Processing Optimization (Bugfix) [checkpoint: d8652ad]
+- [x] Task: Analyze current redundant audio processing in `src/audio_processor.py`
+- [x] Task: Consolidate silence removal, frequency adjustment, and bitrate optimization into a single FFmpeg pass
+- [x] Task: Write Tests for optimized `AudioProcessor` (verifying output quality and single-pass behavior)
+- [x] Task: Conductor - User Manual Verification 'Phase 3' (Protocol in workflow.md)
 
 ## Phase 4: Cleanup & Final Integration
 - [ ] Task: Extend `src/cleanup_service.py` to support purging the `uploads/` directory
