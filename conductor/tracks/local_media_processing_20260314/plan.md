@@ -20,9 +20,9 @@
 - [x] Task: Write Tests for optimized `AudioProcessor` (verifying output quality and single-pass behavior)
 - [x] Task: Conductor - User Manual Verification 'Phase 3' (Protocol in workflow.md)
 
-## Phase 4: Cleanup & Final Integration
+## Phase 4: Cleanup & Final Integration [checkpoint: 9f767e1]
 - [x] Task: Extend `src/cleanup_service.py` to support purging the `uploads/` directory
 - [x] Task: Update main `zaknotes.py` entry point to include the new cleanup option
 - [x] Task: Write Tests for `CleanupService` with the `uploads/` directory
-- [~] Task: Final end-to-end integration test (local file to note generation)
-- [ ] Task: Conductor - User Manual Verification 'Phase 4' (Protocol in workflow.md)
+- [x] Task: Final end-to-end integration test (local file to note generation)
+- [x] Task: Conductor - User Manual Verification 'Phase 4' (Protocol in workflow.md)
