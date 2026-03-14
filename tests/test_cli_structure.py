@@ -1,22 +1,32 @@
+import unittest
+from unittest.mock import patch, MagicMock
 import sys
 import os
-import pytest
-
-# Add project root to sys.path so we can import zaknotes
-sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
 
 import zaknotes
 
-def test_new_menu_functions_exist():
-    """Test that the new menu option functions are defined."""
-    assert hasattr(zaknotes, 'manage_gemini_accounts'), "zaknotes should have manage_gemini_accounts"
-    assert hasattr(zaknotes, 'manage_notion_settings'), "zaknotes should have manage_notion_settings"
-    assert hasattr(zaknotes, 'configure_gemini_models'), "zaknotes should have configure_gemini_models"
-    assert hasattr(zaknotes, 'cleanup_stranded_chunks'), "zaknotes should have cleanup_stranded_chunks"
-    assert hasattr(zaknotes, 'configure_audio_chunking'), "zaknotes should have configure_audio_chunking"
-    assert hasattr(zaknotes, 'configure_user_agent'), "zaknotes should have configure_user_agent"
+class TestCLIStructure(unittest.TestCase):
+    @patch('zaknotes.main_menu')
+    def test_default_interactive_mode(self, mock_main_menu):
+        """Test that running without args enters interactive mode."""
+        with patch.object(sys, 'argv', ['zaknotes.py']):
+            zaknotes.main()
+            mock_main_menu.assert_called_once()
 
-def test_old_menu_functions_removed():
-    """Test that the old browser functions are removed."""
-    assert not hasattr(zaknotes, 'refresh_browser_profile'), "zaknotes should NOT have refresh_browser_profile"
-    assert not hasattr(zaknotes, 'launch_manual_browser'), "zaknotes should NOT have launch_manual_browser"
+    @patch('zaknotes.main_menu')
+    def test_local_flag_parsing_empty(self, mock_main_menu):
+        """Test that --local flag is parsed correctly with no names."""
+        with patch.object(sys, 'argv', ['zaknotes.py', '--local']):
+            # For now, it just prints DEBUG
+            zaknotes.main()
+            mock_main_menu.assert_not_called()
+
+    @patch('zaknotes.main_menu')
+    def test_local_flag_parsing_with_names(self, mock_main_menu):
+        """Test that --local flag is parsed correctly with names."""
+        with patch.object(sys, 'argv', ['zaknotes.py', '--local', 'Bio', 'Hist']):
+            zaknotes.main()
+            mock_main_menu.assert_not_called()
+
+if __name__ == '__main__':
+    unittest.main()

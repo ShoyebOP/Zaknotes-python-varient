@@ -413,9 +413,27 @@ def main_menu():
         else:
             print("❌ Invalid choice. Please try again.")
 
+import argparse
+
+def main():
+    parser = argparse.ArgumentParser(description="Zaknotes: Automated Class Note Generation")
+    parser.add_argument("--local", nargs="*", help="Process local media files in uploads/ folder. Can take optional class names.")
+    # Future flag for cleanup (Phase 4)
+    # parser.add_argument("--cleanup-uploads", action="store_true", help="Purge the uploads/ folder.")
+    
+    args, unknown = parser.parse_known_args()
+    
+    if args.local is not None:
+        # Pass names to local processing flow (implemented in Phase 2)
+        print(f"DEBUG: --local detected with names: {args.local}")
+        # Placeholder for local processing
+        # process_local_media(args.local)
+    else:
+        main_menu()
+
 if __name__ == "__main__":
     try:
-        main_menu()
+        main()
     except KeyboardInterrupt:
         print("\n\nStopped by user.")
         sys.exit(0)
