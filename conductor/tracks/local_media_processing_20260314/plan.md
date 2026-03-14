@@ -3,8 +3,8 @@
 ## Phase 1: Local File Processing (Scaffolding & Scoping)
 - [x] Task: Create `uploads/` directory with `.gitkeep` fbc465d
 - [x] Task: Update `zaknotes.py` CLI to support `--local` flag 254774f
-- [ ] Task: Implement `LocalMediaManager` to list and map files in `uploads/`
-- [ ] Task: Write Tests for `LocalMediaManager` (mapping logic, file listing)
+- [x] Task: Implement `LocalMediaManager` to list and map files in `uploads/` 6a0f515
+- [x] Task: Write Tests for `LocalMediaManager` (mapping logic, file listing) 6a0f515
 - [ ] Task: Conductor - User Manual Verification 'Phase 1' (Protocol in workflow.md)
 
 ## Phase 2: Pipeline Integration & Refactoring
