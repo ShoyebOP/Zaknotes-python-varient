@@ -14,7 +14,22 @@ class FileCleanupService:
                     print(f"Cleanup: Failed to delete {f}: {e}")
 
     @staticmethod
-    def cleanup_all_temp_files(temp_dir="temp", downloads_dir="downloads", jobs_to_purge=None):
+    def cleanup_uploads(uploads_dir="uploads"):
+        """Purges everything in the uploads folder (except .gitkeep)."""
+        print("🧹 Purging everything in uploads...")
+        if os.path.exists(uploads_dir):
+            for f in os.listdir(uploads_dir):
+                if f == ".gitkeep": continue
+                path = os.path.join(uploads_dir, f)
+                try:
+                    if os.path.isfile(path): os.remove(path)
+                    elif os.path.isdir(path): shutil.rmtree(path)
+                    print(f"Cleanup: Deleted {path}")
+                except Exception as e:
+                    print(f"Cleanup: Failed to delete {path}: {e}")
+
+    @staticmethod
+    def cleanup_all_temp_files(temp_dir="temp", downloads_dir="downloads", uploads_dir="uploads", jobs_to_purge=None, include_uploads=False):
         """
         Manually cleans up intermediate files.
         If jobs_to_purge is provided, only files related to those specific jobs are removed.
@@ -77,3 +92,6 @@ class FileCleanupService:
                         elif os.path.isdir(path): shutil.rmtree(path)
                         print(f"Full Cleanup: Deleted {path}")
                     except: pass
+            
+            if include_uploads:
+                FileCleanupService.cleanup_uploads(uploads_dir)

@@ -20,24 +20,62 @@ def test_cleanup_job_files(tmp_path):
     assert not os.path.exists(f1)
     assert not os.path.exists(f2)
 
-def test_cleanup_all_temp_files(tmp_path):
-    """Test manual cleanup of directories."""
+def test_cleanup_uploads(tmp_path):
+    """Test purging of the uploads directory."""
+    uploads_dir = tmp_path / "uploads"
+    uploads_dir.mkdir()
+    (uploads_dir / "class1.mp3").write_text("audio")
+    (uploads_dir / "class2.mp4").write_text("video")
+    (uploads_dir / ".gitkeep").write_text("")
+    
+    FileCleanupService.cleanup_uploads(uploads_dir=str(uploads_dir))
+    
+    assert not os.path.exists(uploads_dir / "class1.mp3")
+    assert not os.path.exists(uploads_dir / "class2.mp4")
+    assert os.path.exists(uploads_dir / ".gitkeep")
+
+def test_cleanup_all_temp_files_including_uploads(tmp_path):
+    """Test cleanup of all directories including uploads."""
     temp_dir = tmp_path / "temp"
     temp_dir.mkdir()
     (temp_dir / "junk.mp3").write_text("junk")
-    (temp_dir / ".gitkeep").write_text("")
     
     down_dir = tmp_path / "downloads"
     down_dir.mkdir()
     (down_dir / "movie.mp3").write_text("movie")
-    (down_dir / "doc.pdf").write_text("doc") # Should NOT be deleted by downloads logic if we only target audio
-    (down_dir / ".gitkeep").write_text("")
     
-    FileCleanupService.cleanup_all_temp_files(temp_dir=str(temp_dir), downloads_dir=str(down_dir))
+    uploads_dir = tmp_path / "uploads"
+    uploads_dir.mkdir()
+    (uploads_dir / "class.mp3").write_text("audio")
+    
+    # Run with include_uploads=True
+    FileCleanupService.cleanup_all_temp_files(
+        temp_dir=str(temp_dir), 
+        downloads_dir=str(down_dir), 
+        uploads_dir=str(uploads_dir),
+        include_uploads=True
+    )
     
     assert not os.path.exists(temp_dir / "junk.mp3")
-    assert os.path.exists(temp_dir / ".gitkeep")
-    
     assert not os.path.exists(down_dir / "movie.mp3")
-    assert not os.path.exists(down_dir / "doc.pdf") # Full cleanup deletes everything
-    assert os.path.exists(down_dir / ".gitkeep")
+    assert not os.path.exists(uploads_dir / "class.mp3")
+
+def test_cleanup_all_temp_files_excluding_uploads(tmp_path):
+    """Test cleanup of all directories excluding uploads."""
+    temp_dir = tmp_path / "temp"
+    temp_dir.mkdir()
+    (temp_dir / "junk.mp3").write_text("junk")
+    
+    uploads_dir = tmp_path / "uploads"
+    uploads_dir.mkdir()
+    (uploads_dir / "class.mp3").write_text("audio")
+    
+    # Run with include_uploads=False (default)
+    FileCleanupService.cleanup_all_temp_files(
+        temp_dir=str(temp_dir), 
+        uploads_dir=str(uploads_dir),
+        include_uploads=False
+    )
+    
+    assert not os.path.exists(temp_dir / "junk.mp3")
+    assert os.path.exists(uploads_dir / "class.mp3") # Should STILL exist

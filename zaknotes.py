@@ -171,18 +171,28 @@ def configure_user_agent():
 
 def cleanup_stranded_chunks():
     print("\n--- Cleanup Options ---")
-    print("1. Purge Everything (Regardless of status)")
-    print("2. Purge Completed/Cancelled Only (Preserve pending/failed jobs)")
-    print("3. Back")
+    print("1. Purge Everything (Temp & Downloads)")
+    print("2. Purge Everything INCLUDING Uploads")
+    print("3. Purge Uploads ONLY")
+    print("4. Purge Completed/Cancelled Only (Preserve pending/failed jobs)")
+    print("5. Back")
     
-    choice = input("Enter your choice (1-3): ").strip()
+    choice = input("Enter your choice (1-5): ").strip()
     manager = JobManager()
     
     if choice == '1':
-        print("\n🧹 Cleaning up ALL intermediate files...")
-        FileCleanupService.cleanup_all_temp_files()
-        print("✅ Full cleanup complete.")
+        print("\n🧹 Cleaning up ALL intermediate files (excluding uploads)...")
+        FileCleanupService.cleanup_all_temp_files(include_uploads=False)
+        print("✅ Cleanup complete.")
     elif choice == '2':
+        print("\n🧹 Cleaning up EVERYTHING including uploads...")
+        FileCleanupService.cleanup_all_temp_files(include_uploads=True)
+        print("✅ Full cleanup complete.")
+    elif choice == '3':
+        print("\n🧹 Cleaning up uploads folder...")
+        FileCleanupService.cleanup_uploads()
+        print("✅ Uploads cleanup complete.")
+    elif choice == '4':
         # Filter strictly for non-resumable jobs
         jobs_to_purge = [j for j in manager.history if j.get('status') in ['completed', 'cancelled', 'no_link_found']]
         if not jobs_to_purge:
@@ -191,7 +201,7 @@ def cleanup_stranded_chunks():
         print(f"\n🧹 Cleaning up all files for {len(jobs_to_purge)} non-pending jobs...")
         FileCleanupService.cleanup_all_temp_files(jobs_to_purge=jobs_to_purge)
         print("✅ Targeted cleanup complete.")
-    elif choice == '3':
+    elif choice == '5':
         return
     else:
         print("❌ Invalid choice.")
