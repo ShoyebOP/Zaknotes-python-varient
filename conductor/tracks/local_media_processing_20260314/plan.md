@@ -8,9 +8,9 @@
 - [x] Task: Conductor - User Manual Verification 'Phase 1' (Protocol in workflow.md)
 
 ## Phase 2: Pipeline Integration & Refactoring
-- [ ] Task: Refactor `Pipeline` in `src/pipeline.py` to handle local files (bypass download)
-- [ ] Task: Update `JobManager` to track status of local file jobs
-- [ ] Task: Write Tests for `Pipeline` with local file input
+- [x] Task: Refactor `Pipeline` in `src/pipeline.py` to handle local files (bypass download)
+- [x] Task: Update `JobManager` to track status of local file jobs
+- [~] Task: Write Tests for `Pipeline` with local file input
 - [ ] Task: Conductor - User Manual Verification 'Phase 2' (Protocol in workflow.md)
 
 ## Phase 3: Audio Processing Optimization (Bugfix)
