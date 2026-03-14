@@ -1,0 +1,4 @@
+Task: Refactor Pipeline to handle local files
+Summary: Modified src/pipeline.py to detect 'file_path' in job objects. If present, it bypasses the download step and uses the local file directly. Integrated this into zaknotes.py to enable the --local flag. Added tests/test_local_pipeline.py to verify.
+Files: src/pipeline.py, zaknotes.py, tests/test_local_pipeline.py
+Why: To allow processing of locally uploaded files using the existing transcription and note generation infrastructure.
