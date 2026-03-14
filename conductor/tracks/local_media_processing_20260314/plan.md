@@ -15,8 +15,8 @@
 
 
 ## Phase 3: Audio Processing Optimization (Bugfix)
-- [ ] Task: Analyze current redundant audio processing in `src/audio_processor.py`
-- [ ] Task: Consolidate silence removal, frequency adjustment, and bitrate optimization into a single FFmpeg pass
+- [~] Task: Analyze current redundant audio processing in `src/audio_processor.py`
+- [~] Task: Consolidate silence removal, frequency adjustment, and bitrate optimization into a single FFmpeg pass
 - [ ] Task: Write Tests for optimized `AudioProcessor` (verifying output quality and single-pass behavior)
 - [ ] Task: Conductor - User Manual Verification 'Phase 3' (Protocol in workflow.md)
 
