@@ -13,16 +13,16 @@
     - [x] Add unit tests to simulate empty Gemini responses and verify the retry behavior.
 - [x] Task: Conductor - User Manual Verification 'Phase 1' (Protocol in workflow.md)
 
-## Phase 2: UI/UX - Interactive Local Media and Time-Based Chunking
+## Phase 2: UI/UX - Interactive Local Media and Time-Based Chunking [checkpoint: 26666f6]
 
-- [ ] Task 1: Restore Time-Based Chunking.
-    - [ ] Remove the file-based chunking logic from `src/audio_processor.py`.
-    - [ ] Ensure the existing time-based chunking logic (default 30 mins) is functional.
-    - [ ] Verify that the "configure audio chunks" menu option correctly updates this setting.
-    - [ ] Add unit tests for time-based chunking.
-- [ ] Task 2: Integrate Local Media into the Interactive Menu.
-    - [ ] Modify the main entry point (e.g., `zaknotes.py`) to add a "Process Local Media" option under "start note generation".
-    - [ ] Update the menu logic to handle the new option, ensuring it triggers the existing local media processing flow.
-    - [ ] Maintain consistent file naming and chronology logic for local media.
-    - [ ] Add a basic integration test for the new menu option.
-- [ ] Task: Conductor - User Manual Verification 'Phase 2' (Protocol in workflow.md)
+- [x] Task 1: Restore Time-Based Chunking. [f4e86cf]
+    - [x] Remove the file-based chunking logic from `src/audio_processor.py`.
+    - [x] Ensure the existing time-based chunking logic (default 30 mins) is functional.
+    - [x] Verify that the "configure audio chunks" menu option correctly updates this setting.
+    - [x] Add unit tests for time-based chunking.
+- [x] Task 2: Integrate Local Media into the Interactive Menu. [f4e86cf]
+    - [x] Modify the main entry point (e.g., `zaknotes.py`) to add a "Process Local Media" option under "start note generation".
+    - [x] Update the menu logic to handle the new option, ensuring it triggers the existing local media processing flow.
+    - [x] Maintain consistent file naming and chronology logic for local media.
+    - [x] Add a basic integration test for the new menu option.
+- [x] Task: Conductor - User Manual Verification 'Phase 2' (Protocol in workflow.md)
