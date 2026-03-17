@@ -11,6 +11,30 @@ from src.audio_processor import AudioProcessor
 
 logger = logging.getLogger(__name__)
 
+class BackoffManager:
+    """Manages exponential backoff for API retries and delays."""
+    def __init__(self, initial_delay: float = 10.0, max_delay: float = 60.0, factor: float = 2.0):
+        self.initial_delay = initial_delay
+        self.max_delay = max_delay
+        self.factor = factor
+
+    def get_delay(self, attempt: int) -> float:
+        """Calculates the delay for a given attempt number."""
+        delay = self.initial_delay * (self.factor ** attempt)
+        return min(delay, self.max_delay)
+
+    async def async_sleep(self, attempt: int):
+        """Asynchronously sleeps for the delay calculated for the given attempt."""
+        delay = self.get_delay(attempt)
+        logger.debug(f"Async backoff sleep: {delay}s (Attempt {attempt})")
+        await asyncio.sleep(delay)
+
+    def sync_sleep(self, attempt: int):
+        """Synchronously sleeps for the delay calculated for the given attempt."""
+        delay = self.get_delay(attempt)
+        logger.debug(f"Sync backoff sleep: {delay}s (Attempt {attempt})")
+        time.sleep(delay)
+
 class GeminiAPIWrapper:
     CODE_ASSIST_ENDPOINT = "https://cloudcode-pa.googleapis.com"
     GEMINI_CLI_HEADERS = {
@@ -32,6 +56,11 @@ class GeminiAPIWrapper:
         self.api_timeout = self.config.get("api_timeout", 300)
         self.api_max_retries = self.config.get("api_max_retries", 3)
         self.api_retry_delay = self.config.get("api_retry_delay", 10)
+        
+        self.backoff_manager = BackoffManager(
+            initial_delay=float(self.api_retry_delay),
+            max_delay=float(self.config.get("api_max_delay", 60.0))
+        )
         
         self.error_file = "error.json"
 
@@ -148,8 +177,9 @@ class GeminiAPIWrapper:
                             logger.error(f"Gemini API Error ({resp.status_code}) for {auth_record['email']}")
                             
                             if resp.status_code == 429:
-                                logger.warning(f"Rate limit (429) for {auth_record['email']}. Waiting 30s and retrying indefinitely...")
-                                await asyncio.sleep(30)
+                                backoff_429 = BackoffManager(initial_delay=30, max_delay=300)
+                                logger.warning(f"Rate limit (429) for {auth_record['email']}. Waiting and retrying indefinitely...")
+                                await backoff_429.async_sleep(attempt)
                                 accounts_tried = 0 # Reset safety to allow indefinite retries
                                 break # Move to next account (or same if only one)
                             
@@ -158,7 +188,7 @@ class GeminiAPIWrapper:
                             
                             if resp.status_code == 503:
                                 logger.warning("Service Unavailable (503). Retrying...")
-                                time.sleep(self.api_retry_delay)
+                                await self.backoff_manager.async_sleep(attempt)
                                 continue
                             
                             raise Exception(f"API Error {resp.status_code}: {resp.text}")
@@ -195,13 +225,13 @@ class GeminiAPIWrapper:
                     logger.warning(f"Gemini API Timeout (Attempt {attempt+1})")
                     if attempt >= self.api_max_retries:
                         break # Try next account
-                    time.sleep(self.api_retry_delay)
+                    await self.backoff_manager.async_sleep(attempt)
                 except Exception as e:
                     logger.error(f"Gemini API Exception ({type(e).__name__}): {e}")
                     self._log_error(request_body, f"{type(e).__name__}: {str(e)}")
                     if attempt >= self.api_max_retries:
                         break # Try next account
-                    time.sleep(self.api_retry_delay)
+                    await self.backoff_manager.async_sleep(attempt)
 
         raise Exception("All configured Gemini CLI accounts failed or were skipped.")
 

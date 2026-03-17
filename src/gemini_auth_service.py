@@ -246,7 +246,7 @@ class GeminiAuthService:
     async def _poll_operation(self, op_name: str, headers: dict) -> dict:
         async with httpx.AsyncClient() as client:
             for _ in range(24):
-                await time.sleep(5)
+                await asyncio.sleep(5)
                 resp = await client.get(f"{self.CODE_ASSIST_ENDPOINT}/v1internal/{op_name}", headers=headers)
                 if resp.status_code != 200:
                     continue
