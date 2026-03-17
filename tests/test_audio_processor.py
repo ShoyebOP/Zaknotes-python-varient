@@ -72,7 +72,14 @@ def test_split_by_size(real_audio_file, tmp_path):
     output_pattern = str(tmp_path / "chunk_%03d.mp3")
     
     # 5s file at 128k is ~80KB. Let's force split by setting max_size to 0.05MB (~50KB)
-    chunks = AudioProcessor.split_by_size(real_audio_file, output_pattern, max_size_mb=0.05)
+    # Use segment_time=0 to bypass duration-based splitting
+    chunks = AudioProcessor.process_for_transcription(
+        real_audio_file, 
+        segment_time=0,
+        max_size_mb=0.05, 
+        output_dir=str(tmp_path), 
+        output_pattern=output_pattern
+    )
     
     assert len(chunks) >= 2
     for chunk in chunks:
