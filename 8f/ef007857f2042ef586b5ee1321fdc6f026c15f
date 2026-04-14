@@ -1,0 +1,7 @@
+Phase 4: CLI Menu Integration
+Summary:
+- Implemented 'Manage Rclone Settings' sub-menu in zaknotes.py.
+- Integrated the new option into the 'main_menu()'.
+- Added specific warnings when both Notion and Rclone are enabled.
+- Updated tests/test_cli_structure.py verifying menu rendering and navigation.
+- User confirmed the verification results.
