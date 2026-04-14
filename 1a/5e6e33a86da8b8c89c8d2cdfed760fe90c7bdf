@@ -1,0 +1,1 @@
+Task: Implement `NoteGenerationService`. Summary: Created `src/note_generation_service.py` which reads the prompt template, injects the transcript file path, and calls the Gemini CLI to generate markdown notes. Why: To automate the final step of creating study notes from transcripts.

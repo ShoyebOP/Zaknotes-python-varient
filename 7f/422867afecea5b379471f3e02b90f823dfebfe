@@ -1,0 +1,1 @@
+Task: Migrate prompts. Summary: Moved transcription and note generation prompt templates from demo files to `src/prompts.py` as raw string constants. Updated services and tests accordingly. Why: To remove dependency on external demo files and ensure robust prompt handling.

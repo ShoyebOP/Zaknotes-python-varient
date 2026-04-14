@@ -1,0 +1,3 @@
+Task: Integrate configured User-Agent into downloader and link_extractor.
+Summary: Updated downloader.py to fetch UA from config. Modified link_extractor.py to accept --user-agent arg. Updated downloader to pass UA to link_extractor. Fixed existing tests.
+Files: src/downloader.py, src/link_extractor.py, tests/test_link_extractor.py, tests/test_downloader_ua.py

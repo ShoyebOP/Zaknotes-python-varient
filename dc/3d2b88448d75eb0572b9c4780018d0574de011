@@ -1,0 +1,4 @@
+Task: Modify src/prompts.py to remove file path references from NOTE_GENERATION_PROMPT.
+Summary: Removed @transcription/file/location and @{chunk} placeholders from prompts as the new Gemini API wrapper handles content and file objects directly.
+Files: src/prompts.py
+Why: Preparation for migration to google-genai SDK where prompts are passed separately from file objects.

@@ -1,0 +1,3 @@
+Task: Phase 4: Interactive Cleanup
+Summary: Updated FileCleanupService to support targeted cleanup using job IDs and expected audio paths. Modified zaknotes.py to present a menu offering 'Purge Everything' or 'Purge Completed/Cancelled Only', allowing users to preserve files for pending jobs.
+Files: src/cleanup_service.py, zaknotes.py, tests/test_interactive_cleanup.py

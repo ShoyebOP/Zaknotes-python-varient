@@ -1,0 +1,1 @@
+Task: Integrate pipeline into `zaknotes.py`. Summary: Updated `zaknotes.py` to use `ProcessingPipeline`, `ConfigManager`, and `FileCleanupService`. Implemented model configuration UI, manual cleanup utility, and the core batch processing loop with fail-fast logic. Why: To provide the user with a complete, functional CLI interface for the new Gemini integration.

@@ -1,0 +1,4 @@
+Task: Handle ClientError 429 for immediate exhaustion flagging.
+Summary: Updated GeminiAPIWrapper to catch google.genai.errors.ClientError and check for status code 429. If detected, it immediately calls mark_exhausted on the model for that API key, overriding any local usage tracking.
+Files: src/gemini_api_wrapper.py, tests/test_gemini_api_wrapper.py
+Why: Ensures that the system remains in sync with the actual API limits, even if local usage tracking is inaccurate or incomplete.

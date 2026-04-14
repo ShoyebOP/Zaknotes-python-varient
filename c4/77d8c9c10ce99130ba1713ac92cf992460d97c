@@ -1,0 +1,6 @@
+Task: Fix Client Initialization
+Summary: Resolved TypeError in genai.Client initialization where 'config' was used instead of the expected 'http_options'. This was likely due to a breaking change in the google-genai SDK.
+Files:
+- src/gemini_api_wrapper.py (modified)
+- tests/reproduce_issue.py (created)
+Why: Restore transcription functionality that was failing due to SDK version mismatch/breaking change.

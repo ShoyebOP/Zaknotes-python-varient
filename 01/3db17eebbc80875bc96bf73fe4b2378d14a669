@@ -1,0 +1,1 @@
+Task: Implement `FileCleanupService`. Summary: Created `src/cleanup_service.py` with methods for cleaning up specific job files and manual cleanup of temp/downloads directories. Refactored `ProcessingPipeline` to use this service. Why: To ensure the system stays clean and meets the requirement of only leaving PDF files after processing.

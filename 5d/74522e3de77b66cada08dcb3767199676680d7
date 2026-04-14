@@ -1,0 +1,4 @@
+Task: Create the 'Happy Path' Quick Start Guide.
+Summary: Added a 3-step quick start section to README.md covering API key setup, note generation, and output retrieval.
+Files: README.md
+Why: Ensures new users can achieve immediate value from the tool with minimal friction.

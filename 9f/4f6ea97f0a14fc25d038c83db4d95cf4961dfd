@@ -1,0 +1,4 @@
+Task: Write exhaustive documentation for all zaknotes.py menu options and the Note Generation sub-menu.
+Summary: Added a 'Feature Deep-Dive' section to README.md covering every CLI menu option in detail, including key rotation and cookie management.
+Files: README.md
+Why: Ensures users understand the full capabilities of the tool and how to use them effectively.

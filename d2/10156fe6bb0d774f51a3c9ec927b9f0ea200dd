@@ -1,0 +1,3 @@
+Task: Update FileCleanupService.cleanup_all_temp_files to recursively clean downloads/temp.
+Summary: Modified cleanup_service.py to detect and recursively empty downloads/temp while preserving .gitkeep. Added tests to verify.
+Files: src/cleanup_service.py, tests/test_cleanup_extended.py

@@ -1,0 +1,4 @@
+Task: Create uploads/ directory with .gitkeep
+Summary: Created the uploads/ directory in the project root with a .gitkeep file. This folder will be used to store local media files for processing.
+Files: uploads/.gitkeep
+Why: To provide a designated location for users to upload media files directly to the Codespace.

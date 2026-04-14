@@ -1,0 +1,6 @@
+Phase Verification Report: Phase 4: Download Reliability Fixes
+Automated Test Command: uv run pytest tests/test_downloader.py tests/test_downloader_ua.py
+Manual Verification Steps:
+1. Run YouTube job and verify -N 4 concurrency in output.
+2. Run EdgeCourseBD job and verify HLS downloader flags in output.
+User Confirmation: Yes

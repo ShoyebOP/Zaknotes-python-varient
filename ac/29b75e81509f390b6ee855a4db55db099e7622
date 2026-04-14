@@ -1,0 +1,3 @@
+Task: Delete the md2notion/ directory and all its contents
+Summary: Removed the reference repository md2notion/ and cleaned up the notes/ directory of processed test files.
+Files: md2notion/ (deleted), notes/ (cleaned)

@@ -1,0 +1,4 @@
+Task: Update zaknotes.py CLI to support --local flag
+Summary: Added argparse to zaknotes.py to handle the --local flag. If --local is present, the script now detects it and bypasses the main interactive menu. Refactored the entry point into a main() function for better testability.
+Files: zaknotes.py, tests/test_cli_structure.py
+Why: To provide a command-line interface for local media processing as specified in the track.

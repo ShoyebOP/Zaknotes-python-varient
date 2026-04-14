@@ -1,0 +1,4 @@
+Fix: Correctly enable EJS solver for YouTube in downloader.
+Summary: Updated src/downloader.py to include --js-runtime node and --extractor-args 'youtube:player_client=web' in yt-dlp commands.
+Files: src/downloader.py
+Why: Ensures yt-dlp uses the EJS library to solve YouTube n-challenges, preventing 403 Forbidden errors.

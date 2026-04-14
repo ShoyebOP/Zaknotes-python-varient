@@ -1,0 +1,1 @@
+Task: Implement AudioProcessor refactor for duration and scaling\n\nSummary: Implemented get_duration using ffprobe. Updated all ffmpeg methods to support the -threads flag. Refactored process_for_transcription to use duration-based chunking instead of size-based. Added comprehensive tests.\n\nFiles:\n- src/audio_processor.py\n- tests/test_audio_processor.py

@@ -1,0 +1,3 @@
+Task: Phase 1: API Quota & Debug Logging
+Summary: Implemented proactive quota counting by moving record_usage before API calls in GeminiAPIWrapper. Added extensive DEBUG level logging for all Gemini API requests (transcription and notes) including truncated prompts, responses, and timing data.
+Files: src/gemini_api_wrapper.py, tests/test_proactive_quota.py, tests/test_gemini_logging.py

@@ -1,0 +1,1 @@
+Task: Implement `ConfigManager`. Summary: Created `src/config_manager.py` with methods to load, save, get, and set configuration values. Defaulted models to 'gemini-2.5-flash' and 'gemini-3-pro-preview'. Why: To allow user configuration of models and other settings.

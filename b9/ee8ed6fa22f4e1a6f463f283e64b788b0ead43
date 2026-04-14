@@ -1,0 +1,3 @@
+Task: Phase 3: Pipeline Resumption (Follow-up)
+Summary: Fixed NameError by adding missing shutil import in src/pipeline.py.
+Files: src/pipeline.py

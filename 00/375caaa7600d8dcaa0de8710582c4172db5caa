@@ -1,0 +1,4 @@
+Task: Refactor src/pipeline.py.
+Summary: Updated ProcessingPipeline to use GeminiAPIWrapper directly for transcription and NoteGenerationService for notes. Added 10s wait between chunks, removed PDF conversion logic, and updated output to save Markdown notes in a 'notes/' directory. Configurable segment_time is now supported.
+Files: src/pipeline.py, tests/test_pipeline.py
+Why: Adapts the main processing flow to the new Gemini API, handles rate limiting with chunk waits, and simplifies the output process to focus on Markdown.

@@ -1,0 +1,7 @@
+Phase 1 Verification Report
+Automated Test Command: CI=true ./.venv/bin/python -m pytest
+Manual Verification Steps:
+1. Run a transcription job with 'python3 zaknotes.py'.
+2. Confirm the exponential delay pauses between chunks in the logs.
+3. Observe successful completion and Notion push.
+User Confirmation: User confirmed 'continue. I will test later'.

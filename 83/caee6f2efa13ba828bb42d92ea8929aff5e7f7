@@ -1,0 +1,3 @@
+Task: Create keys/notion_keys.json structure and initial configuration notion_integration_enabled in config.json
+Summary: Added 'notion_integration_enabled' to default config in src/config_manager.py. Created 'keys/notion_keys.json.example' as a template for Notion credentials. Added unit tests for new configuration.
+Files: src/config_manager.py, keys/notion_keys.json.example, tests/test_notion_config.py

@@ -1,0 +1,4 @@
+Task: Update src/transcription_service.py and src/note_generation_service.py to use GeminiAPIWrapper.
+Summary: Refactored TranscriptionService and NoteGenerationService to use GeminiAPIWrapper instead of GeminiCLIWrapper. Updated NoteGenerationService to read transcript file and pass its content directly to the model. Removed model name argument as it is now managed by the wrapper.
+Files: src/transcription_service.py, src/note_generation_service.py, tests/test_transcription_service.py, tests/test_note_generation_service.py
+Why: Completes the integration of the new API wrapper into the core processing services, enabling API-based transcription and note generation.

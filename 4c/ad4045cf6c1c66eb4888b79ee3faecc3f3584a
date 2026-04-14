@@ -1,0 +1,4 @@
+Fix: Corrected client.files.upload argument and documented prerequisites.
+Summary: Changed 'path' to 'file' in GeminiAPIWrapper.generate_content_with_file to match google-genai SDK. Created comprehensive README.md documenting system requirements (node, ffmpeg, uv).
+Files: src/gemini_api_wrapper.py, README.md, tests/test_gemini_api_wrapper.py
+Why: Resolves a runtime crash during audio upload and provides necessary guidance for new users to set up the project correctly.

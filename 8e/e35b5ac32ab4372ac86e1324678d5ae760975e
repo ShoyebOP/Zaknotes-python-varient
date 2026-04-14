@@ -1,0 +1,4 @@
+Task: Clean up conductor/tracks.md
+Summary: Removed entries for archived tracks and reformatted the active track entry to maintain consistency and clarity in the tracks registry.
+Modified files: conductor/tracks.md
+Why: To keep the registry focused on active tracks and adhere to the standard formatting.

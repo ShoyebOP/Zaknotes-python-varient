@@ -1,0 +1,3 @@
+Task: Implement Markdown to Notion block parsing (adapted from md2notion/ with modern API checks)
+Summary: Implemented 'markdown_to_blocks' with support for headings, bulleted/numbered lists, triple-backtick code blocks, blockquotes, horizontal rules, and paragraphs. Implemented 'process_inline_formatting' with regex-based splitting for bold, italic, code, and links.
+Files: src/notion_service.py, tests/test_notion_service.py

@@ -1,0 +1,1 @@
+Task: Refactor `AudioProcessor`. Summary: Implemented iterative bitrate reduction logic. Chunks > 20MB are re-encoded by decreasing bitrate by 10kbps steps until they fit the limit, with a 32kbps floor. Added `get_bitrate` using `ffprobe`. Why: To preserve audio quality as much as possible while meeting strict file size limits.
