@@ -10,6 +10,8 @@ from src.prompts import TRANSCRIPTION_PROMPT
 from src.job_manager import JobManager
 from src.notion_service import NotionService
 from src.notion_config_manager import NotionConfigManager
+from src.rclone_service import RcloneService
+from src.rclone_config_manager import RcloneConfigManager
 
 class ProcessingPipeline:
     def __init__(self, config_manager, api_wrapper=None, job_manager=None):
@@ -17,6 +19,8 @@ class ProcessingPipeline:
         self.manager = job_manager or JobManager()
         self.api = api_wrapper or GeminiAPIWrapper()
         self.notion_config = NotionConfigManager()
+        self.rclone_config = RcloneConfigManager()
+        self.rclone_service = RcloneService()
 
     def execute_job(self, job) -> bool:
         """
@@ -241,6 +245,28 @@ class ProcessingPipeline:
                     except Exception as e:
                         print(f"❌ Notion push failed with exception: {e}")
 
+            # 5.1 Rclone Integration (Post-generation)
+            pushed_to_rclone = False
+            if self.config.get("rclone_integration_enabled", False):
+                print(f"🚀 [5.1/5] Pushing to Rclone...")
+                remote_name, remote_path = self.rclone_config.get_credentials()
+                
+                if not remote_name:
+                    print("⚠️ Rclone remote not configured. Skipping Rclone push.")
+                else:
+                    try:
+                        # Construct remote destination: remote:path/filename.md
+                        remote_dest = f"{remote_name}:{remote_path}"
+                        success, message = self.rclone_service.push_note(final_notes_path, remote_dest)
+                        
+                        if success:
+                            print(f"✅ Successfully pushed to Rclone: {remote_dest}")
+                            pushed_to_rclone = True
+                        else:
+                            print(f"❌ Rclone push failed: {message}")
+                    except Exception as e:
+                        print(f"❌ Rclone push failed with exception: {e}")
+
             # 6. Cleanup
             print(f"🧹 Cleaning up intermediate files...")
             files_to_cleanup = [audio_path, transcript_path, prepared_path]
@@ -248,16 +274,32 @@ class ProcessingPipeline:
                 if c not in files_to_cleanup:
                     files_to_cleanup.append(c)
             
-            # If successfully pushed to Notion, also cleanup the final md file
-            if pushed_to_notion:
-                files_to_cleanup.append(final_notes_path)
+            # Completion status determination
+            notion_enabled = self.config.get("notion_integration_enabled", False)
+            rclone_enabled = self.config.get("rclone_integration_enabled", False)
+            
+            # If at least one enabled integration was successful, we consider it pushed
+            is_pushed = (notion_enabled and pushed_to_notion) or (rclone_enabled and pushed_to_rclone)
+            
+            # If all ENABLED integrations succeeded, we can cleanup the final note
+            can_cleanup_note = True
+            if notion_enabled and not pushed_to_notion:
+                can_cleanup_note = False
+            if rclone_enabled and not pushed_to_rclone:
+                can_cleanup_note = False
+            
+            if is_pushed:
                 self.manager.update_job_status(job['id'], 'completed')
-                print(f"✅ Job '{job['name']}' completed and pushed to Notion!")
+                if can_cleanup_note:
+                    files_to_cleanup.append(final_notes_path)
+                    print(f"✅ Job '{job['name']}' completed and pushed to all enabled destinations!")
+                else:
+                    print(f"✅ Job '{job['name']}' completed (partial push success). Notes kept: {final_notes_path}")
             else:
-                if self.config.get("notion_integration_enabled", False):
-                    # If enabled but failed, keep local file and mark specially
+                if notion_enabled or rclone_enabled:
+                    # If any was enabled but none succeeded
                     self.manager.update_job_status(job['id'], 'completed_local_only')
-                    print(f"✅ Job '{job['name']}' completed locally (Notion push failed). Notes: {final_notes_path}")
+                    print(f"✅ Job '{job['name']}' completed locally (All push integrations failed). Notes: {final_notes_path}")
                 else:
                     self.manager.update_job_status(job['id'], 'completed')
                     print(f"✅ Job '{job['name']}' completed successfully! Notes: {final_notes_path}")

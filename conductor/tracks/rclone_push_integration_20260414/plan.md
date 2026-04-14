@@ -6,18 +6,18 @@
 - [x] Task: Write unit tests for `RcloneConfigManager` in `tests/test_rclone_config.py`. (9a60e60)
 - [x] Task: Conductor - User Manual Verification 'Phase 1: Configuration Management' (Protocol in workflow.md) (930c2d2)
 
-## Phase 2: Rclone Service Implementation
+## Phase 2: Rclone Service Implementation [checkpoint: 353e45f]
 - [x] Task: Create `src/rclone_service.py` implementing a `push_note(local_path, remote_dest)` method using `subprocess.run` to execute `rclone copy`. (49be88a)
 - [x] Task: Implement robust error handling and logging for the `rclone` command. (49be88a)
 - [x] Task: Write unit tests for `RcloneService` in `tests/test_rclone_service.py` (mocking subprocess calls). (4d093b1)
-- [~] Task: Conductor - User Manual Verification 'Phase 2: Rclone Service Implementation' (Protocol in workflow.md)
+- [x] Task: Conductor - User Manual Verification 'Phase 2: Rclone Service Implementation' (Protocol in workflow.md) (353e45f)
 
 ## Phase 3: Pipeline Integration
-- [ ] Task: Update `ProcessingPipeline` in `src/pipeline.py` to import and initialize `RcloneService` and `RcloneConfigManager`.
-- [ ] Task: Modify `execute_job` to include a Step 5.1: Rclone Integration, running sequentially after the Notion push.
-- [ ] Task: Ensure appropriate cleanup logic if pushing is successful.
-- [ ] Task: Update `tests/test_pipeline.py` or create `tests/test_rclone_pipeline.py` to verify the sequential pushing logic.
-- [ ] Task: Conductor - User Manual Verification 'Phase 3: Pipeline Integration' (Protocol in workflow.md)
+- [x] Task: Update `ProcessingPipeline` in `src/pipeline.py` to import and initialize `RcloneService` and `RcloneConfigManager`. (0313364)
+- [x] Task: Modify `execute_job` to include a Step 5.1: Rclone Integration, running sequentially after the Notion push. (983f2d2)
+- [x] Task: Ensure appropriate cleanup logic if pushing is successful. (983f2d2)
+- [x] Task: Update `tests/test_pipeline.py` or create `tests/test_rclone_pipeline.py` to verify the sequential pushing logic. (be74f67)
+- [~] Task: Conductor - User Manual Verification 'Phase 3: Pipeline Integration' (Protocol in workflow.md)
 
 ## Phase 4: CLI Menu Integration
 - [ ] Task: Implement `manage_rclone_settings()` in `zaknotes.py` to allow users to configure and toggle the Rclone integration.
