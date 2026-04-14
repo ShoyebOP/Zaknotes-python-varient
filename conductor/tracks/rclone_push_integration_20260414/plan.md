@@ -1,16 +1,16 @@
 # Implementation Plan: Rclone Remote Pushing Integration
 
-## Phase 1: Configuration Management
+## Phase 1: Configuration Management [checkpoint: 930c2d2]
 - [x] Task: Create `src/rclone_config_manager.py` to manage rclone credentials (remote name and path) stored in `keys/rclone_keys.json`. (7281c7d)
 - [x] Task: Update `ConfigManager` in `src/config_manager.py` to include the `rclone_integration_enabled` flag in `DEFAULT_CONFIG`. (076e09b)
 - [x] Task: Write unit tests for `RcloneConfigManager` in `tests/test_rclone_config.py`. (9a60e60)
-- [~] Task: Conductor - User Manual Verification 'Phase 1: Configuration Management' (Protocol in workflow.md)
+- [x] Task: Conductor - User Manual Verification 'Phase 1: Configuration Management' (Protocol in workflow.md) (930c2d2)
 
 ## Phase 2: Rclone Service Implementation
-- [ ] Task: Create `src/rclone_service.py` implementing a `push_note(local_path, remote_dest)` method using `subprocess.run` to execute `rclone copy`.
-- [ ] Task: Implement robust error handling and logging for the `rclone` command.
-- [ ] Task: Write unit tests for `RcloneService` in `tests/test_rclone_service.py` (mocking subprocess calls).
-- [ ] Task: Conductor - User Manual Verification 'Phase 2: Rclone Service Implementation' (Protocol in workflow.md)
+- [x] Task: Create `src/rclone_service.py` implementing a `push_note(local_path, remote_dest)` method using `subprocess.run` to execute `rclone copy`. (49be88a)
+- [x] Task: Implement robust error handling and logging for the `rclone` command. (49be88a)
+- [x] Task: Write unit tests for `RcloneService` in `tests/test_rclone_service.py` (mocking subprocess calls). (4d093b1)
+- [~] Task: Conductor - User Manual Verification 'Phase 2: Rclone Service Implementation' (Protocol in workflow.md)
 
 ## Phase 3: Pipeline Integration
 - [ ] Task: Update `ProcessingPipeline` in `src/pipeline.py` to import and initialize `RcloneService` and `RcloneConfigManager`.
