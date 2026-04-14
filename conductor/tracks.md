@@ -21,5 +21,5 @@ This file tracks all major tracks for the project. Each track has its own detail
 
 ---
 
-- [ ] **Track: Add a new remote pushing method using rclone to copy generated Markdown notes to a specified remote destination.**
+- [x] **Track: Add a new remote pushing method using rclone to copy generated Markdown notes to a specified remote destination.**
 *Link: [./tracks/rclone_push_integration_20260414/](./tracks/rclone_push_integration_20260414/)*

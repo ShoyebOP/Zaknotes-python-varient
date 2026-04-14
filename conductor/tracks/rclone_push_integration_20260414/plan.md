@@ -26,7 +26,7 @@
 - [x] Task: Update `tests/test_cli_structure.py` to verify the new menu option and configuration flow. (70b423c)
 - [x] Task: Conductor - User Manual Verification 'Phase 4: CLI Menu Integration' (Protocol in workflow.md) (8fef007)
 
-## Phase 5: Final Verification
+## Phase 5: Final Verification [checkpoint: 3481d71]
 - [x] Task: Perform end-to-end manual testing of the complete flow: local generation -> Notion push -> Rclone push. (29713c2)
 - [x] Task: Verify that enabling/disabling via the menu works as expected and persists correctly. (29713c2)
-- [~] Task: Conductor - User Manual Verification 'Phase 5: Final Verification' (Protocol in workflow.md)
+- [x] Task: Conductor - User Manual Verification 'Phase 5: Final Verification' (Protocol in workflow.md) (3481d71)
