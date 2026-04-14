@@ -18,3 +18,8 @@ This file tracks all major tracks for the project. Each track has its own detail
 
 - [x] **Track: Reliability, UI, and Local Media Refinements**
 *Link: [./tracks/reliability_ui_refinement_20260317/](./tracks/reliability_ui_refinement_20260317/)*
+
+---
+
+- [ ] **Track: Add a new remote pushing method using rclone to copy generated Markdown notes to a specified remote destination.**
+*Link: [./tracks/rclone_push_integration_20260414/](./tracks/rclone_push_integration_20260414/)*
