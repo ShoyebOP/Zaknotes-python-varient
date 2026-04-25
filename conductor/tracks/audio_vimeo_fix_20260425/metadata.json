@@ -1,8 +1,0 @@
-{
-  "track_id": "audio_vimeo_fix_20260425",
-  "type": "bug",
-  "status": "new",
-  "created_at": "2026-04-25T10:00:00Z",
-  "updated_at": "2026-04-25T10:00:00Z",
-  "description": "check the audio cleaning logic to see if there is any duplication or not. investigate doubled audio duration issue. update downloader.py for direct Vimeo URLs to use proper referrer/origin and block cookies."
-}
