@@ -120,14 +120,14 @@ def download_audio(job):
         run_command(cmd)
         match_found = True
 
-    # 3. Vimeo (EdgeCourseBD vimeo_url directly)
+    # 4. Vimeo (EdgeCourseBD vimeo_url directly)
     elif "player.vimeo.com" in url:
         print(">> Mode: Vimeo Url (Direct)")
         # SPEC: Disable cookies for direct Vimeo URLs and use vimeo.com headers
         cmd = base_cmd + ["-N", "16", "--no-part", "--no-keep-fragments", "--no-playlist"] + common_args + [
             "-x", "--audio-format", "mp3",
-            "--add-header", "Referer: https://vimeo.com/",
-            "--add-header", "Origin: https://vimeo.com",
+            "--add-header", "Referer: https://edgecoursebd.com/",
+            "--add-header", "Origin: https://edgecoursebd.com",
             "--add-header", f"User-Agent: {ua}",
             url
         ]
@@ -142,7 +142,7 @@ def download_audio(job):
         match_found = True
 
 
-    # 4. EDGECOURSEBD
+    # 5. EDGECOURSEBD
     elif "edgecoursebd" in url:
         print(">> Mode: EdgeCourseBD (Running Scraper...)")
         
@@ -166,7 +166,7 @@ def download_audio(job):
             print(f"❌ Scraper failed: {e}")
             raise e
 
-    # 5. FALLBACK
+    # 6. FALLBACK
     if not match_found:
         print(">> Mode: Default/Fallback")
         cmd = base_cmd + ["-N", "16"] + common_args + [
