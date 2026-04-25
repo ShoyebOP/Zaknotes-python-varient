@@ -1,0 +1,9 @@
+Task: Audio cleaning refactor, duration investigation, and Vimeo download refinement
+Summary:
+- Consolidated audio optimization into a single pass in AudioProcessor.
+- Improved ffprobe duration and bitrate detection using -analyzeduration and -probesize flags.
+- Refined Vimeo downloader to disable cookies and use vimeo.com headers for direct URLs.
+- Updated ProcessingPipeline to call optimize_audio exactly once.
+- Added TDD tests for redundant calls and Vimeo refinement.
+- Fixed existing tests affected by the refactor.
+Files: src/audio_processor.py, src/downloader.py, src/pipeline.py, tests/test_audio_processor.py, tests/test_pipeline_resumption.py, tests/test_redundant_calls.py, tests/test_vimeo_refinement.py
