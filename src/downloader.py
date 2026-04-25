@@ -123,13 +123,21 @@ def download_audio(job):
     # 3. Vimeo (EdgeCourseBD vimeo_url directly)
     elif "player.vimeo.com" in url:
         print(">> Mode: Vimeo Url (Direct)")
+        # SPEC: Disable cookies for direct Vimeo URLs and use vimeo.com headers
         cmd = base_cmd + ["-N", "16", "--no-part", "--no-keep-fragments", "--no-playlist"] + common_args + [
             "-x", "--audio-format", "mp3",
-            "--add-header", "Referer: https://edgecoursebd.com/",
-            "--add-header", "Origin: https://edgecoursebd.com/",
+            "--add-header", "Referer: https://vimeo.com/",
+            "--add-header", "Origin: https://vimeo.com",
             "--add-header", f"User-Agent: {ua}",
             url
         ]
+        # Remove --cookies if present in common_args (which are part of cmd)
+        # Since common_args is a list, we need to find and remove both '--cookies' and its value
+        if "--cookies" in cmd:
+            idx = cmd.index("--cookies")
+            cmd.pop(idx) # remove --cookies
+            cmd.pop(idx) # remove the cookie file path
+            
         run_command(cmd)
         match_found = True
 

@@ -32,15 +32,15 @@ def test_resume_from_downloaded(pipeline_setup):
     with patch("src.downloader.get_expected_audio_path") as mock_path, \
          patch("src.pipeline.os.path.exists") as mock_exists, \
          patch("src.downloader.download_audio") as mock_download, \
-         patch("src.audio_processor.AudioProcessor.remove_silence") as mock_silence, \
-         patch("src.audio_processor.AudioProcessor.reencode_to_optimal") as mock_reencode, \
+         patch("src.audio_processor.AudioProcessor.optimize_audio") as mock_optimize, \
          patch("src.pipeline.os.listdir") as mock_listdir, \
          patch("src.pipeline.shutil.copy2") as mock_copy, \
          patch("src.audio_processor.AudioProcessor.get_duration") as mock_duration:
 
         mock_path.return_value = "downloads/Test_Job.mp3"
         # Control os.path.exists to simulate file presence
-        mock_exists.side_effect = lambda p: True if "Test_Job" in p or p == "temp" or "downloads" in p else False
+        # Crucial: Prepared file should NOT exist yet to trigger optimization
+        mock_exists.side_effect = lambda p: True if ("Test_Job" in p and "_prepared" not in p) or p == "temp" or "downloads" in p else False
         mock_duration.return_value = 100
         mock_listdir.return_value = [] # No chunks yet
 
@@ -53,8 +53,8 @@ def test_resume_from_downloaded(pipeline_setup):
             if str(e) != "Stop here" and "No such file or directory" not in str(e): raise
 
         mock_download.assert_not_called()
-        # Should call silence removal since status is DOWNLOADED
-        assert mock_silence.called or mock_reencode.called or mock_copy.called
+        # Should call optimization since status is DOWNLOADED
+        assert mock_optimize.called or mock_copy.called
 
 def test_resume_from_chunked(pipeline_setup, tmp_path):
     """Test that if status is CHUNKED, download and processing are skipped."""
@@ -95,7 +95,7 @@ def test_resume_from_chunked(pipeline_setup, tmp_path):
          patch("src.pipeline.open", MagicMock()), \
          patch("src.downloader.get_expected_audio_path", return_value="downloads/Test_Job.mp3"), \
          patch("src.downloader.download_audio") as mock_download, \
-         patch("src.audio_processor.AudioProcessor.remove_silence") as mock_silence:
+         patch("src.audio_processor.AudioProcessor.optimize_audio") as mock_optimize:
 
         pipeline.api.generate_content_with_file.side_effect = Exception("Stop here")
 
@@ -105,7 +105,7 @@ def test_resume_from_chunked(pipeline_setup, tmp_path):
             if str(e) != "Stop here": raise
 
         mock_download.assert_not_called()
-        mock_silence.assert_not_called()
+        mock_optimize.assert_not_called()
         assert pipeline.api.generate_content_with_file.called
 
         

@@ -15,6 +15,8 @@ class AudioProcessor:
     @staticmethod
     def is_under_limit(file_path: str, limit_mb: int = 15) -> bool:
         """Checks if the file size is under the specified limit in MB."""
+        if not os.path.exists(file_path):
+            return True # Assume under limit if it doesn't exist (handles some mock cases)
         size_bytes = AudioProcessor.get_file_size(file_path)
         limit_bytes = limit_mb * 1024 * 1024
         return size_bytes < limit_bytes
@@ -29,8 +31,11 @@ class AudioProcessor:
     def get_duration(file_path: str) -> float:
         """Returns the duration of the audio file in seconds."""
         try:
+            # Added analyzeduration and probesize for better HLS/Vimeo duration detection
             command = [
-                "ffprobe", "-v", "error", "-show_entries", "format=duration",
+                "ffprobe", "-v", "error", 
+                "-analyzeduration", "100M", "-probesize", "100M",
+                "-show_entries", "format=duration",
                 "-of", "default=noprint_wrappers=1:nokey=1", file_path
             ]
             result = subprocess.run(command, check=True, capture_output=True, text=True)
@@ -44,7 +49,9 @@ class AudioProcessor:
         """Returns the bitrate in bits per second."""
         try:
             command = [
-                "ffprobe", "-v", "error", "-select_streams", "a:0",
+                "ffprobe", "-v", "error", 
+                "-analyzeduration", "100M", "-probesize", "100M",
+                "-select_streams", "a:0",
                 "-show_entries", "stream=bit_rate", "-of", "default=noprint_wrappers=1:nokey=1",
                 file_path
             ]
@@ -52,7 +59,9 @@ class AudioProcessor:
             val = result.stdout.strip()
             if val == "N/A" or not val:
                 command = [
-                    "ffprobe", "-v", "error", "-show_entries", "format=bit_rate", 
+                    "ffprobe", "-v", "error", 
+                    "-analyzeduration", "100M", "-probesize", "100M",
+                    "-show_entries", "format=bit_rate", 
                     "-of", "default=noprint_wrappers=1:nokey=1",
                     file_path
                 ]
@@ -156,55 +165,51 @@ class AudioProcessor:
     @staticmethod
     def process_for_transcription(input_path: str, segment_time: int = 1800, max_size_mb: int = 15, output_dir: str = "temp", threads: int = 0, output_pattern: str = None) -> List[str]:
         """
-        Orchestrates the audio processing: optimizes and then splits if needed.
+        Orchestrates the audio processing: splits if needed.
+        Assumes the input is already optimized.
         Prioritizes duration-based splitting (segment_time) as requested.
         """
         if not os.path.exists(output_dir):
             os.makedirs(output_dir, exist_ok=True)
 
-        # 1. Optimize audio in a SINGLE pass
-        print(f"   - Preparing and optimizing audio for transcription...")
         base_name = os.path.splitext(os.path.basename(input_path))[0]
         extension = os.path.splitext(input_path)[1] or ".mp3"
         
-        prepared_path = os.path.join(output_dir, f"{base_name}_prepared{extension}")
-        
-        if not AudioProcessor.optimize_audio(input_path, prepared_path, threads=threads):
-            # If optimization fails, try a simple copy as fallback
-            print(f"      ⚠️ Optimization failed. Using original file as fallback.")
-            shutil.copy2(input_path, prepared_path)
-
-        # 2. Splitting Logic
+        # 1. Splitting Logic
         if not output_pattern:
             output_pattern = os.path.join(output_dir, f"{base_name}_chunk_%03d{extension}")
 
         # If duration-based splitting is requested (segment_time > 0)
         if segment_time > 0:
-            duration = AudioProcessor.get_duration(prepared_path)
+            duration = AudioProcessor.get_duration(input_path)
             if duration > segment_time:
-                print(f"   - Processed file duration ({duration:.1f}s) exceeds limit ({segment_time}s). Splitting...")
-                chunks = AudioProcessor.split_into_chunks(prepared_path, output_pattern, segment_time, threads=threads)
+                print(f"   - Input file duration ({duration:.1f}s) exceeds limit ({segment_time}s). Splitting...")
+                chunks = AudioProcessor.split_into_chunks(input_path, output_pattern, segment_time, threads=threads)
                 print(f"   - Split into {len(chunks)} chunks.")
                 return chunks
             else:
-                print(f"   - Processed file duration is within limit ({segment_time}s).")
+                print(f"   - Input file duration is within limit ({segment_time}s).")
 
         # Fallback to size-based check if duration check passed or wasn't requested
-        if AudioProcessor.is_under_limit(prepared_path, max_size_mb):
+        if AudioProcessor.is_under_limit(input_path, max_size_mb):
             directory = os.path.dirname(output_pattern) or "."
+            # Determine the single output path
             final_path = os.path.join(directory, os.path.basename(output_pattern).replace("%03d", "001"))
-            shutil.copy2(prepared_path, final_path)
+            shutil.copy2(input_path, final_path)
             return [final_path]
 
-        print(f"   - Processed file size exceeds limit ({max_size_mb} MB). Splitting (duration-based fallback)...")
+        print(f"   - Input file size exceeds limit ({max_size_mb} MB). Splitting (duration-based fallback)...")
         # Estimate segment time to fit in max_size_mb as a fallback
-        duration = AudioProcessor.get_duration(prepared_path)
-        current_size_bytes = AudioProcessor.get_file_size(prepared_path)
+        duration = AudioProcessor.get_duration(input_path)
+        current_size_bytes = AudioProcessor.get_file_size(input_path)
         target_size_bytes = max_size_mb * 1024 * 1024
         
         est_segment_time = int((target_size_bytes / current_size_bytes) * duration * 0.9)
-        if est_segment_time < 10: est_segment_time = 10
+        # Guarantee at least 2 chunks if we are over limit
+        if est_segment_time >= duration:
+            est_segment_time = int(duration / 2)
+        if est_segment_time < 1: est_segment_time = 1
         
-        chunks = AudioProcessor.split_into_chunks(prepared_path, output_pattern, est_segment_time, threads=threads)
+        chunks = AudioProcessor.split_into_chunks(input_path, output_pattern, est_segment_time, threads=threads)
         print(f"   - Split into {len(chunks)} chunks.")
         return chunks

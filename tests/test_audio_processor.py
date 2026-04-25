@@ -17,11 +17,11 @@ def dummy_file(tmp_path):
 
 @pytest.fixture
 def real_audio_file(tmp_path):
-    """Creates a 100-second silent MP3 file."""
+    """Creates a 5-second silent MP3 file."""
     p = tmp_path / "silent.mp3"
     subprocess.run([
         "ffmpeg", "-y", "-f", "lavfi", "-i", "anullsrc=r=44100:cl=stereo", 
-        "-t", "100", "-b:a", "128k", str(p)
+        "-t", "5", "-b:a", "128k", str(p)
     ], check=True, capture_output=True)
     return str(p)
 
@@ -76,7 +76,7 @@ def test_split_by_size(real_audio_file, tmp_path):
     chunks = AudioProcessor.process_for_transcription(
         real_audio_file, 
         segment_time=0,
-        max_size_mb=0.05, 
+        max_size_mb=0.01, 
         output_dir=str(tmp_path), 
         output_pattern=output_pattern
     )
@@ -88,8 +88,8 @@ def test_split_by_size(real_audio_file, tmp_path):
 def test_get_duration(real_audio_file):
     """Test retrieving duration of an audio file."""
     duration = AudioProcessor.get_duration(real_audio_file)
-    # real_audio_file was created with -t 100
-    assert 99.5 < duration < 100.5
+    # real_audio_file was created with -t 5
+    assert 4.9 < duration < 5.1
 
 def test_thread_support(real_audio_file, tmp_path):
     """Test that threads parameter is handled in ffmpeg commands."""
@@ -110,6 +110,7 @@ def test_size_based_chunking(real_audio_file, tmp_path):
     assert len(chunks) >= 2
 
     # max_size_mb=1 (1MB) -> Should NOT split
+    # 5s silent @ 128k is ~80KB, which is well under 1MB
     chunks = AudioProcessor.process_for_transcription(
         real_audio_file,
         max_size_mb=1,
