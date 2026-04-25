@@ -19,10 +19,10 @@ The "Class-to-Notes Engine" is a Linux CLI tool designed to automate the convers
 - **Rclone Remote Pushing:** Supports pushing generated notes to various remote storage destinations (Google Drive, S3, etc.) using `rclone` sequentially after generation.
 - **Granular Resumption Logic:** Automatically resumes interrupted jobs from the exact point of failure (e.g., specific transcription chunk) by tracking progress in persistent, job-named intermediate text files.
 - **API Quota & Debug Transparency:** Includes proactive API quota counting and extensive, truncated debug logging for all Gemini API interactions to ensure reliability and visibility.
-- **Intelligent Media Download:** Utilizes domain-specific rules and specialized headers (for Facebook, YouTube, MediaDelivery, etc.) via `yt-dlp` to ensure reliable content extraction.
+- **Intelligent Media Download:** Utilizes domain-specific rules and specialized headers (for Facebook, YouTube, MediaDelivery, Vimeo Direct, etc.) via `yt-dlp` with refined header/cookie handling to ensure reliable content extraction.
 - **Customizable Browser Identity:** Allows users to configure a custom Browser User-Agent to improve compatibility and avoid rate-limiting on platforms like YouTube.
 - **AI-Powered Generation:** Utilizes internal Gemini CLI authentication and `v1internal` endpoints for high-limit transcription and note generation. Supports a customizable "Model Picker" for every step.
-- **Enhanced Transcription & Optimization:** Single-pass audio optimization (silence removal, bitrate, mono, 16kHz) and updated transcription prompts for high accuracy and multilingual support.
+- **Enhanced Transcription & Optimization:** Refined single-pass audio optimization (silence removal, bitrate, mono, 16kHz) and accurate duration detection using advanced ffprobe analysis for precise chunking.
 - **API Request Reliability:** Robust timeout and retry mechanism for all API calls, including **indefinite retries for rate-limit (429) and empty transcription errors** with exponential backoff.
 - **Gemini CLI Account Management:** Robust system for managing multiple Gemini CLI account authorizations with PKCE OAuth2 flow, manual remote support, and automatic token refresh every 90 minutes.
 - **Smart Chunking:** Duration-based audio splitting (default 30 minutes, configurable via menu) to optimize transcription workflow and respect API payload limits.
